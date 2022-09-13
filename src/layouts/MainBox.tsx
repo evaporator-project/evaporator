@@ -18,6 +18,7 @@ import RequestPage from '../panes/Request';
 import WorkspacePage from '../panes/Workspace';
 import { useStore } from '../store';
 import DraggableLayout from './DraggableLayout';
+import {useTranslation} from "react-i18next";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -161,6 +162,8 @@ const MainBox = () => {
     setCollectionTreeData,
   } = useStore();
 
+  const {t} = useTranslation()
+
   const addTab = () => {
     const newActiveKey = String(Math.random());
     setPanes(
@@ -234,7 +237,7 @@ const MainBox = () => {
               onChange={(key) => setActiveMenu(key as MenuTypeEnum)}
               items={[
                 {
-                  label: <MenuTitle icon={<ApiOutlined />} title='Collection' />,
+                  label: <MenuTitle icon={<ApiOutlined />} title={t('navigation.collection')} />,
                   key: MenuTypeEnum.Collection,
                   children: (
                     <CollectionMenu cRef={childRef}  value={activeMenu[1]} onSelect={handleCollectionMenuClick} />

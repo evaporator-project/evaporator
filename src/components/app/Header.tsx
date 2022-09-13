@@ -72,7 +72,7 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
                   padding: 0 6px;
                 `}
               >
-                <SmartButton>evaporator</SmartButton>
+                <SmartButton>EVAPORATOR</SmartButton>
               </HoverWrapper>
             </TopNavigationButton>
 
@@ -118,7 +118,7 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
         </RequesterHeaderSectionLeft>
         <RequesterHeaderSectionRight>
           <Button style={{ marginRight: '8px' }} type={'primary'} icon={<UserAddOutlined />}>
-            {t('hello')}
+            {t('app.invite')}
           </Button>
 
           <HoverWrapper
