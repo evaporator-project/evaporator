@@ -140,9 +140,10 @@ function CollectionTitle({ val, updateDirectoryTreeData, treeData, callbackOfNew
                 value={renameValue}
                 onPressEnter={() => {
                   request({
-                    method: 'PATCH',
-                    url: `/api/file/${val.id}`,
+                    method: 'POST',
+                    url: `/api/updatefile`,
                     data: {
+                      id:val.id,
                       name: renameValue,
                     },
                   }).then((res) => {

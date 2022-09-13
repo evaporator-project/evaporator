@@ -35,6 +35,8 @@ const RequestTypeOptions = METHODS.map((method) => ({
   label: method,
   value: method,
 }));
+
+// TODO 暂时就坐到这里
 const HttpRequest = ({ id, pid, data,updateCol }) => {
   // const {setCollectionTreeData} = useStore
   const { collectionTreeData, extensionInstalled, setPanes, setCollectionTreeData } = useStore();
@@ -43,6 +45,20 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
   const handleUrlChange = (value: string) => {
     setUrl(value);
   };
+
+  // 如果是case(2)类型的话，就一定有一个父节点，类型也一定是request(1)
+  const nodeInfoInCollectionTreeData = useMemo(() => {
+    const paths = treeFindPath(collectionTreeData, (node) => {
+      console.log(node.relationshipRequestId, id,'node.key === id')
+      return node.relationshipRequestId === id
+    });
+
+    return {
+      self: paths[paths.length - 1],
+      parent: paths[paths.length - 2],
+      raw: paths,
+    };
+  }, [collectionTreeData, id]);
 
 
 
@@ -63,6 +79,9 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
           language: 'json',
           fontSize: 16,
           fontFamily: 'monaco',
+          minimap: {
+            enabled:false
+          }
         })
       );
     }
@@ -82,6 +101,9 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
           language: 'json',
           fontSize: 16,
           fontFamily: 'monaco',
+          minimap: {
+            enabled:false
+          }
         })
       );
     }
@@ -150,11 +172,11 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
           justify-content: space-between;
         `}
       >
-        {/*<Breadcrumb style={{ paddingBottom: '14px' }}>*/}
-        {/*  {nodeInfoInCollectionTreeData.raw.map((i, index) => (*/}
-        {/*    <Breadcrumb.Item key={index}>{i.title}</Breadcrumb.Item>*/}
-        {/*  ))}*/}
-        {/*</Breadcrumb>*/}
+        <Breadcrumb style={{ paddingBottom: '14px' }}>
+          {nodeInfoInCollectionTreeData.raw.map((i, index) => (
+            <Breadcrumb.Item key={index}>{i.title}</Breadcrumb.Item>
+          ))}
+        </Breadcrumb>
         <div>
           <Button
             onClick={() => {
