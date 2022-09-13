@@ -15,10 +15,11 @@ export class FileService {
     });
   }
 
-  static deleteACollection(params): Promise<any> {
+  static deleteFileService(params): Promise<any> {
     return request({
-      method: 'DELETE',
-      url: `/api/file/${params.id}`,
+      method: 'POST',
+      url: `/api/deleteFileService`,
+      data: params,
     });
   }
 

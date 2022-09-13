@@ -17,7 +17,7 @@ const Setting: FC<Props> = ({ isModalVisible, setModalVisible }) => {
     <div>
       <Modal
         title="SETTINGS"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >

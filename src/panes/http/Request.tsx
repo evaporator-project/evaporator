@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useRequest } from 'ahooks';
-import { Breadcrumb, Button, Input, Select } from 'antd';
+import {Breadcrumb, Button, Input, message, Select} from 'antd';
 import * as monaco from 'monaco-editor';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -10,8 +10,7 @@ import { treeFindPath } from '../../helpers/collection/util';
 import AgentAxios from '../../helpers/request';
 import request from '../../services/request';
 import { useStore } from '../../store';
-
-
+import {FileService} from "../../services/FileService";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -36,20 +35,9 @@ const RequestTypeOptions = METHODS.map((method) => ({
   label: method,
   value: method,
 }));
-const HttpRequest = ({ id, pid, data }) => {
-  console.log(data, 'data');
-  const { collectionTreeData, extensionInstalled, setPanes } = useStore();
-  // 如果是case(2)类型的话，就一定有一个父节点，类型也一定是request(1)
-  const nodeInfoInCollectionTreeData = useMemo(() => {
-    console.log({ pid, collectionTreeData });
-    const paths = treeFindPath(collectionTreeData, (node) => node.key === pid);
-
-    return {
-      self: paths[paths.length - 1],
-      parent: paths[paths.length - 2],
-      raw: paths,
-    };
-  }, [collectionTreeData, pid]);
+const HttpRequest = ({ id, pid, data,updateCol }) => {
+  // const {setCollectionTreeData} = useStore
+  const { collectionTreeData, extensionInstalled, setPanes, setCollectionTreeData } = useStore();
   const [method, setMethod] = useState<typeof METHODS[number]>(MethodEnum.GET);
   const [url, setUrl] = useState('');
   const handleUrlChange = (value: string) => {
@@ -57,6 +45,76 @@ const HttpRequest = ({ id, pid, data }) => {
   };
 
 
+
+  // 数据初始化
+  useEffect(() => {
+    setUrl(data.endpoint);
+    setMethod(data.method || 'POST');
+  }, [data]);
+
+  const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const monacoEl = useRef(null);
+
+  useEffect(() => {
+    if (monacoEl && !editor) {
+      setEditor(
+        monaco.editor.create(monacoEl.current!, {
+          value: '',
+          language: 'json',
+          fontSize: 16,
+          fontFamily: 'monaco',
+        })
+      );
+    }
+    editor?.setValue(data.body)
+    return () => editor?.dispose();
+  }, [monacoEl.current]);
+
+
+  const [editor2, setEditor2] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const monacoEl2 = useRef(null);
+
+  useEffect(() => {
+    if (monacoEl2 && !editor2) {
+      setEditor2(
+        monaco.editor.create(monacoEl2.current!, {
+          value: '',
+          language: 'json',
+          fontSize: 16,
+          fontFamily: 'monaco',
+        })
+      );
+    }
+
+    return () => editor2?.dispose();
+  }, [monacoEl2.current]);
+
+  // 发请求
+  const handleRequest = () => {
+    AgentAxios({
+      method: method,
+      url,
+      // data: body,
+    }).then((res: any) => {
+      editor2?.setValue(JSON.stringify(res.data, null, 2));
+    });
+  };
+
+
+
+  const {
+    data: treeData = [],
+    loading,
+    run: fetchTreeData,
+  } = useRequest(() => FileService.getcollectiontree({}), {
+    onSuccess: (res) => {
+      console.log(res, 'res');
+      setCollectionTreeData(res);
+      // setColl
+    },
+  });
+
+  // 更新
   const { run: saveRequest } = useRequest(
     () => {
       return request({
@@ -72,63 +130,18 @@ const HttpRequest = ({ id, pid, data }) => {
     },
     {
       manual: true,
+      onSuccess(){
+        message.success('更新成功')
+
+
+
+        updateCol()
+
+
+
+      }
     },
   );
-
-  const divEl = useRef<HTMLDivElement>(null);
-  let editor: monaco.editor.IStandaloneCodeEditor;
-  // const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
-
-  useEffect(() => {
-    setUrl(data.endpoint);
-    setMethod(data.method);
-
-  }, [data]);
-  useEffect(() => {
-    if (divEl.current) {
-      editor =         monaco.editor.create(divEl.current!, {
-        value: '{"name":"123"}',
-        language: 'json',
-        fontSize:30,
-        fontFamily:'monaco'
-      })
-      editor?.setValue(data.body);
-    }
-    return () => {
-      editor?.dispose();
-    };
-  }, []);
-
-
-
-  const divElRes = useRef<HTMLDivElement>(null);
-  let editorRes: monaco.editor.IStandaloneCodeEditor;
-  useEffect(() => {
-    if (divElRes.current) {
-      editorRes = monaco.editor.create(divElRes.current!, {
-        value: '{}',
-        language: 'json',
-        theme: 'vs-dark',
-        fontSize:30,
-        fontFamily:'monaco'
-      })
-    }
-    return () => {
-      editorRes?.dispose();
-    };
-  }, []);
-
-  const handleRequest = () => {
-    AgentAxios({
-      method: method,
-      url,
-      // data: JSON.parse(editor?.getValue()),
-    }).then((res: any) => {
-      console.log(res,editorRes);
-      editorRes?.setValue(JSON.stringify(res.data, null, 2));
-    });
-  };
-
   return (
     <div>
       <div
@@ -137,11 +150,11 @@ const HttpRequest = ({ id, pid, data }) => {
           justify-content: space-between;
         `}
       >
-        <Breadcrumb style={{ paddingBottom: '14px' }}>
-          {nodeInfoInCollectionTreeData.raw.map((i, index) => (
-            <Breadcrumb.Item key={index}>{i.title}</Breadcrumb.Item>
-          ))}
-        </Breadcrumb>
+        {/*<Breadcrumb style={{ paddingBottom: '14px' }}>*/}
+        {/*  {nodeInfoInCollectionTreeData.raw.map((i, index) => (*/}
+        {/*    <Breadcrumb.Item key={index}>{i.title}</Breadcrumb.Item>*/}
+        {/*  ))}*/}
+        {/*</Breadcrumb>*/}
         <div>
           <Button
             onClick={() => {
@@ -165,9 +178,9 @@ const HttpRequest = ({ id, pid, data }) => {
       </HeaderWrapper>
 
       {/*reqBody*/}
-      <div className='Editor' ref={divEl}></div>
+      <div className='Editor' ref={monacoEl}></div>
       {/*res*/}
-      <div className='Editor' ref={divElRes}></div>
+      <div className='Editor' ref={monacoEl2}></div>
     </div>
   );
 };

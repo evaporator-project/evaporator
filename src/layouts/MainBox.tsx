@@ -214,6 +214,8 @@ const MainBox = () => {
     );
   };
 
+  const childRef = useRef();
+
   return (
     <>
       {/*AppHeader部分*/}
@@ -235,7 +237,7 @@ const MainBox = () => {
                   label: <MenuTitle icon={<ApiOutlined />} title='Collection' />,
                   key: MenuTypeEnum.Collection,
                   children: (
-                    <CollectionMenu value={activeMenu[1]} onSelect={handleCollectionMenuClick} />
+                    <CollectionMenu cRef={childRef}  value={activeMenu[1]} onSelect={handleCollectionMenuClick} />
                   ),
                 },
               ]}
@@ -292,7 +294,7 @@ const MainBox = () => {
               {panes.map((pane) => (
                 <MainTabPane className='main-tab-pane' tab={pane.title} key={pane.key}>
                   {/* TODO 工作区自定义组件待规范，参考 menuItem */}
-                  {pane.pageType === PageTypeEnum.Request && <RequestPage id={pane.key} />}
+                  {pane.pageType === PageTypeEnum.Request && <RequestPage id={pane.key} updateCol={childRef.current.func} />}
                   {pane.pageType === PageTypeEnum.Folder && <FolderPage />}
                   {pane.pageType === PageTypeEnum.Environment && <EnvironmentPage />}
                   {pane.pageType === PageTypeEnum.Workspace && <WorkspacePage />}

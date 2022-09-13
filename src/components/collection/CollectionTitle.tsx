@@ -94,7 +94,7 @@ function CollectionTitle({ val, updateDirectoryTreeData, treeData, callbackOfNew
                 okText='Yes'
                 cancelText='No'
                 onConfirm={() => {
-                  FileService.deleteACollection({ id: val.id }).then((res) => {
+                  FileService.deleteFileService({ id: val.id }).then((res) => {
                     console.log(res);
                     updateDirectoryTreeData();
                   });
@@ -114,9 +114,9 @@ function CollectionTitle({ val, updateDirectoryTreeData, treeData, callbackOfNew
         <div className={'left'}>
           {val.nodeType === 1 && val.nodeType === 1 ? (
             <span
-              css={css(`color:${methodMap[val.requestMethod || 'GET'].color};margin-right:4px`)}
+              css={css(`color:${methodMap[val.relationshipRequestMethod || 'GET'].color};margin-right:4px`)}
             >
-              {val.requestMethod}
+              {val.relationshipRequestMethod}
             </span>
           ) : null}
           {val.nodeType === 2 ? (
@@ -162,8 +162,8 @@ function CollectionTitle({ val, updateDirectoryTreeData, treeData, callbackOfNew
           <Dropdown
             overlay={menu(val)}
             trigger={['click']}
-            visible={visible}
-            onVisibleChange={handleVisibleChange}
+            open={visible}
+            onOpenChange={handleVisibleChange}
           >
             <span onClick={(event) => event.stopPropagation()}>
               <Space>

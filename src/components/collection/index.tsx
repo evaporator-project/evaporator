@@ -70,7 +70,16 @@ export type nodeType = {
   key: string;
   nodeType: NodeType;
 } & DataNode;
-const CollectionMenu = ({ value, onSelect }) => {
+const CollectionMenu = ({ value, onSelect,cRef }) => {
+  //用useImperativeHandle暴露一些外部ref能访问的属性
+  useImperativeHandle(cRef, () => {
+    // 需要将暴露的接口返回出去
+    return {
+      func: function () {
+        fetchTreeData()
+      },
+    };
+  });
   const { setCollectionTreeData } = useStore();
   const selectedKeys = useMemo(() => (value ? [value] : []), [value]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);

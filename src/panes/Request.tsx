@@ -8,8 +8,8 @@ import { FileService } from '../services/FileService';
 import request from '../services/request';
 import { useStore } from '../store';
 
-const RequestPage = ({ id }) => {
-  console.log(id,'id')
+const RequestPage = ({ id,updateCol }) => {
+  // console.log(id,'id')
   const { collectionTreeData } = useStore();
   const realId = useMemo(() => {
     return treeFind(collectionTreeData, (node) => {
@@ -43,7 +43,7 @@ const RequestPage = ({ id }) => {
         height: 1500px;
       `}
     >
-      {data ? <HttpRequest id={realId} pid={id} data={data}></HttpRequest> : null}
+      {data ? <HttpRequest id={realId} pid={id} data={data} updateCol={updateCol}></HttpRequest> : null}
     </div>
   );
 };
