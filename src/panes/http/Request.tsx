@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useRequest } from 'ahooks';
+import {useMount, useRequest} from 'ahooks';
 import {Breadcrumb, Button, Input, message, Select} from 'antd';
 import * as monaco from 'monaco-editor';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -11,6 +11,9 @@ import AgentAxios from '../../helpers/request';
 import request from '../../services/request';
 import { useStore } from '../../store';
 import {FileService} from "../../services/FileService";
+import {basicSetup, EditorView} from "codemirror";
+import {javascript} from "@codemirror/lang-javascript";
+import {useCodemirror} from "../../helpers/editor/codemirror";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -49,7 +52,7 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
   // 如果是case(2)类型的话，就一定有一个父节点，类型也一定是request(1)
   const nodeInfoInCollectionTreeData = useMemo(() => {
     const paths = treeFindPath(collectionTreeData, (node) => {
-      console.log(node.relationshipRequestId, id,'node.key === id')
+      // console.log(node.relationshipRequestId, id,'node.key === id')
       return node.relationshipRequestId === id
     });
 
@@ -66,28 +69,44 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
   useEffect(() => {
     setUrl(data.endpoint);
     setMethod(data.method || 'POST');
+    // console.log(window.view,'window.view')
   }, [data]);
 
-  const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const [editor, setEditor] = useState<any>(null);
   const monacoEl = useRef(null);
 
-  useEffect(() => {
-    if (monacoEl && !editor) {
-      setEditor(
-        monaco.editor.create(monacoEl.current!, {
-          value: '',
-          language: 'json',
-          fontSize: 16,
-          fontFamily: 'monaco',
-          minimap: {
-            enabled:false
-          }
-        })
-      );
-    }
-    editor?.setValue(data.body)
-    return () => editor?.dispose();
-  }, [monacoEl.current]);
+  // useEffect(() => {
+  //   if (monacoEl && !editor) {
+  //     setEditor(
+  //       monaco.editor.create(monacoEl.current!, {
+  //         value: '',
+  //         language: 'json',
+  //         fontSize: 16,
+  //         fontFamily: 'monaco',
+  //         minimap: {
+  //           enabled:false
+  //         }
+  //       })
+  //     );
+  //   }
+  //   editor?.setValue(data.body)
+  //   return () => editor?.dispose();
+  // }, [monacoEl.current]);
+
+  // useMount(() => {
+  //   ;(window as any).view = new EditorView({
+  //     doc: 'console.log("Hello world")',
+  //     extensions: [
+  //       basicSetup,
+  //       javascript(),
+  //     ],
+  //     parent: monacoEl2.current!
+  //   })
+  //   // console.log(window.view)
+  // });
+
+
+  useCodemirror(monacoEl,data.body,{})
 
 
   const [editor2, setEditor2] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
@@ -130,7 +149,7 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
     run: fetchTreeData,
   } = useRequest(() => FileService.getcollectiontree({}), {
     onSuccess: (res) => {
-      console.log(res, 'res');
+      // console.log(res, 'res');
       setCollectionTreeData(res);
       // setColl
     },

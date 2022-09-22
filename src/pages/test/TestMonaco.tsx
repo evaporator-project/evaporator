@@ -1,26 +1,16 @@
-import {useEffect, useRef} from "react";
-import * as monaco from 'monaco-editor';
+import React, {useEffect, useRef} from "react";
+
+import {EditorView, basicSetup} from "codemirror"
+import {javascript} from "@codemirror/lang-javascript"
+import {useMount} from "ahooks";
+import {useCodemirror} from "../../helpers/editor/codemirror";
+// import {useCodemirror} from "../../helpers/editor/utils";
 
 const TestMonaco: React.FC = () => {
-  const divEl = useRef<HTMLDivElement>(null);
-  let editor: monaco.editor.IStandaloneCodeEditor;
-  useEffect(() => {
-    if (divEl.current) {
-      editor = monaco.editor.create(divEl.current, {
-        value: ['function x() {', '\tconsole.log("Hello world!");', '}'].join('\n'),
-        language: 'typescript',
-        fontSize:20,
-        fontFamily:'monaco',
-        minimap: {
-          enabled:false
-        }
-      });
-    }
-    return () => {
-      editor.dispose();
-    };
-  }, []);
-  return <div className="Editor" ref={divEl}></div>;
+  const r = useRef(null)
+  useCodemirror(r,'var a = 1',{})
+
+  return <div className="editor" ref={r}></div>;
 };
 
 export default TestMonaco
