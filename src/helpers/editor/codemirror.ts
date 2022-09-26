@@ -1,81 +1,131 @@
-import { LinterDefinition } from "./linting/linter"
-import {Completer} from "./completion";
-import {Ref, useEffect, useRef, useState} from "react";
-import {EditorView, basicSetup} from "codemirror"
-import {javascript} from "@codemirror/lang-javascript";
-
-type ExtendedEditorConfig = {
-  mode: string
-  placeholder: string
-  readOnly: boolean
-  lineWrapping: boolean
+import {useEffect, useState} from "react";
+import {EditorView, keymap, ViewUpdate} from "@codemirror/view"
+import {basicSetup} from "codemirror"
+import { EditorState, StateEffect } from '@codemirror/state';
+import { getStatistics } from "./utils";
+import { oneDark } from '@codemirror/theme-one-dark';
+// import {defaultKeymap} from "@codemirror/commands"
+export interface UseCodeMirror {
+  container?: HTMLDivElement | null;
 }
+export function useCodeMirror(props: UseCodeMirror) {
+  const {
+    value,
+    initialState,
+    root,
+    onCreateEditor,
+    theme = 'light',
+    extensions,
+    height,
+    onStatistics,
+    onChange
+  } = props
+  const [container, setContainer] = useState<HTMLDivElement>();
+  const [view, setView] = useState<EditorView>();
+  const [state, setState] = useState<EditorState>();
 
-type CodeMirrorOptions = {
-  extendedEditorConfig: Partial<ExtendedEditorConfig>
-  linter: LinterDefinition | null
-  completer: Completer | null
-
-  // NOTE: This property is not reactive
-  environmentHighlights: boolean
-}
-
-// 还是参考react-codemirror https://uiwjs.github.io/react-codemirror，项目结构学习hop就可以
-export function useCodemirror(
-  el: any,
-  value: string,
-  options: CodeMirrorOptions
-): { cursor: { line: number; ch: number } } {
-
-
-  const [view,setView] = useState<EditorView>()
-
-
-  useEffect(()=>{
-    // init
-    console.log(el.current,view)
-    if (el.current&&!view) {
-      initView(el.current)
-      console.log(12)
-    }
-    // 组件卸载销毁
-    return ()=>{
-      console.log('卸146')
-      view?.destroy()
-    }
-  },[])
-
-  const initView = (el: any) => {
-    setView(new EditorView({
-      doc: value,
-      extensions: [
-        basicSetup,
-        javascript(),
-      ],
-      parent: el
-    }))
-  }
-
-  // cursor光标
-  const cursor = useState({
-    line: 0,
-    ch: 0,
-  })
-
-  // useEffect(()=>{
-  //   if (el.current){
-  //     // console.log('有就卸载')
-  //     // setView(undefined)
-  //     // initView(el.current)
-  //   } else {
-  //
-  //   }
-  // },[el])
-
-  return {
-    cursor:{
-      ch:12,
-      line:1
+  const defaultLightThemeOption = EditorView.theme(
+    {
+      '&': {
+        backgroundColor: '#fff',
+      },
     },
+    {
+      dark: false,
+    },
+  );
+  const defaultThemeOption = EditorView.theme({
+    '&': {
+      height
+    },
+  });
+  const updateListener = EditorView.updateListener.of((vu: ViewUpdate) => {
+    if (vu.docChanged && typeof onChange === 'function') {
+      const doc = vu.state.doc;
+      const value = doc.toString();
+      onChange(value, vu);
+    }
+    onStatistics && onStatistics(getStatistics(vu));
+  });
+
+  let getExtensions = [updateListener, defaultThemeOption];
+
+  getExtensions.unshift(basicSetup); //存疑
+
+  switch (theme) {
+    case 'light':
+      getExtensions.push(defaultLightThemeOption);
+      break;
+    case 'dark':
+      getExtensions.push(oneDark);
+      break;
+    default:
+      getExtensions.push(theme);
+      break;
   }
+
+  getExtensions = getExtensions.concat(extensions);
+  console.log(getExtensions,'getExtensions')
+  useEffect(() => {
+    if (container && !state) {
+      const config = {
+        doc: value,
+        extensions: getExtensions,
+      };
+      const stateCurrent = initialState
+        ? EditorState.fromJSON(initialState.json, config, initialState.fields)
+        : EditorState.create(config);
+      setState(stateCurrent);
+      if (!view) {
+        console.log(stateCurrent)
+        const viewCurrent = new EditorView({
+          state: stateCurrent,
+          parent: container,
+          root,
+        });
+        setView(viewCurrent);
+        onCreateEditor && onCreateEditor(viewCurrent, stateCurrent);
+      }
+    }
+    return () => {
+      if (view) {
+        setState(undefined);
+        setView(undefined);
+      }
+    };
+  }, [container, state]);
+
+  useEffect(() => setContainer(props.container!), [props.container]);
+
+  useEffect(
+    () => () => {
+      if (view) {
+        view.destroy();
+        setView(undefined);
+      }
+    },
+    [view],
+  );
+
+  useEffect(() => {
+    if (view) {
+      view.dispatch({ effects: StateEffect.reconfigure.of(getExtensions) });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    theme,
+    extensions,
+    height
+  ]);
+
+  useEffect(() => {
+    const currentValue = view ? view.state.doc.toString() : '';
+    if (view && value !== currentValue) {
+      view.dispatch({
+        changes: { from: 0, to: currentValue.length, insert: value || '' },
+      });
+    }
+  }, [value, view]);
+
+  return { state, setState, view, setView, container, setContainer };
 }

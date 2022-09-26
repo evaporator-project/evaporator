@@ -13,7 +13,7 @@ import { useStore } from '../../store';
 import {FileService} from "../../services/FileService";
 import {basicSetup, EditorView} from "codemirror";
 import {javascript} from "@codemirror/lang-javascript";
-import {useCodemirror} from "../../helpers/editor/codemirror";
+// import {useCodemirror} from "../../helpers/editor/codemirror";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -106,7 +106,7 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
   // });
 
 
-  useCodemirror(monacoEl,data.body,{})
+  // useCodemirror(monacoEl,data.body,{})
 
 
   const [editor2, setEditor2] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);

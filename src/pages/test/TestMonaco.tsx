@@ -1,14 +1,17 @@
 import React, {useEffect, useRef} from "react";
+import { javascript } from '@codemirror/lang-javascript';
+import {useCodeMirror} from "../../helpers/editor/codemirror";
 
-import {EditorView, basicSetup} from "codemirror"
-import {javascript} from "@codemirror/lang-javascript"
-import {useMount} from "ahooks";
-import {useCodemirror} from "../../helpers/editor/codemirror";
-// import {useCodemirror} from "../../helpers/editor/utils";
 
 const TestMonaco: React.FC = () => {
   const r = useRef(null)
-  useCodemirror(r,'var a = 1',{})
+
+  useCodeMirror({
+    container:r.current,
+    value:'console.log(123)',
+    height:'300px',
+    extensions:[javascript()]
+  })
 
   return <div className="editor" ref={r}></div>;
 };
