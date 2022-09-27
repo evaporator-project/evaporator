@@ -72,7 +72,7 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
                   padding: 0 6px;
                 `}
               >
-                <SmartButton>EVAPORATOR</SmartButton>
+                <SmartButton>AREX</SmartButton>
               </HoverWrapper>
             </TopNavigationButton>
 
@@ -87,27 +87,27 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
                     <Menu
                       items={workspaces.map((workspace) => {
                         return {
-                          key: workspace.id,
+                          key: workspace._id,
                           label: (
-                            <SmartButton
+                            <Button
                               onClick={() => {
-                                window.location.href = `/${workspace.id}/workspace/${workspace.workspaceName}`;
+                                window.location.href = `/${workspace._id}/workspace/${workspace.name}`;
                               }}
                             >
-                              {workspace.workspaceName}
-                            </SmartButton>
+                              {workspace.name}
+                            </Button>
                           ),
                         };
                       })}
                     />
                   }
                 >
-                  <SmartButton onClick={(e) => e.preventDefault()}>
+                  <Button onClick={(e) => e.preventDefault()}>
                     <Space>
                       Workspaces
                       <DownOutlinedCx />
                     </Space>
-                  </SmartButton>
+                  </Button>
                 </Dropdown>
               </HoverWrapper>
             </TopNavigationButton>

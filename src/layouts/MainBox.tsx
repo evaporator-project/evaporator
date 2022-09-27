@@ -1,9 +1,10 @@
 import { ApiOutlined, DeploymentUnitOutlined, FieldTimeOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { useRequest } from 'ahooks';
+import { useMount, useRequest } from 'ahooks';
 import { Button, Divider, Empty, Select, SelectProps, TabPaneProps, Tabs, TabsProps } from 'antd';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import AppFooter from '../components/app/Footer';
@@ -11,14 +12,14 @@ import AppHeader from '../components/app/Header';
 import CollectionMenu from '../components/collection';
 import EnvironmentMenu from '../components/environment';
 import Environment from '../components/environment';
+import EnvironmentPage from '../components/panes/Environment';
+import FolderPage from '../components/panes/Folder';
+import RequestPage from '../components/panes/Request';
+import WorkspacePage from '../components/panes/Workspace';
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
-import EnvironmentPage from '../panes/Environment';
-import FolderPage from '../panes/Folder';
-import RequestPage from '../panes/Request';
-import WorkspacePage from '../panes/Workspace';
+import request from '../services/request';
 import { useStore } from '../store';
 import DraggableLayout from './DraggableLayout';
-import {useTranslation} from "react-i18next";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -148,11 +149,11 @@ const EmptyWrapper = styled(
 `;
 
 const MainBox = () => {
+  const nav = useNavigate();
+  const params = useParams();
   const {
     panes,
     setPanes,
-    activePane,
-    setActivePane,
     activeMenu,
     setActiveMenu,
     environment,
@@ -162,7 +163,31 @@ const MainBox = () => {
     setCollectionTreeData,
   } = useStore();
 
-  const {t} = useTranslation()
+  const [workspaces, setWorkspaces] = useState([]);
+
+  useMount(() => {
+    request({
+      url: '/api/listworkspace',
+      method: 'POST',
+      data: {},
+    }).then((res) => {
+      console.log(res);
+      setWorkspaces(res);
+    });
+  });
+
+  // 必须和路由搭配起来，在切换的时候附着上去
+  useEffect(() => {
+    const findActivePane = panes.find((i) => i.key === activeMenu[1]);
+    if (findActivePane) {
+      nav(
+        `/${params.workspaceId}/workspace/${params.workspaceName}/${findActivePane.pageType}/${findActivePane.key}`,
+      );
+    }
+    // fetchEnvironmentData();
+  }, [activeMenu, panes]);
+
+  const { t } = useTranslation();
 
   const addTab = () => {
     const newActiveKey = String(Math.random());
@@ -186,7 +211,6 @@ const MainBox = () => {
     if (filteredPanes.length) {
       const lastPane = filteredPanes[filteredPanes.length - 1];
       const lastKey = lastPane.key;
-      setActivePane(lastKey);
       setActiveMenu(lastPane.menuType || MenuTypeEnum.Collection, lastKey);
     } else {
       setActiveMenu(menuType);
@@ -199,7 +223,6 @@ const MainBox = () => {
 
   const handleTabsChange = (activePane: string) => {
     const pane = panes.find((i) => i.key === activePane);
-    setActivePane(activePane);
     setActiveMenu(pane?.menuType || MenuTypeEnum.Collection, activePane);
   };
 
@@ -222,7 +245,7 @@ const MainBox = () => {
   return (
     <>
       {/*AppHeader部分*/}
-      <AppHeader workspaces={[]} userinfo={{}} />
+      <AppHeader workspaces={workspaces} userinfo={{}} />
       <DraggableLayout
         firstNode={
           <div
@@ -240,7 +263,11 @@ const MainBox = () => {
                   label: <MenuTitle icon={<ApiOutlined />} title={t('navigation.collection')} />,
                   key: MenuTypeEnum.Collection,
                   children: (
-                    <CollectionMenu cRef={childRef}  value={activeMenu[1]} onSelect={handleCollectionMenuClick} />
+                    <CollectionMenu
+                      cRef={childRef}
+                      value={activeMenu[1]}
+                      onSelect={handleCollectionMenuClick}
+                    />
                   ),
                 },
               ]}
@@ -274,7 +301,7 @@ const MainBox = () => {
           >
             <MainTabs
               onEdit={handleTabsEdit}
-              activeKey={activePane}
+              activeKey={activeMenu[1]}
               onChange={handleTabsChange}
               tabBarExtraContent={
                 <EnvironmentSelect
@@ -297,7 +324,9 @@ const MainBox = () => {
               {panes.map((pane) => (
                 <MainTabPane className='main-tab-pane' tab={pane.title} key={pane.key}>
                   {/* TODO 工作区自定义组件待规范，参考 menuItem */}
-                  {pane.pageType === PageTypeEnum.Request && <RequestPage id={pane.key} updateCol={childRef.current.func} />}
+                  {pane.pageType === PageTypeEnum.Request && (
+                    <RequestPage id={pane.key} updateCol={childRef.current.func} />
+                  )}
                   {pane.pageType === PageTypeEnum.Folder && <FolderPage />}
                   {pane.pageType === PageTypeEnum.Environment && <EnvironmentPage />}
                   {pane.pageType === PageTypeEnum.Workspace && <WorkspacePage />}

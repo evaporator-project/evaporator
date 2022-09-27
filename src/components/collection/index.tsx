@@ -14,6 +14,8 @@ import { FileService } from '../../services/FileService';
 import { useStore } from '../../store';
 import TooltipButton from '../TooltipButton';
 import CollectionTitle from './CollectionTitle';
+import {treeFind} from "../../helpers/collection/util";
+import {useParams} from "react-router-dom";
 const CollectionMenuWrapper = styled.div`
   height: 100%;
   .ant-spin-nested-loading,
@@ -71,6 +73,7 @@ export type nodeType = {
   nodeType: NodeType;
 } & DataNode;
 const CollectionMenu = ({ value, onSelect,cRef }) => {
+  const params = useParams();
   //用useImperativeHandle暴露一些外部ref能访问的属性
   useImperativeHandle(cRef, () => {
     // 需要将暴露的接口返回出去
@@ -101,6 +104,17 @@ const CollectionMenu = ({ value, onSelect,cRef }) => {
     onSuccess: (res) => {
       console.log(res, 'res');
       setCollectionTreeData(res);
+
+      // 首次加载，在这里加initvalue逻辑
+      const initValue = treeFind(res, (node) => node.key === params.paneRawId);
+      if (initValue && expandedKeys.length === 0) {
+        onSelect(params.paneRawId, {
+          title: initValue.title,
+          key: initValue.key,
+          nodeType: initValue.nodeType,
+        });
+        setExpandedKeys([params.rTypeId]);
+      }
       // setColl
     },
   });

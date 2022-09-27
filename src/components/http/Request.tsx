@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import {useMount, useRequest} from 'ahooks';
 import {Breadcrumb, Button, Input, message, Select} from 'antd';
-import * as monaco from 'monaco-editor';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { MethodEnum, METHODS } from '../../constant';
@@ -13,6 +12,8 @@ import { useStore } from '../../store';
 import {FileService} from "../../services/FileService";
 import {basicSetup, EditorView} from "codemirror";
 import {javascript} from "@codemirror/lang-javascript";
+import {useCodeMirror} from "../../helpers/editor/codemirror";
+import HttpRequestOptions from "./RequestOptions";
 // import {useCodemirror} from "../../helpers/editor/codemirror";
 
 const HeaderWrapper = styled.div`
@@ -72,73 +73,25 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
     // console.log(window.view,'window.view')
   }, [data]);
 
-  const [editor, setEditor] = useState<any>(null);
+  // const [editor, setEditor] = useState<any>(null);
   const monacoEl = useRef(null);
 
-  // useEffect(() => {
-  //   if (monacoEl && !editor) {
-  //     setEditor(
-  //       monaco.editor.create(monacoEl.current!, {
-  //         value: '',
-  //         language: 'json',
-  //         fontSize: 16,
-  //         fontFamily: 'monaco',
-  //         minimap: {
-  //           enabled:false
-  //         }
-  //       })
-  //     );
-  //   }
-  //   editor?.setValue(data.body)
-  //   return () => editor?.dispose();
-  // }, [monacoEl.current]);
+  // const {view:editor,container} = useCodeMirror({
+  //   container:monacoEl.current,
+  //   value:'console.log(123)',
+  //   height:'300px',
+  //   extensions:[javascript()]
+  // })
 
-  // useMount(() => {
-  //   ;(window as any).view = new EditorView({
-  //     doc: 'console.log("Hello world")',
-  //     extensions: [
-  //       basicSetup,
-  //       javascript(),
-  //     ],
-  //     parent: monacoEl2.current!
-  //   })
-  //   // console.log(window.view)
-  // });
-
-
-  // useCodemirror(monacoEl,data.body,{})
-
-
-  const [editor2, setEditor2] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const monacoEl2 = useRef(null);
-
-  useEffect(() => {
-    if (monacoEl2 && !editor2) {
-      setEditor2(
-        monaco.editor.create(monacoEl2.current!, {
-          value: '',
-          language: 'json',
-          fontSize: 16,
-          fontFamily: 'monaco',
-          minimap: {
-            enabled:false
-          }
-        })
-      );
-    }
-
-    return () => editor2?.dispose();
-  }, [monacoEl2.current]);
-
-  // 发请求
+  // // 发请求
   const handleRequest = () => {
-    AgentAxios({
-      method: method,
-      url,
-      // data: body,
-    }).then((res: any) => {
-      editor2?.setValue(JSON.stringify(res.data, null, 2));
-    });
+    // AgentAxios({
+    //   method: method,
+    //   url,
+    //   // data: body,
+    // }).then((res: any) => {
+    //   editor2?.setValue(JSON.stringify(res.data, null, 2));
+    // });
   };
 
 
@@ -165,7 +118,7 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
           id,
           method,
           endpoint: url,
-          body: editor?.getValue(),
+          body: 'editor?.getValue()',
         },
       });
     },
@@ -218,10 +171,15 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
         </Button>
       </HeaderWrapper>
 
+
+      {/**/}
+
+      {/*<HttpRequestOptions/>*/}
+
       {/*reqBody*/}
-      <div className='Editor' ref={monacoEl}></div>
+      {/*<div className='Editor' ref={monacoEl}></div>*/}
       {/*res*/}
-      <div className='Editor' ref={monacoEl2}></div>
+      {/*<div className='Editor' ref={monacoEl2}></div>*/}
     </div>
   );
 };

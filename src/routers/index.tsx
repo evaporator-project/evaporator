@@ -6,14 +6,16 @@ import TestMonaco from "../pages/test/TestMonaco";
 
 export default [
   {
-    path: '/main',
+    path: '/',
     element: <MainBox />,
-    children: [
-      {
-        path: 'Home',
-        element: <Home />,
-      },
-    ],
+  },
+  {
+    path: '/:workspaceId/workspace/:workspaceName',
+    element: <MainBox />,
+  },
+  {
+    path: '/:workspaceId/workspace/:workspaceName/:paneType/:paneRawId',
+    element: <MainBox />,
   },
   {
     path: '/welcome',

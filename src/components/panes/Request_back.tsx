@@ -2,11 +2,11 @@ import { css } from '@emotion/react';
 import { useRequest } from 'ahooks';
 import { useEffect, useMemo } from 'react';
 
-import HttpRequest from './http/Request';
-import { treeFind } from '../helpers/collection/util';
-import { FileService } from '../services/FileService';
-import request from '../services/request';
-import { useStore } from '../store';
+import HttpRequest from '../http/Request';
+import { treeFind } from '../../helpers/collection/util';
+import { FileService } from '../../services/FileService';
+import request from '../../services/request';
+import { useStore } from '../../store';
 
 const RequestPage = ({ id,updateCol }) => {
   // console.log(id,'id')

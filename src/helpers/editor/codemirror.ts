@@ -28,6 +28,11 @@ export function useCodeMirror(props: UseCodeMirror) {
     {
       '&': {
         backgroundColor: '#fff',
+
+      },
+      ".cm-scroller": {
+        fontFamily:'"Roboto Mono", monospace',
+        fontSize:'14px'
       },
     },
     {
@@ -97,6 +102,7 @@ export function useCodeMirror(props: UseCodeMirror) {
 
   useEffect(() => setContainer(props.container!), [props.container]);
 
+  // view改变，更新
   useEffect(
     () => () => {
       if (view) {
@@ -107,6 +113,7 @@ export function useCodeMirror(props: UseCodeMirror) {
     [view],
   );
 
+  // 外部配置改变，更新
   useEffect(() => {
     if (view) {
       view.dispatch({ effects: StateEffect.reconfigure.of(getExtensions) });
@@ -118,6 +125,7 @@ export function useCodeMirror(props: UseCodeMirror) {
     height
   ]);
 
+  // 外部value改变，更新
   useEffect(() => {
     const currentValue = view ? view.state.doc.toString() : '';
     if (view && value !== currentValue) {

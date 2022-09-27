@@ -7,7 +7,7 @@ export default defineConfig({
       babel: {
         plugins: ['@emotion/babel-plugin'],
       },
-    })
+    }),
   ],
   css: {
     preprocessorOptions: {
@@ -22,12 +22,12 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 8000,
-    proxy:{
-      '/api':{
+    proxy: {
+      '/api': {
         target: 'http://127.0.0.1:8080',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      }
-    }
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
 });
