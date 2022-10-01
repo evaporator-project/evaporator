@@ -1,5 +1,5 @@
 import { useRoutes } from 'react-router-dom';
-import './assets/css/App.css'
+
 import routerConfig from './routers';
 
 function App() {

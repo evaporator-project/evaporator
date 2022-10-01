@@ -2,14 +2,14 @@ import { DownOutlined, SettingOutlined, UserAddOutlined } from '@ant-design/icon
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Avatar, Button, Dropdown, Menu, Space } from 'antd';
-import {FC, useState, useTransition} from 'react';
+import { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import Setting from '../setting';
 import SmartButton from '../smart/Button';
 import HoverWrapper from '../smart/HoverWrapper';
 import AppGitHubStarButton from './GitHubStarButton';
-import {useTranslation} from "react-i18next";
 type Props = {
   userinfo: any;
   workspaces: any[];
@@ -17,10 +17,9 @@ type Props = {
 
 const RequesterHeader = styled.div`
   height: 48px;
-  //background-color: salmon;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #EDEDED;
+  border-bottom: 1px solid #ededed;
 `;
 
 const RequesterHeaderSectionLeft = styled.div`
@@ -45,20 +44,20 @@ const DownOutlinedCx = styled(DownOutlined)`
 `;
 const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
   const _useNavigate = useNavigate();
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   const [isSettingModalVisible, setIsSettingModalVisible] = useState(false);
   const SettingMenuItems = [
     {
       key: '1',
-      label: <a onClick={() => {}}>Setting</a>,
+      label: <a>Setting</a>,
     },
     {
       key: '2',
-      label: <a onClick={() => {}}>Privacy Policy</a>,
+      label: <a>Privacy Policy</a>,
     },
     {
       key: '3',
-      label: <a onClick={() => {}}>Terms</a>,
+      label: <a>Terms</a>,
     },
   ];
   return (

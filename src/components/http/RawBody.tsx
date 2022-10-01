@@ -39,8 +39,8 @@ const HttpRawBody = ({ data, cRef }) => {
     };
   });
   const prettifyRequestBody = () => {
-    console.log(rawParamsBody, 'rawParamsBody');
-    const jsonObj = JSON.parse(rawParamsBody);
+    console.log(store.rawParamsBody, 'rawParamsBody');
+    const jsonObj = JSON.parse(store.rawParamsBody);
     dispatch({
       type: 'setRawParamsBody',
       payload: JSON.stringify(jsonObj, null, 2),

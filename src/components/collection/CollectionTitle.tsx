@@ -1,13 +1,18 @@
 import { MoreOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import { Dropdown, Input, Menu, Popconfirm, Space } from 'antd';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 
-import { methodMap } from '../../constant';
+import { MethodEnum, methodMap } from '../../constant';
 import { FileService } from '../../services/FileService';
 import request from '../../services/request';
 
-function CollectionTitle({ val, updateDirectoryTreeData, treeData, callbackOfNewRequest }: any) {
+const CollectionTitle: FC<{
+  val: { relationshipRequestMethod: MethodEnum; nodeType: number; id: string; title: string };
+  updateDirectoryTreeData: any;
+  treeData: any;
+  callbackOfNewRequest: any;
+}> = ({ val, updateDirectoryTreeData, treeData, callbackOfNewRequest }) => {
   const [visible, setVisible] = useState(false);
   const handleVisibleChange = (flag: boolean) => {
     setVisible(flag);
@@ -20,34 +25,31 @@ function CollectionTitle({ val, updateDirectoryTreeData, treeData, callbackOfNew
         onClick={(e) => {
           switch (e.key) {
             case '3':
-              const params3 = {
+              FileService.createACollection({
                 name: 'New Folder',
                 nodeType: 3,
                 pid: val.id,
-              };
-              FileService.createACollection(params3).then((res) => {
+              }).then((res) => {
                 console.log(res);
                 updateDirectoryTreeData();
               });
               break;
             case '1':
-              const params1 = {
+              FileService.createACollection({
                 name: 'New Req',
                 nodeType: 1,
                 pid: val.id,
-              };
-              FileService.createACollection(params1).then((res) => {
+              }).then((res) => {
                 console.log(res);
                 updateDirectoryTreeData();
               });
               break;
             case '2':
-              const params2 = {
+              FileService.createACollection({
                 name: 'New Ex',
                 nodeType: 2,
                 pid: val.id,
-              };
-              FileService.createACollection(params2).then((res) => {
+              }).then((res) => {
                 console.log(res);
                 updateDirectoryTreeData();
               });
@@ -114,7 +116,9 @@ function CollectionTitle({ val, updateDirectoryTreeData, treeData, callbackOfNew
         <div className={'left'}>
           {val.nodeType === 1 && val.nodeType === 1 ? (
             <span
-              css={css(`color:${methodMap[val.relationshipRequestMethod || 'GET'].color};margin-right:4px`)}
+              css={css(
+                `color:${methodMap[val.relationshipRequestMethod || 'GET'].color};margin-right:4px`,
+              )}
             >
               {val.relationshipRequestMethod}
             </span>
@@ -143,7 +147,7 @@ function CollectionTitle({ val, updateDirectoryTreeData, treeData, callbackOfNew
                     method: 'POST',
                     url: `/api/updatefile`,
                     data: {
-                      id:val.id,
+                      id: val.id,
                       name: renameValue,
                     },
                   }).then((res) => {
@@ -176,6 +180,6 @@ function CollectionTitle({ val, updateDirectoryTreeData, treeData, callbackOfNew
       </div>
     </>
   );
-}
+};
 
 export default CollectionTitle;

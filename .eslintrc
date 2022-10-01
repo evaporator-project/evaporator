@@ -24,11 +24,13 @@
     "simple-import-sort",
     "jsx-a11y",
     "react-hooks",
-    "prettier"
+    "prettier",
+    "@emotion"
   ],
   "rules": {
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
@@ -55,6 +57,10 @@
         "singleQuote": true
       }
     ],
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "react/no-unknown-property": ["error", { "ignore": ["css"] }]
   }
 }

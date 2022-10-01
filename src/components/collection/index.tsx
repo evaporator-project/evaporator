@@ -1,21 +1,18 @@
 import { DownOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
 import styled from '@emotion/styled';
-import { useMount, useRequest } from 'ahooks';
-import { Button, Input, Tree } from 'antd';
+import { useRequest } from 'ahooks';
+import { Input, Tree } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 import type { DirectoryTreeProps } from 'antd/lib/tree';
-import axios from 'axios';
-// import { DataNode } from 'antd/lib/tree';
-// import { CollectionService } from '../../services/CollectionService';
-import React, { useEffect, useImperativeHandle, useMemo, useState } from 'react';
+import React, { FC, useImperativeHandle, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { NodeType } from '../../constant';
+import { treeFind } from '../../helpers/collection/util';
 import { FileService } from '../../services/FileService';
 import { useStore } from '../../store';
 import TooltipButton from '../TooltipButton';
 import CollectionTitle from './CollectionTitle';
-import {treeFind} from "../../helpers/collection/util";
-import {useParams} from "react-router-dom";
 const CollectionMenuWrapper = styled.div`
   height: 100%;
   .ant-spin-nested-loading,
@@ -23,12 +20,9 @@ const CollectionMenuWrapper = styled.div`
     height: 100%;
     max-height: 100% !important;
   }
-
   .collection-header {
     display: flex;
     justify-content: space-between;
-    //margin-top: 10px;
-    //margin-bottom: 10px;
     .collection-header-create {
       margin-right: 5px;
       span.action {
@@ -65,21 +59,23 @@ const CollectionMenuWrapper = styled.div`
   }
 `;
 
-// import CollectionTitleRender from './CollectionTitleRender';
-// import { arrToTree } from '../../helpers/collection/util';
 export type nodeType = {
   title: string;
   key: string;
   nodeType: NodeType;
 } & DataNode;
-const CollectionMenu = ({ value, onSelect,cRef }) => {
-  const params = useParams();
+const CollectionMenu: FC<{ value: any; onSelect: (a: string, b: any) => void; cRef: any }> = ({
+  value,
+  onSelect,
+  cRef,
+}) => {
+  const params: any = useParams();
   //用useImperativeHandle暴露一些外部ref能访问的属性
   useImperativeHandle(cRef, () => {
     // 需要将暴露的接口返回出去
     return {
       func: function () {
-        fetchTreeData()
+        fetchTreeData();
       },
     };
   });
@@ -106,14 +102,14 @@ const CollectionMenu = ({ value, onSelect,cRef }) => {
       setCollectionTreeData(res);
 
       // 首次加载，在这里加initvalue逻辑
-      const initValue = treeFind(res, (node) => node.key === params.paneRawId);
+      const initValue = treeFind(res, (node: any) => node.key === params.paneRawId);
       if (initValue && expandedKeys.length === 0) {
         onSelect(params.paneRawId, {
           title: initValue.title,
           key: initValue.key,
           nodeType: initValue.nodeType,
         });
-        setExpandedKeys([params.rTypeId]);
+        setExpandedKeys([params.paneRawId]);
       }
       // setColl
     },
@@ -154,11 +150,6 @@ const CollectionMenu = ({ value, onSelect,cRef }) => {
           placeholder=''
           prefix={<MenuOutlined />}
         />
-        {/*<Tooltip placement='bottomLeft' title={'View more actions'} mouseEnterDelay={0.5}>*/}
-        {/*  <Button className={'collection-header-view'} type='text' size='small'>*/}
-        {/*    <DashOutlined />*/}
-        {/*  </Button>*/}
-        {/*</Tooltip>*/}
       </div>
       <Tree
         autoExpandParent

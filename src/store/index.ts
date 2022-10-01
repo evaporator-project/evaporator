@@ -1,3 +1,4 @@
+import { set } from 'husky';
 import React from 'react';
 import create from 'zustand';
 import { immer } from 'zustand/middleware/immer';
@@ -23,6 +24,13 @@ export type PaneType = {
   isNew?: boolean;
 };
 
+export type Environment = {
+  envName?: string;
+  id: string;
+  keyValues?: EnvironmentKeyValues[];
+  workspaceId?: string;
+};
+export type EnvironmentKeyValues = { key: string; value: string; active: boolean };
 type BaseState = {
   extensionInstalled: boolean;
   userInfo?: UserInfo;
@@ -53,6 +61,9 @@ type BaseState = {
 
   environment: string;
   setEnvironment: (environment: any) => void;
+
+  activeEnvironment?: Environment;
+  setActiveEnvironment: (environment: Environment | string) => void;
 };
 
 /**
@@ -123,5 +134,7 @@ export const useStore = create(
 
     environment: '0',
     setEnvironment: (environment) => set({ environment }),
+    activeEnvironment: undefined,
+    setActiveEnvironment: (activeEnvironment) => set({ activeEnvironment }),
   })),
 );

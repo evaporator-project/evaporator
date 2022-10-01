@@ -1,10 +1,15 @@
 import { CheckCircleOutlined } from '@ant-design/icons';
-import { Tag } from 'antd';
-import {css} from "@emotion/react";
+import { css } from '@emotion/react';
 
 const AppFooter = () => {
   return (
-    <div css={css`height: 24px;background-color: white;border-top: 1px solid #EDEDED`}>
+    <div
+      css={css`
+        height: 24px;
+        background-color: white;
+        border-top: 1px solid #ededed;
+      `}
+    >
       <div>{/*left*/}</div>
       <div>
         {/*right*/}
