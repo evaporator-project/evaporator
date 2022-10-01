@@ -1,20 +1,17 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import {useMount, useRequest} from 'ahooks';
-import {Breadcrumb, Button, Input, message, Select} from 'antd';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useRequest } from 'ahooks';
+import { Breadcrumb, Button, Input, message, Select } from 'antd';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 
-import { MethodEnum, METHODS } from '../../constant';
+import { METHODS } from '../../constant';
 import { treeFindPath } from '../../helpers/collection/util';
 import AgentAxios from '../../helpers/request';
+import { FileService } from '../../services/FileService';
 import request from '../../services/request';
 import { useStore } from '../../store';
-import {FileService} from "../../services/FileService";
-import {basicSetup, EditorView} from "codemirror";
-import {javascript} from "@codemirror/lang-javascript";
-import {useCodeMirror} from "../../helpers/editor/codemirror";
-import HttpRequestOptions from "./RequestOptions";
-// import {useCodemirror} from "../../helpers/editor/codemirror";
+import { requestUseStore } from '../../store/request';
+import { ColorContext } from '../panes/Request';
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -39,24 +36,20 @@ const RequestTypeOptions = METHODS.map((method) => ({
   label: method,
   value: method,
 }));
-
-// TODO 暂时就坐到这里
-const HttpRequest = ({ id, pid, data,updateCol }) => {
-  // const {setCollectionTreeData} = useStore
-  const { collectionTreeData, extensionInstalled, setPanes, setCollectionTreeData } = useStore();
-  const [method, setMethod] = useState<typeof METHODS[number]>(MethodEnum.GET);
-  const [url, setUrl] = useState('');
+const HttpRequest = ({ id, pid, data, updateCol }) => {
+  const { store, dispatch } = useContext(ColorContext);
+  const { collectionTreeData, setCollectionTreeData } = useStore();
   const handleUrlChange = (value: string) => {
-    setUrl(value);
+    // setEndpoint(value);
+    dispatch({
+      type: 'setEndpoint',
+      payload: value,
+    });
   };
-
-  // 如果是case(2)类型的话，就一定有一个父节点，类型也一定是request(1)
   const nodeInfoInCollectionTreeData = useMemo(() => {
     const paths = treeFindPath(collectionTreeData, (node) => {
-      // console.log(node.relationshipRequestId, id,'node.key === id')
-      return node.relationshipRequestId === id
+      return node.relationshipRequestId === id;
     });
-
     return {
       self: paths[paths.length - 1],
       parent: paths[paths.length - 2],
@@ -64,37 +57,36 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
     };
   }, [collectionTreeData, id]);
 
-
-
   // 数据初始化
   useEffect(() => {
-    setUrl(data.endpoint);
-    setMethod(data.method || 'POST');
-    // console.log(window.view,'window.view')
+    // setEndpoint(data.endpoint);
+    console.log(data.endpoint, 'endpoint');
+    dispatch({
+      type: 'setEndpoint',
+      payload: data.endpoint,
+    });
+    dispatch({
+      type: 'setMethod',
+      payload: data.method || 'POST',
+    });
   }, [data]);
-
-  // const [editor, setEditor] = useState<any>(null);
-  const monacoEl = useRef(null);
-
-  // const {view:editor,container} = useCodeMirror({
-  //   container:monacoEl.current,
-  //   value:'console.log(123)',
-  //   height:'300px',
-  //   extensions:[javascript()]
-  // })
-
-  // // 发请求
   const handleRequest = () => {
-    // AgentAxios({
-    //   method: method,
-    //   url,
-    //   // data: body,
-    // }).then((res: any) => {
-    //   editor2?.setValue(JSON.stringify(res.data, null, 2));
-    // });
+    AgentAxios({
+      method: store.method,
+      url: store.endpoint,
+      // data: JSON.parse(store.rawParamsBody),
+      headers: {
+        cookie: '',
+      },
+      // data: body,
+    }).then((res: any) => {
+      // console.log(res,'res')
+      dispatch({
+        type: 'setResponse',
+        payload: JSON.stringify(res.data),
+      });
+    });
   };
-
-
 
   const {
     data: treeData = [],
@@ -102,9 +94,7 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
     run: fetchTreeData,
   } = useRequest(() => FileService.getcollectiontree({}), {
     onSuccess: (res) => {
-      // console.log(res, 'res');
       setCollectionTreeData(res);
-      // setColl
     },
   });
 
@@ -116,24 +106,18 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
         url: `/api/updaterequest`,
         data: {
           id,
-          method,
-          endpoint: url,
-          body: 'editor?.getValue()',
+          method: store.method,
+          endpoint: store.endpoint,
+          body: store.rawParamsBody,
         },
       });
     },
     {
       manual: true,
-      onSuccess(){
-        message.success('更新成功')
-
-
-
-        updateCol()
-
-
-
-      }
+      onSuccess() {
+        message.success('更新成功');
+        updateCol();
+      },
     },
   );
   return (
@@ -160,26 +144,25 @@ const HttpRequest = ({ id, pid, data,updateCol }) => {
         </div>
       </div>
       <HeaderWrapper>
-        <Select value={method} options={RequestTypeOptions} onChange={setMethod} />
+        <Select
+          value={store.method}
+          options={RequestTypeOptions}
+          onChange={(value) => {
+            dispatch({
+              type: 'setMethod',
+              payload: value,
+            });
+          }}
+        />
         <Input
           placeholder={'http.enterRequestUrl'}
-          value={url}
+          value={store.endpoint}
           onChange={(e) => handleUrlChange(e.target.value)}
         />
         <Button type='primary' onClick={handleRequest}>
           Send
         </Button>
       </HeaderWrapper>
-
-
-      {/**/}
-
-      {/*<HttpRequestOptions/>*/}
-
-      {/*reqBody*/}
-      {/*<div className='Editor' ref={monacoEl}></div>*/}
-      {/*res*/}
-      {/*<div className='Editor' ref={monacoEl2}></div>*/}
     </div>
   );
 };

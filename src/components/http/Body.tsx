@@ -13,6 +13,7 @@ const HttpBody = ({data}) => {
     console.log('radio1 checked', value);
     setValue1(value);
   };
+  const rawBodyRef = useRef(null)
   return (
     <div>
       <div css={css`display: flex;justify-content: space-between`}>
@@ -20,11 +21,11 @@ const HttpBody = ({data}) => {
 
         <div>
           {/*右边操作的区域*/}
-          <a>beautify</a>
+          <a onClick={()=>rawBodyRef.current.prettifyRequestBody()}>beautify</a>
         </div>
       </div>
 
-      <RawBody data={data}/>
+      <RawBody cRef={rawBodyRef} data={data}/>
     </div>
   );
 };

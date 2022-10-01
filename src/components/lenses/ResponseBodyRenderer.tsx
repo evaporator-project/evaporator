@@ -1,21 +1,22 @@
-import {useRef} from "react";
-import {useCodeMirror} from "../../helpers/editor/codemirror";
-import {json} from "@codemirror/lang-json";
+import { json } from '@codemirror/lang-json';
+import { useRef } from 'react';
 
-const LensesResponseBodyRenderer = ()=>{
-  const jsonResponse = useRef(null)
+import { useCodeMirror } from '../../helpers/editor/codemirror';
+
+const LensesResponseBodyRenderer = ({ response }) => {
+  const jsonResponse = useRef(null);
 
   useCodeMirror({
     container: jsonResponse.current,
-    value: `{
-    "name":"zhangwenrou"
-    }`,
+    value: response,
     height: '300px',
     extensions: [json()],
   });
-  return <div>
-    <div ref={jsonResponse}></div>
-  </div>
-}
+  return (
+    <div>
+      <div ref={jsonResponse}></div>
+    </div>
+  );
+};
 
-export default LensesResponseBodyRenderer
+export default LensesResponseBodyRenderer;

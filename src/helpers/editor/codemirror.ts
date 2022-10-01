@@ -70,7 +70,7 @@ export function useCodeMirror(props: UseCodeMirror) {
   }
 
   getExtensions = getExtensions.concat(extensions);
-  console.log(getExtensions,'getExtensions')
+  // console.log(getExtensions,'getExtensions')
   useEffect(() => {
     if (container && !state) {
       const config = {

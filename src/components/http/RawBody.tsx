@@ -1,45 +1,56 @@
 import { json } from '@codemirror/lang-json';
 import { Button } from 'antd';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import { useCodeMirror } from '../../helpers/editor/codemirror';
-import { Context } from '../panes/Request';
+import { requestUseStore } from '../../store/request';
+import {ColorContext} from "../panes/Request";
 
-const HttpRawBody = ({ data }) => {
+const HttpRawBody = ({ data, cRef }) => {
   const rawBodyParameters = useRef(null);
-
-  const [rawParamsBody, setRawParamsBody] = useState(``);
-
+  const { store, dispatch } = useContext(ColorContext);
   useEffect(() => {
-    console.log({ data });
-    setRawParamsBody(JSON.stringify(data));
+    dispatch({
+      type: 'setRawParamsBody',
+      payload: data?.body,
+    });
   }, [data]);
 
   useCodeMirror({
     container: rawBodyParameters.current,
-    value: rawParamsBody,
+    value: store.rawParamsBody,
     height: '300px',
     extensions: [json()],
+    onChange: (val) => {
+      dispatch({
+        type: 'setRawParamsBody',
+        payload: val,
+      });
+    },
+  });
+
+  //用useImperativeHandle暴露一些外部ref能访问的属性
+  useImperativeHandle(cRef, () => {
+    // 需要将暴露的接口返回出去
+    return {
+      prettifyRequestBody: function () {
+        prettifyRequestBody();
+      },
+    };
   });
   const prettifyRequestBody = () => {
     console.log(rawParamsBody, 'rawParamsBody');
     const jsonObj = JSON.parse(rawParamsBody);
-    console.log(jsonObj, 'jsonObj');
-    setRawParamsBody(JSON.stringify(jsonObj, null, 2));
+    dispatch({
+      type: 'setRawParamsBody',
+      payload: JSON.stringify(jsonObj, null, 2),
+    });
   };
 
-  const context = useContext(Context);
-  // const context = useContext(Context)
-  const user = context.state.user;
-  const params = context.state.params;
-  const handleName = (e) => {
-    context.dispatch({ type: 'name', value: 'zt' });
-  };
+  const handleName = (e) => {};
 
   return (
     <div>
-      <Button onClick={() => prettifyRequestBody()}>变好看{user.name}</Button>
-      <Button onClick={() => handleName('')}>change</Button>
       <div ref={rawBodyParameters}></div>
     </div>
   );

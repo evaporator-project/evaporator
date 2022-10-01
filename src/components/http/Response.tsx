@@ -1,12 +1,16 @@
 import LensesResponseBodyRenderer from '../lenses/ResponseBodyRenderer';
 import HttpResponseMeta from './ResponseMeta';
+import {requestUseStore} from "../../store/request";
+import {useContext} from "react";
+import {ColorContext} from "../panes/Request";
 
 const HttpResponse = () => {
-  const response = {}
+  const {store} = useContext(ColorContext)
   return (
     <div>
-      <HttpResponseMeta response={response} />
-      <LensesResponseBodyRenderer response={response} />
+      <p>{store.response}11</p>
+      <HttpResponseMeta response={store.response} />
+      <LensesResponseBodyRenderer response={store.response} />
     </div>
   );
 };
