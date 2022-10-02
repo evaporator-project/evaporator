@@ -15,7 +15,23 @@ const defaultState = {
   endpoint: '',
   method: '',
   rawParamsBody: '',
-  response: '',
+  request: {
+    params: [],
+  },
+  response: {
+    type: 'success',
+    headers: [],
+    statusCode: 200,
+    meta: {
+      responseSize: 0,
+      responseDuration: 1,
+    },
+    error: {
+      name: '',
+      message: '',
+      stack: '',
+    },
+  },
 };
 
 function reducer(state = defaultState, action) {
@@ -30,8 +46,17 @@ function reducer(state = defaultState, action) {
     return { ...state, rawParamsBody: action.payload };
   }
   if (action.type === 'setResponse') {
-    console.log(action,'re')
+    console.log(action, 're');
     return { ...state, response: action.payload };
+  }
+  if (action.type === 'setRequestParams') {
+    return {
+      ...state,
+      request: {
+        ...state.request,
+        params: action.payload,
+      },
+    };
   }
   return state;
 }
@@ -57,18 +82,27 @@ const RequestPage = ({ id, updateCol }) => {
       });
     },
     {
-      onSuccess: (res) => {},
+      onSuccess: (res) => {
+        console.log(res, 'res');
+        dispatch({
+          type: 'setRequestParams',
+          payload: [{ key: '1', value: '2', active: true }],
+        });
+      },
     },
   );
+  // 需要有值才展示，不然mounted的时候没数据
   return (
     <ColorContext.Provider value={{ store, dispatch }}>
       <AppPaneLayout
         primary={
           <div>
             {data ? (
-              <HttpRequest id={realId} pid={id} data={data} updateCol={updateCol}></HttpRequest>
+              <div>
+                <HttpRequest id={realId} pid={id} data={data} updateCol={updateCol}></HttpRequest>
+                <HttpRequestOptions data={data}></HttpRequestOptions>
+              </div>
             ) : null}
-            <HttpRequestOptions data={data}></HttpRequestOptions>
           </div>
         }
         secondary={<HttpResponse></HttpResponse>}

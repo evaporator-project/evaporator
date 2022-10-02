@@ -1,4 +1,8 @@
-const HttpResponseMeta = ({ response }) => {
+import { FC } from 'react';
+
+import { HoppRESTResponse } from '../../helpers/types/HoppRESTResponse';
+
+const HttpResponseMeta: FC<{ response: HoppRESTResponse }> = ({ response }) => {
   return (
     <div>
       {response === null ? (
@@ -11,8 +15,8 @@ const HttpResponseMeta = ({ response }) => {
             {response.type === 'success' ? (
               <div>
                 <span>{response.statusCode}</span>
-                <span>{response.responseDuration}</span>
-                <span>{response.responseSize}</span>
+                <span>{response.meta.responseDuration}</span>
+                <span>{response.meta.responseSize}</span>
               </div>
             ) : null}
           </div>

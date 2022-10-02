@@ -71,6 +71,7 @@ const HttpRequest = ({ id, pid, data, updateCol }) => {
     });
   }, [data]);
   const handleRequest = () => {
+    console.log(store.request.params,'raw')
     AgentAxios({
       method: store.method,
       url: store.endpoint,

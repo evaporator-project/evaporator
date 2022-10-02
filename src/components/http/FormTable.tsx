@@ -89,14 +89,16 @@ export const useColumns = (
             <Space>
               <Tooltip title={record.active ? t('disable') : t('enable')}>
                 <Button
+                  style={{color:'#10b981'}}
                   type='text'
                   size='small'
-                  icon={record.active ? <StopOutlined /> : <CheckCircleOutlined />}
+                  icon={record.active ? <CheckCircleOutlined /> : <StopOutlined />}
                   onClick={() => handleDisable(i)}
                 />
               </Tooltip>
               <Tooltip title={t('remove')}>
                 <Button
+                  style={{color:'#ef4444'}}
                   type='text'
                   size='small'
                   icon={<DeleteOutlined />}

@@ -9,7 +9,7 @@ const HttpResponse = () => {
   const { store } = useContext(ColorContext);
   return (
     <div>
-      <p>{store.response}11</p>
+      {/*<p>{store.response}11</p>*/}
       <HttpResponseMeta response={store.response} />
       <LensesResponseBodyRenderer response={store.response} />
     </div>

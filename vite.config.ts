@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import * as path from 'path';
 import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [
@@ -10,6 +11,11 @@ export default defineConfig({
     preprocessorOptions: {
       less: {
         javascriptEnabled: true,
+        // modifyVars: {
+        //   'primary-color': '#1DA57A',
+        //   'link-color': '#1DA57A',
+        //   'border-radius-base': '2px',
+        // },
       },
     },
   },
@@ -25,6 +31,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+    },
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
   },
 });

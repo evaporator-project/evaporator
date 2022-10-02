@@ -8,11 +8,10 @@ import HttpTests from "./Tests";
 import HttpParameters from "./Parameters";
 const { TabPane } = Tabs;
 const HttpRequestOptions = ({ data }) => {
-  const [activeKey, setActiveKey] = useState('3');
+  const [activeKey, setActiveKey] = useState('0');
   useEffect(() => {
     console.log({ data });
   }, [data]);
-  // >=4.23.0 可用，推荐的写法 ✅
   const items = [
     { label: 'Params', key: '0', children: <HttpParameters/> }, // 务必填写 key
     // { label: 'form-data', key: '1', children: '内容 2' },
