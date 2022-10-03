@@ -161,6 +161,8 @@ const MainBox = () => {
     setEnvironment,
     setEnvironmentTreeData,
     setCollectionTreeData,
+    setActiveEnvironment,
+    activeEnvironment
   } = useStore();
 
   const [workspaces, setWorkspaces] = useState([]);
@@ -305,16 +307,18 @@ const MainBox = () => {
               onChange={handleTabsChange}
               tabBarExtraContent={
                 <EnvironmentSelect
-                  value={environment}
+                  value={activeEnvironment}
                   onChange={(e) => {
-                    setEnvironment(e);
+                    console.log(e,'e')
+                    setActiveEnvironment(e)
+                    // seAc
                   }}
                 >
                   <Option value='0'>No Environment</Option>
-                  {environmentTreeData?.map((e: { id: string; envName: string }) => {
+                  {environment?.map((e) => {
                     return (
-                      <Option key={e.id} value={e.id}>
-                        {e.envName}
+                      <Option key={e.name} value={e.name}>
+                        {e.name}
                       </Option>
                     );
                   })}

@@ -4,6 +4,7 @@ import create from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
+import { Environment } from '../data/environment';
 
 type UserInfo = {
   email: string | null;
@@ -24,13 +25,6 @@ export type PaneType = {
   isNew?: boolean;
 };
 
-export type Environment = {
-  envName?: string;
-  id: string;
-  keyValues?: EnvironmentKeyValues[];
-  workspaceId?: string;
-};
-export type EnvironmentKeyValues = { key: string; value: string; active: boolean };
 type BaseState = {
   extensionInstalled: boolean;
   userInfo?: UserInfo;
@@ -59,8 +53,8 @@ type BaseState = {
   environmentTreeData: any;
   setEnvironmentTreeData: (environmentTreeData: any) => void;
 
-  environment: string;
-  setEnvironment: (environment: any) => void;
+  environment: Environment[];
+  setEnvironment: (environment: Environment[]) => void;
 
   activeEnvironment?: Environment;
   setActiveEnvironment: (environment: Environment | string) => void;
@@ -132,9 +126,19 @@ export const useStore = create(
     environmentTreeData: [],
     setEnvironmentTreeData: (environmentTreeData) => set({ environmentTreeData }),
 
-    environment: '0',
+    environment: [
+      {
+        name: 'dev',
+        variables: [
+          {
+            key: 'url',
+            value: 'http://127.0.0.1:8080',
+          },
+        ],
+      },
+    ],
     setEnvironment: (environment) => set({ environment }),
-    activeEnvironment: undefined,
+    activeEnvironment: 'dev',
     setActiveEnvironment: (activeEnvironment) => set({ activeEnvironment }),
   })),
 );

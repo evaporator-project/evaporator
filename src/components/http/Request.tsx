@@ -6,13 +6,13 @@ import { useContext, useEffect, useMemo, useRef } from 'react';
 
 import { METHODS } from '../../constant';
 import { treeFindPath } from '../../helpers/collection/util';
+import { readableBytes } from '../../helpers/http/responseMeta';
 import AgentAxios from '../../helpers/request';
 import { FileService } from '../../services/FileService';
 import request from '../../services/request';
 import { useStore } from '../../store';
 import { requestUseStore } from '../../store/request';
 import { HttpContext } from '../panes/Request';
-import { readableBytes } from '../../helpers/http/responseMeta';
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -58,32 +58,36 @@ const HttpRequest = ({ id, pid, updateCol }) => {
   }, [collectionTreeData, id]);
 
   const handleRequest = () => {
-
     dispatch({
       type: 'setResponseType',
       payload: 'loading',
     });
 
-    const start = new Date().getTime()
+    const start = new Date().getTime();
     AgentAxios({
       method: store.request.method,
       url: store.request.endpoint,
       headers: {},
-      data: ['GET'].includes(store.request.method)?undefined:JSON.parse(store.request.body.body),
-      // parm: ['GET'].includes(store.request.method)?undefined:JSON.parse(store.request.body.body)
+      data: ['GET'].includes(store.request.method)
+        ? undefined
+        : JSON.parse(store.request.body.body),
+      params: ['POST'].includes(store.request.method)
+        ? undefined
+        : store.request.params.reduce((p, c) => {
+            return {
+              ...p,
+              [c.key]: c.value,
+            };
+          }, {}),
     }).then((res: any) => {
-      setTimeout(()=>{
-        const end = new Date().getTime()
-        console.log(res,'res')
-
-
+      setTimeout(() => {
+        const end = new Date().getTime();
+        console.log(res, 'res');
 
         dispatch({
           type: 'setResponseType',
           payload: 'success',
         });
-
-
 
         dispatch({
           type: 'setResponseBody',
@@ -93,7 +97,6 @@ const HttpRequest = ({ id, pid, updateCol }) => {
           type: 'setResponseHeaders',
           payload: res.headers,
         });
-
 
         dispatch({
           type: 'setResponseMeta',
@@ -107,7 +110,7 @@ const HttpRequest = ({ id, pid, updateCol }) => {
           type: 'setResponseStatuscode',
           payload: res.status,
         });
-      },1000)
+      }, 200);
     });
   };
 
