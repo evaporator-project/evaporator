@@ -1,6 +1,9 @@
 import { useRequest } from 'ahooks';
+import { AxiosResponse } from 'axios';
+import _ from 'lodash';
 import { createContext, useMemo, useReducer } from 'react';
 
+import { HoppRESTRequest } from '../../data/rest';
 import { treeFind } from '../../helpers/collection/util';
 import request from '../../services/request';
 import { useStore } from '../../store';
@@ -9,19 +12,41 @@ import HttpRequest from '../http/Request';
 import HttpRequestOptions from '../http/RequestOptions';
 import HttpResponse from '../http/Response';
 
-export const ColorContext = createContext({});
+export const HttpContext = createContext({});
 
 const defaultState = {
   endpoint: '',
   method: '',
   rawParamsBody: '',
   request: {
+    preRequestScript: '',
+    v: '1',
+    headers: [],
+    name: 'updatePet',
+    body: {
+      contentType: 'application/json',
+      body: '',
+    },
+    testScript: '',
+    method: 'PUT',
+    auth: {
+      authURL: 'http://petstore.swagger.io/api/oauth/dialog',
+      oidcDiscoveryURL: '',
+      accessTokenURL: '',
+      clientID: '',
+      scope: 'write:pets read:pets',
+      token: '',
+      authType: 'oauth-2',
+      authActive: true,
+    },
+    endpoint: '<<baseUrl>>/pet',
     params: [],
   },
   response: {
     type: 'success',
     headers: [],
-    statusCode: 200,
+    statuscode: 200,
+    body: '',
     meta: {
       responseSize: 0,
       responseDuration: 1,
@@ -34,32 +59,31 @@ const defaultState = {
   },
 };
 
-function reducer(state = defaultState, action) {
-  ///reducer负责操作数据
-  if (action.type === 'setEndpoint') {
-    return { ...state, endpoint: action.payload };
+function find(object, path) {
+  const props = path.split('.');
+  for (let i = 0; i < props.length; i++) {
+    const p = props[i];
+    if (object && object.hasOwnProperty(p)) {
+      object = object[p];
+    } else {
+      return undefined;
+    }
   }
-  if (action.type === 'setMethod') {
-    return { ...state, method: action.payload };
-  }
-  if (action.type === 'setRawParamsBody') {
-    return { ...state, rawParamsBody: action.payload };
-  }
-  if (action.type === 'setResponse') {
-    console.log(action, 're');
-    return { ...state, response: action.payload };
-  }
-  if (action.type === 'setRequestParams') {
-    return {
-      ...state,
-      request: {
-        ...state.request,
-        params: action.payload,
-      },
-    };
-  }
-  return state;
+  return object;
 }
+
+function reducer(state = defaultState, action) {
+  function underline(str) {
+    return str.replace(/\B([A-Z])/g, '_$1').toLowerCase();
+  }
+  const clonestate = JSON.parse(JSON.stringify(state));
+
+  const arr = underline(action.type).split('_');
+
+  _.set(clonestate, arr.slice(1, arr.length).join('.'), action.payload);
+  return clonestate;
+}
+
 const RequestPage = ({ id, updateCol }) => {
   const [store, dispatch] = useReducer(reducer, defaultState); //创建reducer
   const { collectionTreeData } = useStore();
@@ -75,25 +99,40 @@ const RequestPage = ({ id, updateCol }) => {
   } = useRequest(
     () => {
       const a = treeFind(collectionTreeData, (node) => node.key === id);
-      return request({
+      return request<HoppRESTRequest>({
         method: 'POST',
         url: `/api/retrieverequest`,
         data: { id: a?.relationshipRequestId },
       });
     },
     {
-      onSuccess: (res) => {
-        console.log(res, 'res');
+      onSuccess: ({ endpoint, params, method, headers, body }) => {
+        dispatch({
+          type: 'setRequestMethod',
+          payload: method,
+        });
         dispatch({
           type: 'setRequestParams',
-          payload: [{ key: '1', value: '2', active: true }],
+          payload: params,
+        });
+        dispatch({
+          type: 'setRequestEndpoint',
+          payload: endpoint,
+        });
+        dispatch({
+          type: 'setRequestHeaders',
+          payload: headers,
+        });
+        dispatch({
+          type: 'setRequestBody',
+          payload: body,
         });
       },
     },
   );
   // 需要有值才展示，不然mounted的时候没数据
   return (
-    <ColorContext.Provider value={{ store, dispatch }}>
+    <HttpContext.Provider value={{ store, dispatch }}>
       <AppPaneLayout
         primary={
           <div>
@@ -107,7 +146,7 @@ const RequestPage = ({ id, updateCol }) => {
         }
         secondary={<HttpResponse></HttpResponse>}
       ></AppPaneLayout>
-    </ColorContext.Provider>
+    </HttpContext.Provider>
   );
 };
 

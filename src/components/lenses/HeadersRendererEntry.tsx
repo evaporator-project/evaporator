@@ -7,7 +7,7 @@ import { HoppRESTHeader } from '../../data/rest';
 const test = css`
   border-right: 1px solid #eee;
   border-bottom: 1px solid #eee;
-  padding: 10px;
+  padding: 6px;
 `;
 
 const LensesHeadersRendererEntry: FC<{ header: HoppRESTHeader }> = ({ header }) => {

@@ -4,5 +4,25 @@
   },
   "navigation": {
     "collection": "Collection"
+  },
+  "request": {
+    "parameter_list": "Query Parameters"
+  },
+  "response": {
+    "body": "Response Body",
+    "filter_response_body": "Filter JSON response body (uses JSONPath syntax)",
+    "headers": "Headers",
+    "html": "HTML",
+    "image": "Image",
+    "json": "JSON",
+    "pdf": "PDF",
+    "preview_html": "Preview HTML",
+    "raw": "Raw",
+    "size": "Size",
+    "status": "Status",
+    "time": "Time",
+    "title": "Response",
+    "waiting_for_connection": "waiting for connection",
+    "xml": "XML"
   }
 }

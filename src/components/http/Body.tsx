@@ -5,8 +5,8 @@ import { useRef, useState } from 'react';
 import RawBody from './RawBody';
 
 const HttpBody = ({ data }) => {
-  const [value1, setValue1] = useState('raw');
-  const plainOptions = ['none', 'form-data', 'x-www-form-urlencoded', 'raw', 'binary'];
+  const [value1, setValue1] = useState('application/json');
+  const plainOptions = ['application/json'];
   const onChange1 = ({ target: { value } }: RadioChangeEvent) => {
     console.log('radio1 checked', value);
     setValue1(value);

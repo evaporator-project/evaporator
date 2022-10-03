@@ -11,7 +11,8 @@ import { FileService } from '../../services/FileService';
 import request from '../../services/request';
 import { useStore } from '../../store';
 import { requestUseStore } from '../../store/request';
-import { ColorContext } from '../panes/Request';
+import { HttpContext } from '../panes/Request';
+import { readableBytes } from '../../helpers/http/responseMeta';
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -36,13 +37,12 @@ const RequestTypeOptions = METHODS.map((method) => ({
   label: method,
   value: method,
 }));
-const HttpRequest = ({ id, pid, data, updateCol }) => {
-  const { store, dispatch } = useContext(ColorContext);
+const HttpRequest = ({ id, pid, updateCol }) => {
+  const { store, dispatch } = useContext(HttpContext);
   const { collectionTreeData, setCollectionTreeData } = useStore();
   const handleUrlChange = (value: string) => {
-    // setEndpoint(value);
     dispatch({
-      type: 'setEndpoint',
+      type: 'setRequestEndpoint',
       payload: value,
     });
   };
@@ -57,35 +57,57 @@ const HttpRequest = ({ id, pid, data, updateCol }) => {
     };
   }, [collectionTreeData, id]);
 
-  // 数据初始化
-  useEffect(() => {
-    // setEndpoint(data.endpoint);
-    console.log(data.endpoint, 'endpoint');
-    dispatch({
-      type: 'setEndpoint',
-      payload: data.endpoint,
-    });
-    dispatch({
-      type: 'setMethod',
-      payload: data.method || 'POST',
-    });
-  }, [data]);
   const handleRequest = () => {
-    console.log(store.request.params,'raw')
+
+    dispatch({
+      type: 'setResponseType',
+      payload: 'loading',
+    });
+
+    const start = new Date().getTime()
     AgentAxios({
-      method: store.method,
-      url: store.endpoint,
-      // data: JSON.parse(store.rawParamsBody),
-      headers: {
-        cookie: '',
-      },
-      // data: body,
+      method: store.request.method,
+      url: store.request.endpoint,
+      headers: {},
+      data: ['GET'].includes(store.request.method)?undefined:JSON.parse(store.request.body.body),
+      // parm: ['GET'].includes(store.request.method)?undefined:JSON.parse(store.request.body.body)
     }).then((res: any) => {
-      // console.log(res,'res')
-      dispatch({
-        type: 'setResponse',
-        payload: JSON.stringify(res.data),
-      });
+      setTimeout(()=>{
+        const end = new Date().getTime()
+        console.log(res,'res')
+
+
+
+        dispatch({
+          type: 'setResponseType',
+          payload: 'success',
+        });
+
+
+
+        dispatch({
+          type: 'setResponseBody',
+          payload: JSON.stringify(res.data),
+        });
+        dispatch({
+          type: 'setResponseHeaders',
+          payload: res.headers,
+        });
+
+
+        dispatch({
+          type: 'setResponseMeta',
+          payload: {
+            responseSize: JSON.stringify(res.data).length,
+            responseDuration: end - start,
+          },
+        });
+
+        dispatch({
+          type: 'setResponseStatuscode',
+          payload: res.status,
+        });
+      },1000)
     });
   };
 
@@ -107,9 +129,11 @@ const HttpRequest = ({ id, pid, data, updateCol }) => {
         url: `/api/updaterequest`,
         data: {
           id,
-          method: store.method,
-          endpoint: store.endpoint,
-          body: store.rawParamsBody,
+          method: store.request.method,
+          endpoint: store.request.endpoint,
+          body: store.request.body,
+          params: store.request.params,
+          headers: store.request.headers,
         },
       });
     },
@@ -146,18 +170,19 @@ const HttpRequest = ({ id, pid, data, updateCol }) => {
       </div>
       <HeaderWrapper>
         <Select
-          value={store.method}
+          value={store.request.method}
           options={RequestTypeOptions}
           onChange={(value) => {
+            console.log(value, 'va');
             dispatch({
-              type: 'setMethod',
+              type: 'setRequestMethod',
               payload: value,
             });
           }}
         />
         <Input
           placeholder={'http.enterRequestUrl'}
-          value={store.endpoint}
+          value={store.request.endpoint}
           onChange={(e) => handleUrlChange(e.target.value)}
         />
         <Button type='primary' onClick={handleRequest}>

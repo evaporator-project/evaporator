@@ -4,11 +4,11 @@ import { useContext, useEffect, useImperativeHandle, useRef, useState } from 're
 
 import { useCodeMirror } from '../../helpers/editor/codemirror';
 import { requestUseStore } from '../../store/request';
-import {ColorContext} from "../panes/Request";
+import {HttpContext} from "../panes/Request";
 
 const HttpRawBody = ({ data, cRef }) => {
   const rawBodyParameters = useRef(null);
-  const { store, dispatch } = useContext(ColorContext);
+  const { store, dispatch } = useContext(HttpContext);
   useEffect(() => {
     dispatch({
       type: 'setRawParamsBody',
@@ -18,12 +18,12 @@ const HttpRawBody = ({ data, cRef }) => {
 
   useCodeMirror({
     container: rawBodyParameters.current,
-    value: store.rawParamsBody,
+    value: store.request.body.body,
     height: '300px',
     extensions: [json()],
     onChange: (val) => {
       dispatch({
-        type: 'setRawParamsBody',
+        type: 'setRequestBodyBody',
         payload: val,
       });
     },
@@ -39,10 +39,9 @@ const HttpRawBody = ({ data, cRef }) => {
     };
   });
   const prettifyRequestBody = () => {
-    console.log(store.rawParamsBody, 'rawParamsBody');
-    const jsonObj = JSON.parse(store.rawParamsBody);
+    const jsonObj = JSON.parse(store.request.body.body);
     dispatch({
-      type: 'setRawParamsBody',
+      type: 'setRequestBodyBody',
       payload: JSON.stringify(jsonObj, null, 2),
     });
   };

@@ -34,6 +34,7 @@ export const FormHeaderWrapper = styled.div`
 const FormHeader: FC<{ update: Updater<KeyValueType[]> }> = (props) => {
   const { t: t_common } = useTranslation('common');
   const { t: t_components } = useTranslation('components');
+  const { t } = useTranslation();
 
   const handleAddParam = () => {
     const newValue: KeyValueType = {
@@ -50,7 +51,7 @@ const FormHeader: FC<{ update: Updater<KeyValueType[]> }> = (props) => {
 
   return (
     <FormHeaderWrapper>
-      <span>{t_components('http.queryParams')}</span>
+      <span>{t("request.parameter_list")}</span>
       <div>
         <Tooltip title={t_common('help')}>
           <Button type='text' icon={<QuestionCircleOutlined />} />

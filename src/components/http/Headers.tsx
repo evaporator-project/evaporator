@@ -1,25 +1,38 @@
 import styled from '@emotion/styled';
 import { useImmer } from 'use-immer';
-import { HoppRESTParam } from '../../data/rest';
+import { HoppRESTHeader, HoppRESTParam } from '../../data/rest';
 
 import FormHeader from './FormHeader';
 import FormTable, { KeyValueType, useColumns } from './FormTable';
+import { useContext, useEffect } from 'react';
+import { HttpContext } from '../panes/Request';
+import { useMount } from 'ahooks';
 
 const HttpHeaders = () => {
-  const [requestParams, setRequestParams] = useImmer<HoppRESTParam[]>([
+  const { store, dispatch } = useContext(HttpContext);
+  const [requestHeaders, setRequestHeaders] = useImmer<HoppRESTHeader[]>([
     { key: '', value: '', active: true },
   ]);
+  useMount(() => {
+    setRequestHeaders(store.request.headers);
+  });
+
+  useEffect(() => {
+    dispatch({
+      type: 'setRequestHeaders',
+      payload: requestHeaders,
+    });
+  }, [requestHeaders]);
   return (
     <div>
-      <p>{JSON.stringify(requestParams)}</p>
-      <FormHeader update={setRequestParams} />
+      <FormHeader update={setRequestHeaders} />
       <FormTable
         bordered
         size='small'
         rowKey='id'
         pagination={false}
-        dataSource={requestParams}
-        columns={useColumns(setRequestParams, true)}
+        dataSource={requestHeaders}
+        columns={useColumns(setRequestHeaders, true)}
       />
     </div>
   );

@@ -4,5 +4,24 @@
   },
   "navigation": {
     "collection": "Collection"
+  },
+  "request": {
+    "parameter_list": "查询参数"
+  },
+  "response": {
+    "body": "响应体",
+    "headers": "响应头",
+    "html": "HTML",
+    "image": "图像",
+    "json": "JSON",
+    "pdf": "PDF",
+    "preview_html": "预览 HTML",
+    "raw": "原始内容",
+    "size": "大小",
+    "status": "状态",
+    "time": "时间",
+    "title": "响应",
+    "waiting_for_connection": "等待连接",
+    "xml": "XML"
   }
 }
