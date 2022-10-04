@@ -2,7 +2,7 @@ import { ApiOutlined, DeploymentUnitOutlined, FieldTimeOutlined } from '@ant-des
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMount, useRequest } from 'ahooks';
-import { Button, Divider, Empty, Select, SelectProps, TabPaneProps, Tabs, TabsProps } from 'antd';
+import { Button, Col, Divider, Empty, Row, Select, SelectProps, TabPaneProps, Tabs, TabsProps } from 'antd';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -20,11 +20,14 @@ import { MenuTypeEnum, PageTypeEnum } from '../constant';
 import request from '../services/request';
 import { useStore } from '../store';
 import DraggableLayout from './DraggableLayout';
+import Settings from '../pages/settings';
+import Profile from '../pages/profile';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
 const MainMenu = styled(Tabs)`
-  height: 100%;
+  //height: 100%;
+  flex: 1;
   .ant-tabs-nav-list {
     width: 100px;
     .ant-tabs-tab {
@@ -254,8 +257,22 @@ const MainBox = () => {
             css={css`
               height: calc(100vh - 72px);
               overflow-y: auto;
+              display: flex;
+              flex-direction: column;
             `}
           >
+            {/*<Row>*/}
+            {/*  <Col span={18}>*/}
+            {/*    EVAPORATOR*/}
+            {/*  </Col>*/}
+            {/*  <Col span={6} >*/}
+            {/*    <Button>Import</Button>*/}
+            {/*  </Col>*/}
+            {/*</Row>*/}
+            <div css={css`display: flex;justify-content: space-between;padding: 10px;border-bottom: 1px solid #eee`}>
+              <span>EVAPORATOR</span>
+              <Button size={'small'}>Import</Button>
+            </div>
             <MainMenu
               tabPosition='left'
               activeKey={activeMenu[0]}
@@ -274,23 +291,6 @@ const MainBox = () => {
                 },
               ]}
             >
-              {/* menuItem 自定义子组件命名规定: XxxMenu, 表示xx功能的左侧主菜单 */}
-              {/* menuItem 自定义子组件 props 约定，便于之后封装  */}
-              {/* 1. ref?: 组件ref对象，用于调用组件自身属性方法。尽量不使用，使用前请思考是否还有别的方法 */}
-              {/* 1. xxId?: 涉及组件初始化的全局id，之后可以将该参数置于全局状态管理存储 */}
-              {/* 2. onSelect: 选中 menu item 时触发，参数（结构待规范）为选中节点的相关信息，点击后的逻辑不在 Menu 组件中处理 */}
-              {/*<MainMenuItem*/}
-              {/*  tab={<MenuTitle icon={<ApiOutlined />} title='Collection' />}*/}
-              {/*  key={MenuTypeEnum.Collection}*/}
-              {/*  menuItem={*/}
-              {/*    <CollectionMenu value={activeMenu[1]} onSelect={handleCollectionMenuClick} />*/}
-              {/*  }*/}
-              {/*/>*/}
-              {/*<MainMenuItem*/}
-              {/*  tab={<MenuTitle icon={<DeploymentUnitOutlined />} title='Environment' />}*/}
-              {/*  key={MenuTypeEnum.Environment}*/}
-              {/*  menuItem={<EnvironmentMenu />}*/}
-              {/*/>*/}
             </MainMenu>
           </div>
         }
@@ -342,6 +342,11 @@ const MainBox = () => {
         direction={'horizontal'}
         limitRange={[15, 40]}
       />
+
+      {/*setting弹窗、profile弹窗*/}
+      <Settings/>
+      <Profile/>
+      {/*<Button onClick={()=>setModalVisible(true)}>sss</Button>*/}
       <AppFooter />
     </>
   );

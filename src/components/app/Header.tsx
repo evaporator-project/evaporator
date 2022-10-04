@@ -1,4 +1,11 @@
-import { DownOutlined, SettingOutlined, UserAddOutlined } from '@ant-design/icons';
+import {
+  DownOutlined,
+  LogoutOutlined,
+  ProfileOutlined,
+  SettingOutlined,
+  UserAddOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Avatar, Button, Dropdown, Menu, Space } from 'antd';
@@ -6,10 +13,12 @@ import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import { useStore } from '../../store';
 import Setting from '../setting';
 import SmartButton from '../smart/Button';
 import HoverWrapper from '../smart/HoverWrapper';
 import AppGitHubStarButton from './GitHubStarButton';
+import testa from '../../assets/testa.jpeg'
 type Props = {
   userinfo: any;
   workspaces: any[];
@@ -20,6 +29,7 @@ const RequesterHeader = styled.div`
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #ededed;
+  padding: 0 8px;
 `;
 
 const RequesterHeaderSectionLeft = styled.div`
@@ -45,7 +55,7 @@ const DownOutlinedCx = styled(DownOutlined)`
 const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
   const _useNavigate = useNavigate();
   const { t } = useTranslation();
-  const [isSettingModalVisible, setIsSettingModalVisible] = useState(false);
+  const { settingModalOpen, setSettingModalOpen,setProfileModalOpen } = useStore();
   const SettingMenuItems = [
     {
       key: '1',
@@ -71,10 +81,12 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
                   padding: 0 6px;
                 `}
               >
-                <SmartButton>AREX</SmartButton>
+                <SmartButton>EVAPORATOR</SmartButton>
               </HoverWrapper>
             </TopNavigationButton>
-
+            <TopNavigationButton>
+              <AppGitHubStarButton />
+            </TopNavigationButton>
             <TopNavigationButton>
               <HoverWrapper
                 css={css`
@@ -101,18 +113,16 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
                     />
                   }
                 >
-                  <Button onClick={(e) => e.preventDefault()}>
+                  <a onClick={(e) => e.preventDefault()}>
                     <Space>
                       Workspaces
                       <DownOutlinedCx />
                     </Space>
-                  </Button>
+                  </a>
                 </Dropdown>
               </HoverWrapper>
             </TopNavigationButton>
-            <TopNavigationButton>
-              <AppGitHubStarButton />
-            </TopNavigationButton>
+
           </TopNavigationButtons>
         </RequesterHeaderSectionLeft>
         <RequesterHeaderSectionRight>
@@ -129,11 +139,9 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
               }
             `}
           >
-            <Dropdown trigger={['click']} overlay={<Menu items={SettingMenuItems} />}>
-              <div>
-                <SettingOutlined style={{ color: '#6B6B6B', fontSize: '16px' }} />
-              </div>
-            </Dropdown>
+            <div onClick={() => setSettingModalOpen(true)}>
+              <SettingOutlined style={{ color: '#6B6B6B', fontSize: '16px' }} />
+            </div>
           </HoverWrapper>
           <HoverWrapper
             css={css`
@@ -147,38 +155,68 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
             <Dropdown
               trigger={['click']}
               overlay={
-                <Menu
-                  items={[
-                    {
-                      key: 'Sign Out',
-                      label: (
-                        <a
-                          onClick={() => {
-                            localStorage.removeItem('email');
-                            // value.dispatch({ type: "login"})
-                            // _useNavigate('/')
-                            window.location.href = '/';
-                          }}
-                        >
-                          Sign Out
-                        </a>
-                      ),
-                    },
-                  ]}
-                />
+                <div
+                  css={css`
+                    background-color: white;
+                  `}
+                >
+                  <Menu
+                    items={[
+                      {
+                        key: '1',
+                        label: (
+                          <div>
+                            <div>张涛</div>
+                            <div css={css`color: #a3a3a3`}>zhangwen@136.com</div>
+                          </div>
+                        )
+                      },
+                      {
+                        type:'divider'
+                      },
+                      {
+                        key: '个人档案',
+                        label: (
+                          <a
+                            onClick={() => {
+                              setProfileModalOpen(true)
+                            }}
+                          >
+                            个人档案
+                          </a>
+                        ),
+                        icon: <UserOutlined />,
+                      },
+                      {
+                        key: 'Sign Out',
+                        label: (
+                          <a
+                            onClick={() => {
+                              localStorage.removeItem('email');
+                              // value.dispatch({ type: "login"})
+                              // _useNavigate('/')
+                              window.location.href = '/';
+                            }}
+                          >
+                            Sign Out
+                          </a>
+                        ),
+                        icon: <LogoutOutlined />,
+                      },
+                    ]}
+                  />
+                </div>
               }
             >
               <span onClick={(e) => e.preventDefault()}>
                 <div>
-                  <Avatar size={20}>{userinfo.email}</Avatar>
+                  <Avatar src={testa} size={20}>{userinfo.email}</Avatar>
                 </div>
               </span>
             </Dropdown>
           </HoverWrapper>
         </RequesterHeaderSectionRight>
       </RequesterHeader>
-      {/*模态框*/}
-      <Setting isModalVisible={isSettingModalVisible} setModalVisible={setIsSettingModalVisible} />
     </>
   );
 };

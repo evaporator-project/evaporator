@@ -1,4 +1,5 @@
 import { DownOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useRequest } from 'ahooks';
 import { Input, Tree } from 'antd';
@@ -134,7 +135,7 @@ const CollectionMenu: FC<{ value: any; onSelect: (a: string, b: any) => void; cR
 
   return (
     <CollectionMenuWrapper>
-      <div className={'collection-header'}>
+      <div className={'collection-header'} css={css`padding-top: 10px;padding-bottom: 10px`}>
         <TooltipButton
           icon={<PlusOutlined />}
           type='text'

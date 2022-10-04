@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { useContext, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import { useCodeMirror } from '../../helpers/editor/codemirror';
-import { requestUseStore } from '../../store/request';
+// import { requestUseStore } from '../../store/request';
 import {HttpContext} from "../panes/Request";
 
 const HttpRawBody = ({ data, cRef }) => {

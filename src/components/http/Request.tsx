@@ -11,7 +11,7 @@ import AgentAxios from '../../helpers/request';
 import { FileService } from '../../services/FileService';
 import request from '../../services/request';
 import { useStore } from '../../store';
-import { requestUseStore } from '../../store/request';
+// import { requestUseStore } from '../../store/request';
 import { HttpContext } from '../panes/Request';
 
 const HeaderWrapper = styled.div`
@@ -67,7 +67,12 @@ const HttpRequest = ({ id, pid, updateCol }) => {
     AgentAxios({
       method: store.request.method,
       url: store.request.endpoint,
-      headers: {},
+      headers: store.request.headers.reduce((p, c) => {
+        return {
+          ...p,
+          [c.key]: c.value,
+        };
+      }, {}),
       data: ['GET'].includes(store.request.method)
         ? undefined
         : JSON.parse(store.request.body.body),

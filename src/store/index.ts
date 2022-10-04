@@ -26,6 +26,11 @@ export type PaneType = {
 };
 
 type BaseState = {
+  settingModalOpen: boolean;
+  setSettingModalOpen: (settingModalOpen: boolean) => void;
+  profileModalOpen: boolean;
+  setProfileModalOpen: (settingModalOpen: boolean) => void;
+
   extensionInstalled: boolean;
   userInfo?: UserInfo;
   logout: () => void;
@@ -69,6 +74,11 @@ type BaseState = {
 
 export const useStore = create(
   immer<BaseState>((set, get) => ({
+    settingModalOpen: false,
+    setSettingModalOpen: (settingModalOpen) => set({ settingModalOpen }),
+    profileModalOpen: false,
+    setProfileModalOpen: (profileModalOpen) => set({ profileModalOpen }),
+
     userInfo: {
       email: localStorage.getItem('email'),
       profile: {

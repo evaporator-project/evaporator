@@ -65,6 +65,7 @@ export function useCodeMirror(props: UseCodeMirror) {
       getExtensions.push(oneDark);
       break;
     default:
+      console.log(theme,'theme')
       getExtensions.push(theme);
       break;
   }

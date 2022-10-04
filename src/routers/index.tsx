@@ -1,5 +1,5 @@
 import MainBox from '../layouts/MainBox';
-import TestMonaco from '../pages/test/TestMonaco';
+// import TestMonaco from '../pages/test/TestMonaco';
 import Welcome from '../pages/welcome';
 
 export default [
@@ -18,9 +18,5 @@ export default [
   {
     path: '/welcome',
     element: <Welcome />,
-  },
-  {
-    path: 'testmonaco',
-    element: <TestMonaco />,
   },
 ];
