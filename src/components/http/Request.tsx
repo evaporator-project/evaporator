@@ -13,6 +13,7 @@ import request from '../../services/request';
 import { useStore } from '../../store';
 // import { requestUseStore } from '../../store/request';
 import { HttpContext } from '../panes/Request';
+import SmartEnvInput from '../smart/EnvInput';
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -193,6 +194,9 @@ const HttpRequest = ({ id, pid, updateCol }) => {
           value={store.request.endpoint}
           onChange={(e) => handleUrlChange(e.target.value)}
         />
+        <SmartEnvInput value={store.request.endpoint} onChange={(val)=>{
+          console.log(val)
+        }}/>
         <Button type='primary' onClick={handleRequest}>
           Send
         </Button>

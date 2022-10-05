@@ -9,7 +9,7 @@ import { getStatistics } from './utils';
 export interface UseCodeMirror {
   container?: HTMLDivElement | null;
 }
-export function useCodeMirror(props: UseCodeMirror) {
+export function useEnvCodeMirror(props: UseCodeMirror) {
   const {
     value,
     initialState,
