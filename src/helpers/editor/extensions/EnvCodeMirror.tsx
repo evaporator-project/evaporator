@@ -4,7 +4,7 @@ import { Decoration, DecorationSet, EditorView, keymap, ViewUpdate } from '@code
 import { basicSetup } from 'codemirror';
 import { useEffect, useState } from 'react';
 
-import { getStatistics } from './utils';
+import { getStatistics } from './../utils';
 // import {defaultKeymap} from "@codemirror/commands"
 export interface UseCodeMirror {
   container?: HTMLDivElement | null;
@@ -73,6 +73,7 @@ export function useEnvCodeMirror(props: UseCodeMirror) {
   getExtensions = getExtensions.concat(extensions);
   // console.log(getExtensions,'getExtensions')
   useEffect(() => {
+    console.log(value,'1111111')
     if (container && !state) {
       const config = {
         doc: value,
@@ -118,15 +119,20 @@ export function useEnvCodeMirror(props: UseCodeMirror) {
 
   // 外部配置改变，更新
   useEffect(() => {
+
     if (view) {
-      view.dispatch({ effects: StateEffect.reconfigure.of(getExtensions) });
+      // console.log('555')
+      // 这里为什么？？TODO
+      // view.dispatch({ effects: StateEffect.reconfigure.of(getExtensions) });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme, extensions, height]);
 
+
+  // 增加mark的地方
   const errorMarkTheme = EditorView.baseTheme({
     '.cm-error-mark': {
-      backgroundColor: 'red',
+      backgroundColor: 'skyblue',
     },
   });
 
@@ -154,10 +160,8 @@ export function useEnvCodeMirror(props: UseCodeMirror) {
 
   // 外部value改变，更新
   useEffect(() => {
+    console.log(value,'valuevaluevaluevaluevalue')
     const currentValue = view ? view.state.doc.toString() : '';
-
-
-
     let from = 0
     let to = 0
 
@@ -170,37 +174,26 @@ export function useEnvCodeMirror(props: UseCodeMirror) {
       // 寻找标记的起始位置
       const start = matchValueLeftRight[0].length;
       const end = matchValueLeftRight[0].length + editorValueMatch[0].length;
-      console.log({start,end})
       from = start
       to = end
     }
-
-
-
-
-    // 必须用起始位置标记
-    const code = `t\nest`;
-    const lines = code.split('\n');
-
-
     const effects = [addErrorMarks.of({ from, to })];
-
+    effects.push(StateEffect.appendConfig.of([markField, errorMarkTheme]));
     if (view && value !== currentValue) {
-      effects.push(StateEffect.appendConfig.of([markField, errorMarkTheme]));
-      console.log(effects,'effects')
-
+      console.log('123')
+      view.dispatch({
+        changes: { from: 0, to: currentValue.length, insert: value || '' }
+      });
+    } else {
+      console.log('321',to - from,view)
+      // 必须大于0才可以！
+      // 必须是没有改变才可以
       if (to - from>0){
-        view.dispatch({
-          changes: { from: 0, to: currentValue.length, insert: value || '' },
+        view?.dispatch({
           effects: effects,
         });
       } else {
-        view.dispatch({
-          changes: { from: 0, to: currentValue.length, insert: value || '' }
-        });
       }
-
-
     }
   }, [value, view]);
 

@@ -10,24 +10,32 @@ import { useCodeMirror } from '../../helpers/editor/codemirror';
 import { useStore } from '../../store';
 import { HttpContext } from '../panes/Request';
 import { useEnvCodeMirror } from '../../helpers/editor/extensions/EnvCodeMirror';
+import { css } from '@emotion/react';
 // import { ThemeClassify } from '../../style/theme';
 interface SmartEnvInputProps {
   value: string;
   onChange: (e: any) => void;
 }
 const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
+  console.log(value,'va')
   const [editor, setEditor] = useState(null);
   const smartEnvInputRef = useRef(null);
 
-  const { store } = useContext(HttpContext);
+  const { store,dispatch } = useContext(HttpContext);
 
   const { state, view } = useEnvCodeMirror({
     container: smartEnvInputRef.current,
     value: value,
-    height: '300px',
+    height: '30px',
     extensions: [json()],
     onChange: (val) => {
       // console.log(val,'val')
+      // console.log(view,'sss')
+      // dis
+      dispatch({
+        type: 'setRequestEndpoint',
+        payload: val,
+      });
     },
   });
 
@@ -36,8 +44,9 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
   }, [state]);
 
   return (
-    <div className={'smart-env'}>
-      <p>{store.request.endpoint}</p>
+    <div className={'smart-env'}  css={css`width: 100%;display: inline-block`}>
+      {/*<p>{store.request.endpoint}</p>*/}
+      {/*<p>{value}</p>*/}
       <div ref={smartEnvInputRef} id='smart-env-input'></div>
     </div>
   );

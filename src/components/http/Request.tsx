@@ -59,6 +59,28 @@ const HttpRequest = ({ id, pid, updateCol }) => {
   }, [collectionTreeData, id]);
 
   const handleRequest = () => {
+    const urlPretreatment = (url: string) => {
+      const currentEnvironment = {
+        keyValues:[{
+          key:'url',
+          value:'http://127.0.0.1:8080'
+        }]
+      }
+      // 正则匹配{{}}
+      const editorValueMatch = url.match(/\{\{(.+?)\}\}/g) || [''];
+      let replaceVar = editorValueMatch[0];
+      const env = currentEnvironment?.keyValues || [];
+      for (let i = 0; i < env.length; i++) {
+        if (env[i].key === editorValueMatch[0].replace('{{', '').replace('}}', '')) {
+          replaceVar = env[i].value;
+        }
+      }
+
+      return url.replace(editorValueMatch[0], replaceVar).split('?')[0];
+    };
+
+    console.log(store.request.endpoint,'store.request.endpoint',urlPretreatment(store.request.endpoint))
+    // return
     dispatch({
       type: 'setResponseType',
       payload: 'loading',
@@ -67,7 +89,7 @@ const HttpRequest = ({ id, pid, updateCol }) => {
     const start = new Date().getTime();
     AgentAxios({
       method: store.request.method,
-      url: store.request.endpoint,
+      url: urlPretreatment(store.request.endpoint),
       headers: store.request.headers.reduce((p, c) => {
         return {
           ...p,
@@ -189,11 +211,11 @@ const HttpRequest = ({ id, pid, updateCol }) => {
             });
           }}
         />
-        <Input
-          placeholder={'http.enterRequestUrl'}
-          value={store.request.endpoint}
-          onChange={(e) => handleUrlChange(e.target.value)}
-        />
+        {/*<Input*/}
+        {/*  placeholder={'http.enterRequestUrl'}*/}
+        {/*  value={store.request.endpoint}*/}
+        {/*  onChange={(e) => handleUrlChange(e.target.value)}*/}
+        {/*/>*/}
         <SmartEnvInput value={store.request.endpoint} onChange={(val)=>{
           console.log(val)
         }}/>
