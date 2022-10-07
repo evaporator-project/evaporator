@@ -9,6 +9,9 @@ import { getStatistics } from './../utils';
 export interface UseCodeMirror {
   container?: HTMLDivElement | null;
 }
+
+// 这个环境变量的codemirror很多问题
+// 1.删除的时候tab无法删除，在想是否换成老的更好
 export function useEnvCodeMirror(props: UseCodeMirror) {
   const {
     value,
