@@ -150,5 +150,14 @@ export const useStore = create(
     setEnvironment: (environment) => set({ environment }),
     activeEnvironment: 'dev',
     setActiveEnvironment: (activeEnvironment) => set({ activeEnvironment }),
+    currentEnvironment: {
+      envName: 'dev',
+      keyValues: [
+        {
+          key: 'url',
+          value: 'http://127.0.0.1:8080',
+        },
+      ],
+    },
   })),
 );

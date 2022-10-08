@@ -1,53 +1,75 @@
-// import './EnvInput.less';
+import { hoverTooltip } from '@codemirror/view';
+import { css } from '@emotion/react';
+import { FC, useContext, useRef } from 'react';
 
-import { json } from '@codemirror/lang-json';
-import { EditorState } from '@codemirror/state';
-import { EditorView } from '@codemirror/view';
-import CodeMirror from 'codemirror';
-import { FC, useContext, useEffect, useRef, useState } from 'react';
-
-import { useCodeMirror } from '../../helpers/editor/codemirror';
+import { useEnvCodeMirror } from '../../helpers/editor/extensions/EnvCodeMirror';
+import {
+  getMarkFromToArr,
+  HOPP_ENVIRONMENT_REGEX,
+} from '../../helpers/editor/extensions/HoppEnvironment';
 import { useStore } from '../../store';
 import { HttpContext } from '../panes/Request';
-import { useEnvCodeMirror } from '../../helpers/editor/extensions/EnvCodeMirror';
-import { css } from '@emotion/react';
-// import { ThemeClassify } from '../../style/theme';
+
 interface SmartEnvInputProps {
   value: string;
   onChange: (e: any) => void;
 }
 const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
-  console.log(value,'va')
-  const [editor, setEditor] = useState(null);
   const smartEnvInputRef = useRef(null);
-
+  const { currentEnvironment } = useStore();
   const { store,dispatch } = useContext(HttpContext);
-
-  const { state, view } = useEnvCodeMirror({
+  console.log(currentEnvironment,'currentEnvironment')
+  useEnvCodeMirror({
     container: smartEnvInputRef.current,
     value: value,
     height: '30px',
-    extensions: [json()],
+    extensions: [
+      [
+        hoverTooltip((view, pos, side) => {
+          const { text } = view.state.doc.lineAt(pos);
+          const markArrs = getMarkFromToArr(text, HOPP_ENVIRONMENT_REGEX, currentEnvironment);
+          const index = markArrs.map((i) => pos < i.to && pos > i.from).findIndex((i) => i);
+          if (index === -1) {
+            return null;
+          }
+          return {
+            pos: pos,
+            end: pos,
+            above: true,
+            arrow: true,
+            create(view) {
+              const dom = document.createElement('div');
+              dom.innerHTML = `
+              <span class="name">${markArrs[index].matchEnv.name}</span>
+              <span class="value">${markArrs[index].matchEnv.value}</span>
+              `;
+              dom.className = 'tooltip-theme1';
+              return { dom };
+            },
+          };
+        }),
+      ],
+    ],
     onChange: (val) => {
-      // console.log(val,'val')
-      // console.log(view,'sss')
-      // dis
       dispatch({
         type: 'setRequestEndpoint',
         payload: val,
       });
     },
+    currentEnv: currentEnvironment,
+    theme: 'dark',
   });
 
-  useEffect(() => {
-    console.log(state, 'state');
-  }, [state]);
-
   return (
-    <div className={'smart-env'}  css={css`width: 100%;display: inline-block`}>
-      {/*<p>{store.request.endpoint}</p>*/}
-      {/*<p>{value}</p>*/}
-      <div ref={smartEnvInputRef} id='smart-env-input'></div>
+    <div
+      className={'smart-env'}
+      css={css`
+        width: 100%;
+        display: inline-block;
+        border: 1px solid #434343;
+      `}
+    >
+      <div ref={smartEnvInputRef}></div>
     </div>
   );
 };
