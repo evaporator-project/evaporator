@@ -22,6 +22,7 @@ import { useStore } from '../store';
 import DraggableLayout from './DraggableLayout';
 import Settings from '../pages/settings';
 import Profile from '../pages/profile';
+import { Allotment } from 'allotment';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -251,97 +252,103 @@ const MainBox = () => {
     <>
       {/*AppHeader部分*/}
       <AppHeader workspaces={workspaces} userinfo={{}} />
-      <DraggableLayout
-        firstNode={
-          <div
-            css={css`
+      <div        css={css`
+          height: calc(100vh - 74px);
+        `}>
+        <Allotment>
+          <Allotment.Pane  preferredSize={500} minSize={400}>
+            <div
+              css={css`
               height: calc(100vh - 72px);
               overflow-y: auto;
               display: flex;
               flex-direction: column;
             `}
-          >
-            {/*<Row>*/}
-            {/*  <Col span={18}>*/}
-            {/*    EVAPORATOR*/}
-            {/*  </Col>*/}
-            {/*  <Col span={6} >*/}
-            {/*    <Button>Import</Button>*/}
-            {/*  </Col>*/}
-            {/*</Row>*/}
-            <div css={css`display: flex;justify-content: space-between;padding: 10px;border-bottom: 1px solid #eee`}>
-              <span>EVAPORATOR</span>
-              <Button size={'small'}>Import</Button>
-            </div>
-            <MainMenu
-              tabPosition='left'
-              activeKey={activeMenu[0]}
-              onChange={(key) => setActiveMenu(key as MenuTypeEnum)}
-              items={[
-                {
-                  label: <MenuTitle icon={<ApiOutlined />} title={t('navigation.collection')} />,
-                  key: MenuTypeEnum.Collection,
-                  children: (
-                    <CollectionMenu
-                      cRef={childRef}
-                      value={activeMenu[1]}
-                      onSelect={handleCollectionMenuClick}
-                    />
-                  ),
-                },
-              ]}
             >
-            </MainMenu>
-          </div>
-        }
-        secondNode={
-          <div
-            css={css`
+              {/*<Row>*/}
+              {/*  <Col span={18}>*/}
+              {/*    EVAPORATOR*/}
+              {/*  </Col>*/}
+              {/*  <Col span={6} >*/}
+              {/*    <Button>Import</Button>*/}
+              {/*  </Col>*/}
+              {/*</Row>*/}
+              <div css={css`display: flex;justify-content: space-between;padding: 10px;border-bottom: 1px solid #eee`}>
+                <span>EVAPORATOR</span>
+                <Button size={'small'}>Import</Button>
+              </div>
+              <MainMenu
+                tabPosition='left'
+                activeKey={activeMenu[0]}
+                onChange={(key) => setActiveMenu(key as MenuTypeEnum)}
+                items={[
+                  {
+                    label: <MenuTitle icon={<ApiOutlined />} title={t('navigation.collection')} />,
+                    key: MenuTypeEnum.Collection,
+                    children: (
+                      <CollectionMenu
+                        cRef={childRef}
+                        value={activeMenu[1]}
+                        onSelect={handleCollectionMenuClick}
+                      />
+                    ),
+                  },
+                ]}
+              >
+              </MainMenu>
+            </div>
+          </Allotment.Pane>
+          <Allotment.Pane snap>
+            <div
+              css={css`
               height: calc(100vh - 72px);
               overflow-y: auto;
             `}
-          >
-            <MainTabs
-              onEdit={handleTabsEdit}
-              activeKey={activeMenu[1]}
-              onChange={handleTabsChange}
-              tabBarExtraContent={
-                <EnvironmentSelect
-                  value={activeEnvironment}
-                  onChange={(e) => {
-                    console.log(e,'e')
-                    setActiveEnvironment(e)
-                    // seAc
-                  }}
-                >
-                  <Option value='0'>No Environment</Option>
-                  {environment?.map((e) => {
-                    return (
-                      <Option key={e.name} value={e.name}>
-                        {e.name}
-                      </Option>
-                    );
-                  })}
-                </EnvironmentSelect>
-              }
             >
-              {panes.map((pane) => (
-                <MainTabPane className='main-tab-pane' tab={pane.title} key={pane.key}>
-                  {/* TODO 工作区自定义组件待规范，参考 menuItem */}
-                  {pane.pageType === PageTypeEnum.Request && (
-                    <RequestPage id={pane.key} updateCol={childRef.current.func} />
-                  )}
-                  {pane.pageType === PageTypeEnum.Folder && <FolderPage />}
-                  {pane.pageType === PageTypeEnum.Environment && <EnvironmentPage />}
-                  {pane.pageType === PageTypeEnum.Workspace && <WorkspacePage />}
-                </MainTabPane>
-              ))}
-            </MainTabs>
-          </div>
-        }
-        direction={'horizontal'}
-        limitRange={[15, 40]}
-      />
+              <MainTabs
+                onEdit={handleTabsEdit}
+                activeKey={activeMenu[1]}
+                onChange={handleTabsChange}
+                tabBarExtraContent={
+                  <EnvironmentSelect
+                    value={activeEnvironment}
+                    onChange={(e) => {
+                      console.log(e,'e')
+                      setActiveEnvironment(e)
+                      // seAc
+                    }}
+                  >
+                    <Option value='0'>No Environment</Option>
+                    {environment?.map((e) => {
+                      return (
+                        <Option key={e.name} value={e.name}>
+                          {e.name}
+                        </Option>
+                      );
+                    })}
+                  </EnvironmentSelect>
+                }
+              >
+                {panes.map((pane) => (
+                  <MainTabPane className='main-tab-pane' tab={pane.title} key={pane.key}>
+                    {/* TODO 工作区自定义组件待规范，参考 menuItem */}
+                    {pane.pageType === PageTypeEnum.Request && (
+                      <RequestPage id={pane.key} updateCol={childRef.current.func} />
+                    )}
+                    {pane.pageType === PageTypeEnum.Folder && <FolderPage />}
+                    {pane.pageType === PageTypeEnum.Environment && <EnvironmentPage />}
+                    {pane.pageType === PageTypeEnum.Workspace && <WorkspacePage />}
+                  </MainTabPane>
+                ))}
+              </MainTabs>
+            </div>
+          </Allotment.Pane>
+        </Allotment>
+      </div>
+
+
+
+
 
       {/*setting弹窗、profile弹窗*/}
       <Settings/>

@@ -2,9 +2,12 @@ import { set } from 'husky';
 import React from 'react';
 import create from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { toggleTheme } from '@zougt/vite-plugin-theme-preprocessor/dist/browser-utils';
 
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
 import { Environment } from '../data/environment';
+import DefaultConfig from '../defaultConfig';
+import { PrimaryColor, ThemeClassify, ThemeName } from '../style/theme';
 
 type UserInfo = {
   email: string | null;
@@ -30,6 +33,9 @@ type BaseState = {
   setSettingModalOpen: (settingModalOpen: boolean) => void;
   profileModalOpen: boolean;
   setProfileModalOpen: (settingModalOpen: boolean) => void;
+
+  themeClassify: ThemeClassify;
+  changeTheme: (theme?: ThemeName) => void;
 
   extensionInstalled: boolean;
   userInfo?: UserInfo;
@@ -91,6 +97,21 @@ export const useStore = create(
     setUserInfo: (userInfo: BaseState['userInfo']) => set({ userInfo }),
 
     extensionInstalled: false,
+
+    themeClassify:DefaultConfig.themeClassify,
+    changeTheme: (theme) => {
+      set((state) => {
+        const newTheme = theme;
+        const themeName = newTheme as ThemeName;
+        toggleTheme({
+          scopeName: newTheme,
+        });
+        state.themeClassify = themeName.split('-')[0] as ThemeClassify;
+      });
+    },
+
+
+
 
     activePane: '',
     setActivePane: (key: string) => {

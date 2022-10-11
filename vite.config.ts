@@ -1,11 +1,14 @@
 import react from '@vitejs/plugin-react';
 import * as path from 'path';
 import { defineConfig } from 'vite';
+import { themePreprocessorPlugin } from '@zougt/vite-plugin-theme-preprocessor';
+import themePreprocessorOptions from './config/themePreprocessorOptions';
 export default defineConfig({
   plugins: [
     react({
       jsxImportSource: '@emotion/react',
     }),
+    themePreprocessorPlugin(themePreprocessorOptions),
   ],
   css: {
     preprocessorOptions: {
