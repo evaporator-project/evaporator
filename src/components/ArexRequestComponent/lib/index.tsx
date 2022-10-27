@@ -104,6 +104,13 @@ const ArexRequestProvider = ({ children, theme }) => {
   return <GlobalContext.Provider value={{ store, dispatch }}>{children}</GlobalContext.Provider>;
 };
 
+// TODO
+/*
+1. ArexRequestComponent =》 HttpRequest
+2. 核心props 全局props/locale、theme、collectionTreeData？，内部props/currentRequestId、onEdit、onSend,
+3. 字典例如 onSend以后触发的函数名称，返回值里面需要包含{testResult,response}
+4. 导出的方法
+* */
 const ArexRequestComponent: FC<ArexRequestComponentProps> = ({
   locale = 'en',
   theme = 'light',
