@@ -2,6 +2,7 @@ import { I18nextLng } from './i18n/index.js';
 import { FontSize } from './pages/Setting.js';
 import { Theme, ThemeClassify, ThemeName } from './style/theme';
 import DarkPurple from './style/theme/darkPurple';
+import LightPurple from './style/theme/lightPurple';
 
 export type DefaultConfig = {
   language: I18nextLng;
@@ -13,9 +14,9 @@ export type DefaultConfig = {
 
 const defaultConfig: DefaultConfig = {
   language: 'en-US',
-  theme: Theme.darkPurple,
-  themePrimaryColor: DarkPurple.primaryColor,
-  themeClassify: ThemeClassify.dark, // 深浅应于 theme 对应
+  theme: Theme.lightPurple,
+  themePrimaryColor: LightPurple.primaryColor,
+  themeClassify: ThemeClassify.light, // 深浅应于 theme 对应
   fontSize: 'medium',
 };
 
