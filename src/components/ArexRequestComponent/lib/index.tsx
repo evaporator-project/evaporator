@@ -14,22 +14,24 @@ import TestResult from './components/http/TestResult';
 import cn from './locales/cn.json';
 import en from './locales/en.json';
 import { themeMap } from './theme';
-
-const localeObj = {
-  en,
-  cn,
+const localeMap = {
+  cn: {
+    type: 'cn',
+    locale: cn,
+  },
+  en: {
+    type: 'en',
+    locale: en,
+  },
 };
 
 export const HttpContext = createContext({});
-
 export const GlobalContext = createContext({});
 
 const globalDefaultState = {
-  theme: {
-    color: {
-      p: 'green',
-    },
-  },
+  theme: themeMap.light,
+  locale: localeMap.en,
+  collectionTreeData: [],
 };
 
 const defaultState = {
@@ -73,8 +75,6 @@ const defaultState = {
     },
   },
   testResult: {},
-  locale: en,
-  theme: themeMap.dark,
 };
 
 function reducer(state = defaultState, action) {
@@ -83,23 +83,40 @@ function reducer(state = defaultState, action) {
   return clonestate;
 }
 
-interface ArexRequestComponentProps {
-  collectionTreeData: any[];
+interface HttpProps {
   currentRequestId: string;
-  envData: [];
-  currentEnvId: string;
-  locale: string;
-  theme: string;
   onEdit: ({ type, payload }) => any;
   onSend: () => any;
+  // ---
+  envData: [];
+  currentEnvId: string;
   requestExtraTabItems: any;
   requestExtraData: any;
   cRef: any;
 }
 
-const ArexRequestProvider = ({ children, theme }) => {
-  const [store, dispatch] = useReducer(reducer, globalDefaultState); //创建reducer
+const HttpProvider = ({ children, theme = 'light', locale = 'en', collectionTreeData = [] }) => {
+  const [store, dispatch] = useReducer(reducer, globalDefaultState);
+  useEffect(() => {
+    dispatch({
+      type: 'locale',
+      payload: localeMap[locale],
+    });
+  }, [locale]);
 
+  useEffect(() => {
+    dispatch({
+      type: 'theme',
+      payload: themeMap[theme],
+    });
+  }, [theme]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'collectionTreeData',
+      payload: collectionTreeData,
+    });
+  }, [collectionTreeData]);
   // console.log({theme})
   return <GlobalContext.Provider value={{ store, dispatch }}>{children}</GlobalContext.Provider>;
 };
@@ -111,39 +128,13 @@ const ArexRequestProvider = ({ children, theme }) => {
 3. 字典例如 onSend以后触发的函数名称，返回值里面需要包含{testResult,response}
 4. 导出的方法
 * */
-const ArexRequestComponent: FC<ArexRequestComponentProps> = ({
-  locale = 'en',
-  theme = 'light',
-  collectionTreeData,
-  currentRequestId,
-  envData,
-  currentEnvId,
-  onEdit,
-  onSend,
-  requestExtraTabItems,
-  cRef,
-  requestExtraData,
-}) => {
+const Http: FC<HttpProps> = ({ currentRequestId, onEdit, onSend, cRef }) => {
   const [store, dispatch] = useReducer(reducer, {
     ...defaultState,
     request: {
-      ...defaultState.request
+      ...defaultState.request,
     },
-  }); //创建reducer
-  const [data, setData] = useState({});
-  useEffect(() => {
-    dispatch({
-      type: 'locale',
-      payload: localeObj[locale],
-    });
-  }, [locale]);
-
-  useEffect(() => {
-    dispatch({
-      type: 'theme',
-      payload: themeMap[theme],
-    });
-  }, [theme]);
+  });
 
   useMount(() => {
     onEdit({
@@ -158,9 +149,8 @@ const ArexRequestComponent: FC<ArexRequestComponentProps> = ({
       });
     });
   });
-  //用useImperativeHandle暴露一些外部ref能访问的属性
+  // 需要将暴露的接口返回出去
   useImperativeHandle(cRef, () => {
-    // 需要将暴露的接口返回出去
     return {
       func: func,
       setValue(value) {
@@ -193,14 +183,11 @@ const ArexRequestComponent: FC<ArexRequestComponentProps> = ({
               `}
             >
               <HttpRequest
-                collectionTreeData={collectionTreeData}
                 currentRequestId={currentRequestId}
                 onEdit={onEdit}
                 onSend={onSend}
               ></HttpRequest>
-              <HttpRequestOptions
-                data={data}
-              ></HttpRequestOptions>
+              <HttpRequestOptions></HttpRequestOptions>
             </div>
           </Allotment.Pane>
           <Allotment.Pane>
@@ -212,8 +199,8 @@ const ArexRequestComponent: FC<ArexRequestComponentProps> = ({
   );
 };
 
-export default ArexRequestComponent;
+export default Http;
 
-export { ArexRequestProvider };
+export { HttpProvider };
 
 export { TestResult };

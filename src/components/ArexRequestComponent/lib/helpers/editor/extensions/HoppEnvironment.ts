@@ -20,22 +20,23 @@ export const getMarkFromToArr = (
     value: string;
   };
 }[] => {
+  // ssss
   const editorValueMatch = text.match(reg) || [];
   const arr = [];
-  for (let i = 0; i < editorValueMatch.length; i++) {
-    const find = currentEnv.keyValues.find(
-      (f) => f.key === editorValueMatch[i].replace('{{', '').replace('}}', ''),
-    );
-    arr.push({
-      from: text.indexOf(editorValueMatch[i]),
-      to: text.indexOf(editorValueMatch[i]) + editorValueMatch[i].length,
-      found: find ? true : false,
-      matchEnv: {
-        name: currentEnv.envName || 'choose an environment',
-        key: find ? find.key : 'not found',
-        value: find ? find.value : 'not found',
-      },
-    });
-  }
+  // for (let i = 0; i < editorValueMatch.length; i++) {
+  //   const find = currentEnv.keyValues.find(
+  //     (f) => f.key === editorValueMatch[i].replace('{{', '').replace('}}', ''),
+  //   );
+  //   arr.push({
+  //     from: text.indexOf(editorValueMatch[i]),
+  //     to: text.indexOf(editorValueMatch[i]) + editorValueMatch[i].length,
+  //     found: find ? true : false,
+  //     matchEnv: {
+  //       name: currentEnv.envName || 'choose an environment',
+  //       key: find ? find.key : 'not found',
+  //       value: find ? find.value : 'not found',
+  //     },
+  //   });
+  // }
   return arr;
 };

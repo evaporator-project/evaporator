@@ -5,7 +5,7 @@ import { useContext, useEffect, useImperativeHandle, useRef, useState } from 're
 
 import { useCodeMirror } from '../../helpers/editor/codemirror';
 import { HttpContext } from '../../index';
-const HttpRawBody = ({ data, cRef, theme }) => {
+const HttpRawBody = ({ cRef }) => {
   const rawBodyParameters = useRef(null);
   const { store, dispatch } = useContext(HttpContext);
 
@@ -14,7 +14,7 @@ const HttpRawBody = ({ data, cRef, theme }) => {
     value: store.request.body.body,
     height: '100%',
     extensions: [json()],
-    theme: theme,
+    // theme: ,
     onChange: (val) => {
       dispatch({
         type: 'request.body.body',

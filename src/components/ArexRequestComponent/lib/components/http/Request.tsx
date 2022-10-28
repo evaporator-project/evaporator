@@ -8,7 +8,7 @@ import { useContext, useEffect, useMemo, useRef } from 'react';
 import { treeFind, treeFindPath } from '../../helpers/collection/util';
 // import AgentAxios from '../../helpers/request';
 import { getValueByPath } from '../../helpers/utils/locale';
-import { HttpContext } from '../../index';
+import { GlobalContext, HttpContext } from '../../index';
 import SmartEnvInput from '../smart/EnvInput';
 
 const HeaderWrapper = styled.div`
@@ -44,9 +44,11 @@ const methods = [
   'CUSTOM',
 ];
 
-const HttpRequest = ({ currentRequestId, onEdit, collectionTreeData,onSend }) => {
+const HttpRequest = ({ currentRequestId, onEdit,onSend }) => {
   const { store, dispatch } = useContext(HttpContext);
-  const t = (key) => getValueByPath(store.locale, key);
+  const { dispatch: globalDispatch, store: globalStore } = useContext(GlobalContext);
+  console.log(globalStore.locale,'globalStore.locale')
+  const t = (key) => getValueByPath(globalStore.locale.locale, key);
 
   const handleRequest = () => {
     const urlPretreatment = (url: string) => {
@@ -84,7 +86,7 @@ const HttpRequest = ({ currentRequestId, onEdit, collectionTreeData,onSend }) =>
 
     const start = new Date().getTime();
 
-    console.log(store.request.testscript);
+    console.log(store.request);
 
     onSend({
       request: store.request,
@@ -138,7 +140,7 @@ const HttpRequest = ({ currentRequestId, onEdit, collectionTreeData,onSend }) =>
         {/*  JSON.stringify(treeFindPath(collectionTreeData,(node)=>node.key === currentRequestId))*/}
         {/*}*/}
         <Breadcrumb style={{ paddingBottom: '14px' }}>
-          {treeFindPath(collectionTreeData, (node) => node.key === currentRequestId).map(
+          {treeFindPath(globalStore.collectionTreeData, (node) => node.key === currentRequestId).map(
             (i, index) => (
               <Breadcrumb.Item key={index}>{i.title}</Breadcrumb.Item>
             ),
@@ -151,7 +153,6 @@ const HttpRequest = ({ currentRequestId, onEdit, collectionTreeData,onSend }) =>
                 type: 'update',
                 payload: {
                   ...store.request,
-                  id: currentRequestId,
                 },
               });
             }}

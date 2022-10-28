@@ -3,6 +3,12 @@ import { message, Tag } from 'antd';
 import { FC, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { HoppRESTRequest } from '../../data/rest';
+import { treeFind } from '../../helpers/collection/util';
+import { AgentAxiosAndTest } from '../../helpers/request';
+import { FileService } from '../../services/FileService';
+import request from '../../services/request';
+import { useStore } from '../../store';
 // import ArexRequestComponent from '../components/ArexRequestComponent/lib';
 // import { convertRequestData } from '../components/ArexRequestComponent/util';
 // import { treeFind } from '../helpers/collection/util';
@@ -11,14 +17,8 @@ import { useParams } from 'react-router-dom';
 // import { useStore } from '../store';
 // import { PageFC } from './index';
 // import { AgentAxiosAndTest } from '../helpers/request';
-import ArexRequestComponent from '../ArexRequestComponent/lib';
+import Http from '../ArexRequestComponent/lib';
 import { convertRequestData } from '../ArexRequestComponent/util';
-import { useStore } from '../../store';
-import { FileService } from '../../services/FileService';
-import request from '../../services/request';
-import { HoppRESTRequest } from '../../data/rest';
-import { AgentAxiosAndTest } from '../../helpers/request';
-import { treeFind } from '../../helpers/collection/util';
 
 export type KeyValueType = {
   key: string;
@@ -26,21 +26,18 @@ export type KeyValueType = {
   active?: boolean;
 };
 
-const RequestPage: FC<any> = ({id, updateCol}) => {
-  const {
-    themeClassify,
-    collectionTreeData,
-  } = useStore();
+const RequestPage: FC<any> = ({ id, updateCol }) => {
+  const { themeClassify, collectionTreeData } = useStore();
   const { workspaceId } = useParams();
 
-  const nodeType = 1
+  const nodeType = 1;
 
-  const nId = useMemo(()=>{
-    return treeFind(collectionTreeData,node=>node.key === id).relationshipRequestId
-  },[id])
-  console.log(nId,'nId')
+  const nId = useMemo(() => {
+    return treeFind(collectionTreeData, (node) => node.key === id).relationshipRequestId;
+  }, [id]);
+  console.log(nId, 'nId');
   return (
-    <ArexRequestComponent
+    <Http
       locale={'en'}
       theme={themeClassify}
       currentRequestId={id}
@@ -57,7 +54,11 @@ const RequestPage: FC<any> = ({id, updateCol}) => {
           });
         } else if (e.type === 'update') {
           console.log(e.payload);
-          // return updateRequestById(e.payload);
+          return request<HoppRESTRequest>({
+            method: 'POST',
+            url: `/api/updaterequest`,
+            data: { id: nId, ...e.payload },
+          });
           // FileSystemService.saveInterface({
           //   workspaceId: workspaceId,
           //   id: id,
@@ -77,8 +78,8 @@ const RequestPage: FC<any> = ({id, updateCol}) => {
         }
       }}
       requestExtraTabItems={[]}
-      onSend={(e)=>{
-        return AgentAxiosAndTest(e)
+      onSend={(e) => {
+        return AgentAxiosAndTest(e);
       }}
     />
   );

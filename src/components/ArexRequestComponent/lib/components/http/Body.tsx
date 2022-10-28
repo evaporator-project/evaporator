@@ -6,7 +6,7 @@ import RawBody from './RawBody';
 import { HttpContext } from '../../index';
 import { getValueByPath } from '../../helpers/utils/locale';
 
-const HttpBody = ({ data, theme }) => {
+const HttpBody = ( ) => {
   const { store, dispatch } = useContext(HttpContext);
   const t = (key) => getValueByPath(store.locale, key);
   const [value1, setValue1] = useState('application/json');
@@ -39,7 +39,7 @@ const HttpBody = ({ data, theme }) => {
         </div>
       </div>
 
-      <RawBody theme={theme} cRef={rawBodyRef} data={data} />
+      <RawBody cRef={rawBodyRef} />
     </div>
   );
 };

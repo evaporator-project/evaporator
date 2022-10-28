@@ -59,7 +59,7 @@ export type ResponseTestProps = {
   getTestVal: (p: any) => void;
 };
 
-const HttpTests = ({ getTestVal, OldTestVal, theme }: ResponseTestProps) => {
+const HttpTests = ({ getTestVal, OldTestVal }: ResponseTestProps) => {
   const { store, dispatch } = useContext(HttpContext);
   const t = (key) => getValueByPath(store.locale, key);
 
@@ -84,7 +84,7 @@ arex.test("Status code is 200", ()=> {
     value: store.request.testScript,
     height: '100%',
     extensions: [javascript()],
-    theme: theme,
+    // theme: theme,
     onChange: (val) => {
       dispatch({
         type: 'request.testScript',
