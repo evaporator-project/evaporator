@@ -16,10 +16,9 @@ const TestError = styled.div`
     margin-top: 10px;
   }
 `;
-const TestResult = ({testResult}) => {
-
-  const {store} = useContext(GlobalContext)
-  console.log(store,'store')
+const TestResult = ({ testResult }) => {
+  const { store } = useContext(GlobalContext);
+  console.log(store, 'store');
   return (
     <div>
       {true ? (

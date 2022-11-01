@@ -4,7 +4,7 @@ import { Button, Input, Space, Table, TableProps, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { Updater } from 'use-immer';
 import { useContext } from 'react';
-import { HttpContext } from '../../index';
+import { GlobalContext, HttpContext } from '../../index';
 import { getValueByPath } from '../../helpers/utils/locale';
 
 export type KeyValueType = {
@@ -29,7 +29,8 @@ export const useColumns = (
   editable?: boolean,
 ): ColumnsType<KeyValueType> => {
   const { store } = useContext(HttpContext);
-  const t = (key) => getValueByPath(store.locale, key);
+  const { store: globalStore } = useContext(GlobalContext);
+  const t = (key) => getValueByPath(globalStore.locale.locale, key);
   const handleChange = (i: number, attr: 'key' | 'value', value: string) => {
     paramsUpdater &&
       paramsUpdater((params) => {
@@ -51,7 +52,7 @@ export const useColumns = (
     //   key: 'id',
     // },
     {
-      title: t('key'),
+      title: t('count.key'),
       dataIndex: 'key',
       key: 'key',
       render: editable
@@ -59,7 +60,7 @@ export const useColumns = (
             <Input
               value={text}
               bordered={false}
-              placeholder={t('key')}
+              placeholder={t('count.key')}
               disabled={!record.active}
               onChange={(e) => handleChange(i, 'key', e.target.value)}
             />
@@ -67,7 +68,7 @@ export const useColumns = (
         : undefined,
     },
     {
-      title: t('value'),
+      title: t('count.value'),
       dataIndex: 'value',
       key: 'value',
       render: editable
@@ -75,7 +76,7 @@ export const useColumns = (
             <Input
               value={text}
               bordered={false}
-              placeholder={t('value')}
+              placeholder={t('count.value')}
               disabled={!record.active}
               onChange={(e) => handleChange(i, 'value', e.target.value)}
             />
@@ -95,7 +96,7 @@ export const useColumns = (
           className: 'actions',
           render: (text, record, i) => (
             <Space>
-              <Tooltip title={record.active ? t('disable') : t('enable')}>
+              <Tooltip title={record.active ? t('action.turn_off') : t('action.turn_on')}>
                 <Button
                   style={{ color: '#10b981' }}
                   type='text'

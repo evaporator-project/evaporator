@@ -11,10 +11,15 @@ import HttpRequest from './components/http/Request';
 import HttpRequestOptions from './components/http/RequestOptions';
 import HttpResponse from './components/http/Response';
 import TestResult from './components/http/TestResult';
+import { defaultState, globalDefaultState, LocaleEnum, ThemeEnum } from './default';
 import cn from './locales/cn.json';
 import en from './locales/en.json';
 import { themeMap } from './theme';
-const localeMap = {
+
+export type LocaleInterface = Record<LocaleEnum, { type: string; locale: any }>;
+export type ThemeInterface = Record<ThemeEnum, { type: string; locale: any }>;
+
+const localeMap: LocaleInterface = {
   cn: {
     type: 'cn',
     locale: cn,
@@ -28,74 +33,37 @@ const localeMap = {
 export const HttpContext = createContext({});
 export const GlobalContext = createContext({});
 
-const globalDefaultState = {
-  theme: themeMap.light,
-  locale: localeMap.en,
-  collectionTreeData: [],
-};
-
-const defaultState = {
-  request: {
-    preRequestScript: '',
-    v: '',
-    headers: [],
-    name: '',
-    body: {
-      contentType: 'application/json',
-      body: '',
-    },
-    testScript: '',
-    method: '',
-    auth: {
-      authURL: 'http://petstore.swagger.io/api/oauth/dialog',
-      oidcDiscoveryURL: '',
-      accessTokenURL: '',
-      clientID: '',
-      scope: 'write:pets read:pets',
-      token: '',
-      authType: 'oauth-2',
-      authActive: true,
-    },
-    endpoint: '',
-    params: [],
-  },
-  response: {
-    type: 'success',
-    headers: [],
-    statusCode: 200,
-    body: '',
-    meta: {
-      responseSize: 0,
-      responseDuration: 1,
-    },
-    error: {
-      name: '',
-      message: '',
-      stack: '',
-    },
-  },
-  testResult: {},
-};
-
-function reducer(state = defaultState, action) {
-  const clonestate = JSON.parse(JSON.stringify(state));
-  _.set(clonestate, action.type, action.payload);
-  return clonestate;
+function reducer(state = defaultState, action: { type: string; payload: any }) {
+  const cloneState = JSON.parse(JSON.stringify(state));
+  _.set(cloneState, action.type, action.payload);
+  return cloneState;
 }
 
 interface HttpProps {
   currentRequestId: string;
-  onEdit: ({ type, payload }) => any;
+  onEdit: ({ type, payload }: any) => Promise<any>;
   onSend: () => any;
   // ---
-  envData: [];
-  currentEnvId: string;
   requestExtraTabItems: any;
   requestExtraData: any;
   cRef: any;
 }
 
-const HttpProvider = ({ children, theme = 'light', locale = 'en', collectionTreeData = [] }) => {
+interface HttpProviderProps {
+  children: any;
+  theme: ThemeEnum;
+  locale: LocaleEnum;
+  collectionTreeData: any;
+  environment: any;
+}
+
+const HttpProvider: FC<HttpProviderProps> = ({
+  children = null,
+  theme,
+  locale = LocaleEnum.en,
+  collectionTreeData = [],
+  environment,
+}) => {
   const [store, dispatch] = useReducer(reducer, globalDefaultState);
   useEffect(() => {
     dispatch({
@@ -110,6 +78,13 @@ const HttpProvider = ({ children, theme = 'light', locale = 'en', collectionTree
       payload: themeMap[theme],
     });
   }, [theme]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'environment',
+      payload: environment,
+    });
+  }, [environment]);
 
   useEffect(() => {
     dispatch({
@@ -128,7 +103,7 @@ const HttpProvider = ({ children, theme = 'light', locale = 'en', collectionTree
 3. 字典例如 onSend以后触发的函数名称，返回值里面需要包含{testResult,response}
 4. 导出的方法
 * */
-const Http: FC<HttpProps> = ({ currentRequestId, onEdit, onSend, cRef }) => {
+const Http: FC<HttpProps> = ({ currentRequestId, onEdit, onSend, onSendCompare, cRef }) => {
   const [store, dispatch] = useReducer(reducer, {
     ...defaultState,
     request: {
@@ -153,7 +128,7 @@ const Http: FC<HttpProps> = ({ currentRequestId, onEdit, onSend, cRef }) => {
   useImperativeHandle(cRef, () => {
     return {
       func: func,
-      setValue(value) {
+      setValue(value: any) {
         dispatch({
           type: 'request.mock',
           payload: value,
@@ -167,7 +142,7 @@ const Http: FC<HttpProps> = ({ currentRequestId, onEdit, onSend, cRef }) => {
   }
   return (
     <HttpContext.Provider value={{ store, dispatch }}>
-      {store.request.endpoint !== '' ? (
+      {store.request.method !== '' ? (
         <Allotment
           css={css`
             height: calc(100vh - 118px);
@@ -186,6 +161,7 @@ const Http: FC<HttpProps> = ({ currentRequestId, onEdit, onSend, cRef }) => {
                 currentRequestId={currentRequestId}
                 onEdit={onEdit}
                 onSend={onSend}
+                onSendCompare={onSendCompare}
               ></HttpRequest>
               <HttpRequestOptions></HttpRequestOptions>
             </div>

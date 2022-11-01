@@ -8,7 +8,7 @@ import { useStore } from './store';
 function App() {
   const { collectionTreeData } = useStore();
   const useRoutesRouterConfig = useRoutes(routerConfig);
-  return <HttpProvider locale={'en'} theme={'dark'} collectionTreeData={collectionTreeData}>{useRoutesRouterConfig}</HttpProvider>;
+  return <HttpProvider locale={'en'} theme={'light'} collectionTreeData={collectionTreeData}>{useRoutesRouterConfig}</HttpProvider>;
 }
 
 export default App;
