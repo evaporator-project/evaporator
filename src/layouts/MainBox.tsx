@@ -274,7 +274,7 @@ const MainBox = () => {
               {/*  </Col>*/}
               {/*</Row>*/}
               <div css={css`display: flex;justify-content: space-between;padding: 10px;border-bottom: 1px solid #eee`}>
-                <span>EVAPORATOR</span>
+                <span></span>
                 <Button size={'small'}>Import</Button>
               </div>
               <MainMenu

@@ -81,7 +81,7 @@ const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
                   padding: 0 6px;
                 `}
               >
-                <SmartButton>EVAPORATOR</SmartButton>
+                <SmartButton></SmartButton>
               </HoverWrapper>
             </TopNavigationButton>
             <TopNavigationButton>

@@ -38,12 +38,7 @@ const RequestPage: FC<any> = ({ id, updateCol }) => {
   console.log(nId, 'nId');
   return (
     <Http
-      locale={'en'}
-      theme={themeClassify}
       currentRequestId={id}
-      collectionTreeData={collectionTreeData}
-      envData={[]}
-      currentEnvId={'aa'}
       onEdit={(e) => {
         console.log(nodeType, 'nodeType');
         if (e.type === 'retrieve') {
@@ -51,30 +46,14 @@ const RequestPage: FC<any> = ({ id, updateCol }) => {
             method: 'POST',
             url: `/api/retrieverequest`,
             data: { id: nId },
-          });
+          })
         } else if (e.type === 'update') {
           console.log(e.payload);
           return request<HoppRESTRequest>({
             method: 'POST',
             url: `/api/updaterequest`,
             data: { id: nId, ...e.payload },
-          });
-          // FileSystemService.saveInterface({
-          //   workspaceId: workspaceId,
-          //   id: id,
-          //   address: {
-          //     endpoint: e.payload.endpoint,
-          //     method: e.payload.method,
-          //   },
-          //   body: e.payload.body,
-          //   headers: e.payload.headers,
-          //   params: e.payload.params,
-          //   testScript: e.payload.testScript,
-          // }).then((res) => {
-          //   if (res.body.success) {
-          //     message.success('success');
-          //   }
-          // });
+          }).then(res=>message.success('success'));;
         }
       }}
       requestExtraTabItems={[]}
