@@ -14,6 +14,7 @@ import { useStore } from '../../store';
 // import { requestUseStore } from '../../store/request';
 import { HttpContext } from '../panes/Request';
 import SmartEnvInput from '../smart/EnvInput';
+import {useParams} from "react-router-dom";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -141,12 +142,12 @@ const HttpRequest = ({ id, pid, updateCol }) => {
       }, 200);
     });
   };
-
+  const params: any = useParams();
   const {
     data: treeData = [],
     loading,
     run: fetchTreeData,
-  } = useRequest(() => FileService.getcollectiontree({}), {
+  } = useRequest(() => FileService.getcollectiontree({workspaceId:params.workspaceId}), {
     onSuccess: (res) => {
       setCollectionTreeData(res);
     },

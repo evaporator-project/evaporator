@@ -14,7 +14,7 @@ const err = (error: any) => {
 // request interceptor
 axiosInstance.interceptors.request.use((config) => {
   if (localStorage.getItem('token')) {
-    config.headers['Authorization'] = 'bearer ' + localStorage.getItem('token');
+    config.headers['Authorization'] = 'Bearer ' + localStorage.getItem('token');
   }
   return config;
 }, err);

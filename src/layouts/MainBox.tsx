@@ -2,7 +2,19 @@ import { ApiOutlined, DeploymentUnitOutlined, FieldTimeOutlined } from '@ant-des
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useMount, useRequest } from 'ahooks';
-import { Button, Col, Divider, Empty, Row, Select, SelectProps, TabPaneProps, Tabs, TabsProps } from 'antd';
+import { Allotment } from 'allotment';
+import {
+  Button,
+  Col,
+  Divider,
+  Empty,
+  Row,
+  Select,
+  SelectProps,
+  TabPaneProps,
+  Tabs,
+  TabsProps,
+} from 'antd';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -17,12 +29,11 @@ import FolderPage from '../components/panes/Folder';
 import RequestPage from '../components/panes/Request';
 import WorkspacePage from '../components/panes/Workspace';
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
+import Profile from '../pages/profile';
+import Settings from '../pages/settings';
 import request from '../services/request';
 import { useStore } from '../store';
 import DraggableLayout from './DraggableLayout';
-import Settings from '../pages/settings';
-import Profile from '../pages/profile';
-import { Allotment } from 'allotment';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -166,7 +177,11 @@ const MainBox = () => {
     setEnvironmentTreeData,
     setCollectionTreeData,
     setActiveEnvironment,
-    activeEnvironment
+    activeEnvironment,
+    setUserInfo,
+    userInfo,
+    setCurrentEnvironment,
+    currentEnvironment,
   } = useStore();
 
   const [workspaces, setWorkspaces] = useState([]);
@@ -179,6 +194,39 @@ const MainBox = () => {
     }).then((res) => {
       console.log(res);
       setWorkspaces(res);
+
+      // setEnvironment(res.environments)
+      console.log(
+        res.find((r) => r._id === params.workspaceId).environments,
+        'res.find(r=>r.id === params.workspaceId)',
+      );
+
+      const e = res.find((r) => r._id === params.workspaceId)?.environments || [];
+
+      setEnvironment(e);
+    });
+
+    request({
+      url: '/api/user',
+      method: 'GET',
+    }).then((res) => {
+      // console.log(res);
+      setUserInfo({
+        username: res.username,
+        nickname: res.nickname,
+        avatar: res.avatar,
+        thRefreshToken: res.thRefreshToken,
+        thAccessToken: res.thAccessToken,
+        email: res.email,
+        thId: res.thId,
+        role: [],
+        profile: {
+          background: '',
+          accentColor: '',
+          fontSize: '',
+          language: '',
+        },
+      });
     });
   });
 
@@ -246,25 +294,44 @@ const MainBox = () => {
     );
   };
 
+  const handleEnvironmentMenuClick = (key, node) => {
+    setActiveMenu(MenuTypeEnum.Environment, key);
+
+    console.log(MenuTypeEnum.Environment, key);
+    setPanes(
+      {
+        key,
+        title: 'env',
+        menuType: MenuTypeEnum.Environment,
+        pageType: PageTypeEnum.Environment,
+        isNew: false,
+      },
+      'push',
+    );
+  };
+
   const childRef = useRef();
 
   return (
     <>
       {/*AppHeader部分*/}
       <AppHeader workspaces={workspaces} userinfo={{}} />
-      <div        css={css`
+      <div
+        css={css`
           height: calc(100vh - 74px);
-        `}>
+        `}
+      >
         <Allotment>
-          <Allotment.Pane  preferredSize={500} minSize={400}>
+          <Allotment.Pane preferredSize={500} minSize={400}>
             <div
               css={css`
-              height: calc(100vh - 72px);
-              overflow-y: auto;
-              display: flex;
-              flex-direction: column;
-            `}
+                height: calc(100vh - 72px);
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+              `}
             >
+              {/*{JSON.stringify(userInfo)}*/}
               {/*<Row>*/}
               {/*  <Col span={18}>*/}
               {/*    EVAPORATOR*/}
@@ -273,7 +340,14 @@ const MainBox = () => {
               {/*    <Button>Import</Button>*/}
               {/*  </Col>*/}
               {/*</Row>*/}
-              <div css={css`display: flex;justify-content: space-between;padding: 10px;border-bottom: 1px solid #eee`}>
+              <div
+                css={css`
+                  display: flex;
+                  justify-content: space-between;
+                  padding: 10px;
+                  border-bottom: 1px solid #eee;
+                `}
+              >
                 <span></span>
                 <Button size={'small'}>Import</Button>
               </div>
@@ -293,17 +367,27 @@ const MainBox = () => {
                       />
                     ),
                   },
+
+                  {
+                    label: <MenuTitle icon={<ApiOutlined />} title={'env'} />,
+                    key: MenuTypeEnum.Environment,
+                    children: (
+                      <EnvironmentMenu
+                        value={activeMenu[1]}
+                        onSelect={handleEnvironmentMenuClick}
+                      />
+                    ),
+                  },
                 ]}
-              >
-              </MainMenu>
+              ></MainMenu>
             </div>
           </Allotment.Pane>
           <Allotment.Pane snap>
             <div
               css={css`
-              height: calc(100vh - 72px);
-              overflow-y: auto;
-            `}
+                height: calc(100vh - 72px);
+                overflow-y: auto;
+              `}
             >
               <MainTabs
                 onEdit={handleTabsEdit}
@@ -311,17 +395,18 @@ const MainBox = () => {
                 onChange={handleTabsChange}
                 tabBarExtraContent={
                   <EnvironmentSelect
-                    value={activeEnvironment}
+                    value={currentEnvironment}
                     onChange={(e) => {
-                      console.log(e,'e')
-                      setActiveEnvironment(e)
+                      console.log(e, 'ssssssse');
+                      console.log(environment);
+                      setCurrentEnvironment(e);
                       // seAc
                     }}
                   >
                     <Option value='0'>No Environment</Option>
-                    {environment?.map((e) => {
+                    {environment?.map((e, index) => {
                       return (
-                        <Option key={e.name} value={e.name}>
+                        <Option key={e.name} value={String(index + 1)}>
                           {e.name}
                         </Option>
                       );
@@ -332,9 +417,7 @@ const MainBox = () => {
                 {panes.map((pane) => (
                   <MainTabPane className='main-tab-pane' tab={pane.title} key={pane.key}>
                     {/* TODO 工作区自定义组件待规范，参考 menuItem */}
-                    {pane.pageType === PageTypeEnum.Request && (
-                      <RequestPage id={pane.key} />
-                    )}
+                    {pane.pageType === PageTypeEnum.Request && <RequestPage id={pane.key} />}
                     {pane.pageType === PageTypeEnum.Folder && <FolderPage />}
                     {pane.pageType === PageTypeEnum.Environment && <EnvironmentPage />}
                     {pane.pageType === PageTypeEnum.Workspace && <WorkspacePage />}
@@ -346,13 +429,9 @@ const MainBox = () => {
         </Allotment>
       </div>
 
-
-
-
-
       {/*setting弹窗、profile弹窗*/}
-      <Settings/>
-      <Profile/>
+      <Settings />
+      <Profile />
       {/*<Button onClick={()=>setModalVisible(true)}>sss</Button>*/}
       <AppFooter />
     </>

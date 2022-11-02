@@ -97,7 +97,7 @@ const CollectionMenu: FC<{ value: any; onSelect: (a: string, b: any) => void; cR
     data: treeData = [],
     loading,
     run: fetchTreeData,
-  } = useRequest(() => FileService.getcollectiontree({}), {
+  } = useRequest(() => FileService.getcollectiontree({workspaceId:params.workspaceId}), {
     onSuccess: (res) => {
       console.log(res, 'res');
       setCollectionTreeData(res);
@@ -119,6 +119,7 @@ const CollectionMenu: FC<{ value: any; onSelect: (a: string, b: any) => void; cR
   const { run: createCollection } = useRequest(
     () =>
       FileService.createACollection({
+        workspaceId: params.workspaceId,
         name: 'Top Folder',
         nodeType: 3,
         pid: '',

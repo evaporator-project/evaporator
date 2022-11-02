@@ -1,16 +1,36 @@
+import { toggleTheme } from '@zougt/vite-plugin-theme-preprocessor/dist/browser-utils';
 import { set } from 'husky';
 import React from 'react';
 import create from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { toggleTheme } from '@zougt/vite-plugin-theme-preprocessor/dist/browser-utils';
 
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
 import { Environment } from '../data/environment';
 import DefaultConfig from '../defaultConfig';
 import { PrimaryColor, ThemeClassify, ThemeName } from '../style/theme';
-
+const u = {
+  _id: '6361d92af827a4adc24fabac',
+  username: 'tzhangm',
+  password: '123456',
+  nickname: 'zt张涛',
+  avatar: 'http://git.dev.sh.ctripcorp.com/uploads/-/system/user/avatar/8417/avatar.png',
+  thRefreshToken: '2f9378d27ed5456682a4da6bed0b557bc03163f18c340007be593fcf8e3f1916',
+  thAccessToken: 'dbd48abbb07828be5f8d3625c39fa6d925f11b69ab9bc52b0c09d54f86f10be9',
+  email: 'tzhangm@trip.com',
+  thId: '8417',
+  role: [],
+  createdAt: '2022-11-02T02:42:50.262Z',
+  __v: 0,
+};
 type UserInfo = {
-  email: string | null;
+  username: string;
+  nickname: string;
+  avatar: string;
+  thRefreshToken: string;
+  thAccessToken: string;
+  email: string;
+  thId: string;
+  role: string[];
   profile: {
     background: string;
     accentColor: string;
@@ -98,7 +118,7 @@ export const useStore = create(
 
     extensionInstalled: false,
 
-    themeClassify:DefaultConfig.themeClassify,
+    themeClassify: DefaultConfig.themeClassify,
     changeTheme: (theme) => {
       set((state) => {
         const newTheme = theme;
@@ -109,9 +129,6 @@ export const useStore = create(
         state.themeClassify = themeName.split('-')[0] as ThemeClassify;
       });
     },
-
-
-
 
     activePane: '',
     setActivePane: (key: string) => {
@@ -158,27 +175,11 @@ export const useStore = create(
     setEnvironmentTreeData: (environmentTreeData) => set({ environmentTreeData }),
 
     environment: [
-      {
-        name: 'dev',
-        variables: [
-          {
-            key: 'url',
-            value: 'http://127.0.0.1:8080',
-          },
-        ],
-      },
     ],
     setEnvironment: (environment) => set({ environment }),
     activeEnvironment: 'dev',
     setActiveEnvironment: (activeEnvironment) => set({ activeEnvironment }),
-    currentEnvironment: {
-      envName: 'dev',
-      keyValues: [
-        {
-          key: 'url',
-          value: 'http://127.0.0.1:8080',
-        },
-      ],
-    },
+    currentEnvironment: '0',
+    setCurrentEnvironment: (currentEnvironment) => set({ currentEnvironment }),
   })),
 );

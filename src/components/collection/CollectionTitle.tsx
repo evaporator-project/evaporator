@@ -6,6 +6,7 @@ import { FC, useState } from 'react';
 import { MethodEnum, methodMap } from '../../constant';
 import { FileService } from '../../services/FileService';
 import request from '../../services/request';
+import {useParams} from "react-router-dom";
 
 const CollectionTitle: FC<{
   val: { relationshipRequestMethod: MethodEnum; nodeType: number; id: string; title: string };
@@ -19,6 +20,7 @@ const CollectionTitle: FC<{
   };
   const [renameKey, setRenameKey] = useState('');
   const [renameValue, setRenameValue] = useState('');
+  const params = useParams()
   const menu = (val: any) => {
     return (
       <Menu
@@ -29,6 +31,7 @@ const CollectionTitle: FC<{
                 name: 'New Folder',
                 nodeType: 3,
                 pid: val.id,
+                workspaceId:params.workspaceId
               }).then((res) => {
                 console.log(res);
                 updateDirectoryTreeData();
@@ -39,6 +42,7 @@ const CollectionTitle: FC<{
                 name: 'New Req',
                 nodeType: 1,
                 pid: val.id,
+                workspaceId:params.workspaceId
               }).then((res) => {
                 console.log(res);
                 updateDirectoryTreeData();
@@ -49,6 +53,7 @@ const CollectionTitle: FC<{
                 name: 'New Ex',
                 nodeType: 2,
                 pid: val.id,
+                workspaceId:params.workspaceId
               }).then((res) => {
                 console.log(res);
                 updateDirectoryTreeData();
