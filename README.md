@@ -3,7 +3,7 @@
 **Official container** &nbsp; [![zhangtao25/evaporator](https://img.shields.io/docker/pulls/zhangtao25/evaporator?style=social)](https://hub.docker.com/r/zhangtao25/evaporator)
 
 ```bash
-docker run --rm --name hoppscotch -p 3000:3000 hoppscotch/hoppscotch:latest
+docker run --rm --name evaporator-application -p 8080:8080 zhangtao25/evaporator:main
 ```
 
 ## Built with
