@@ -36,7 +36,7 @@
     "@uiw/codemirror-theme-xcode": "^4.12.3",
     "ahooks": "^3.6.2",
     "allotment": "^1.17.0",
-    "antd": "^4.21.7",
+    "antd": "^4.24.0",
     "axios": "^0.27.2",
     "codemirror": "^6.0.1",
     "copy-to-clipboard": "^3.3.2",

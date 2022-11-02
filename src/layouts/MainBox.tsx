@@ -192,15 +192,7 @@ const MainBox = () => {
       method: 'POST',
       data: {},
     }).then((res) => {
-      console.log(res);
       setWorkspaces(res);
-
-      // setEnvironment(res.environments)
-      console.log(
-        res.find((r) => r._id === params.workspaceId).environments,
-        'res.find(r=>r.id === params.workspaceId)',
-      );
-
       const e = res.find((r) => r._id === params.workspaceId)?.environments || [];
 
       setEnvironment(e);

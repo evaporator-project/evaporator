@@ -26,10 +26,10 @@ const HeaderWrapper = styled.div`
   .ant-input {
     border-radius: 0 2px 2px 0;
   }
-  .ant-btn-group,
-  .ant-btn {
-    margin-left: 16px;
-  }
+  //.ant-btn-group,
+  //.ant-btn {
+  //  margin-left: 16px;
+  //}
 `;
 
 const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
@@ -220,14 +220,16 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend, onSendCompare }) => {
         {/*  {t('action.send')}*/}
         {/*</Button>*/}
 
-        <Dropdown.Button
-          type='primary'
-          onClick={() => handleRequest({ type: null })}
-          overlay={menu}
-          icon={<DownOutlined />}
-        >
-          {t('action.send')}
-        </Dropdown.Button>
+        <div css={css`margin: 0 0px 0 14px`}>
+          <Dropdown.Button
+            type='primary'
+            onClick={() => handleRequest({ type: null })}
+            overlay={menu}
+            icon={<DownOutlined />}
+          >
+            {t('action.send')}
+          </Dropdown.Button>
+        </div>
       </HeaderWrapper>
     </div>
   );
