@@ -16,13 +16,12 @@ const HttpRequestOptions = () => {
   const { dispatch: globalDispatch, store: globalStore } = useContext(GlobalContext);
 
   const items = [
-    { label: t('request.parameters'), key: '0', children: <HttpParameters /> }, // 务必填写 key
+    { label: t('tab.parameters'), key: '0', children: <HttpParameters /> }, // 务必填写 key
     // { label: 'form-data', key: '1', children: '内容 2' },
     // { label: 'x-www-form-urlencoded', key: '2', children: '内容 2' },
-    { label: 'Headers', key: '1', children: <HttpHeaders /> },
-    { label: 'Body', key: '3', children: <HttpBody /> },
-    { label: 'Tests', key: '4', children: <HttpTests /> },
-    { label: 'Compare', key: '5', children: <HttpCompare /> },
+    { label: t('tab.headers'), key: '1', children: <HttpHeaders /> },
+    { label: t('tab.body'), key: '3', children: <HttpBody /> },
+    { label: t('tab.tests'), key: '4', children: <HttpTests /> },
   ].filter((i) => !(i.key === '6' && !store.request.recordId));
   return (
     <div

@@ -8,7 +8,19 @@ import { HttpProvider } from './components/ArexRequestComponent/lib';
 import routerConfig from './routers';
 import { useStore } from './store';
 function App() {
-  const { collectionTreeData, currentEnvironment, environment } = useStore();
+
+  // 主题检测
+  const themeMedia = window.matchMedia("(prefers-color-scheme: light)")
+  const { collectionTreeData, currentEnvironment, environment,changeTheme,themeClassify } = useStore();
+  if (themeMedia.matches) {
+    changeTheme('light-purple');
+  } else {
+    changeTheme('dark-purple');
+  }
+
+  // 默认语言检测
+  console.log(navigator.language)
+
   const useRoutesRouterConfig = useRoutes(routerConfig);
   // console.log(environment,'environment',environment[currentEnvironment - 1],'environment[currentEnvironment - 1]')
 
@@ -30,7 +42,7 @@ function App() {
   return (
     <HttpProvider
       locale={'en'}
-      theme={'light'}
+      theme={themeClassify}
       collectionTreeData={collectionTreeData}
       environment={env}
     >

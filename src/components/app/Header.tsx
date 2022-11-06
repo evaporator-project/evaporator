@@ -55,7 +55,8 @@ const DownOutlinedCx = styled(DownOutlined)`
 const AppHeader: FC<Props> = ({ userinfo, workspaces }) => {
   const _useNavigate = useNavigate();
   const { t } = useTranslation();
-  const { settingModalOpen, setSettingModalOpen,setProfileModalOpen } = useStore();
+  const { settingModalOpen, setSettingModalOpen,setProfileModalOpen,themeClassify } = useStore();
+  console.log(themeClassify,'themeClassify')
   const SettingMenuItems = [
     {
       key: '1',

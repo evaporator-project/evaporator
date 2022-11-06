@@ -195,7 +195,7 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend, onSendCompare }) => {
               });
             }}
           >
-            Save
+            {t('action.save')}
           </Button>
         </div>
       </div>

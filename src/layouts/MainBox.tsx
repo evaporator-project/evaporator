@@ -349,7 +349,7 @@ const MainBox = () => {
                 onChange={(key) => setActiveMenu(key as MenuTypeEnum)}
                 items={[
                   {
-                    label: <MenuTitle icon={<ApiOutlined />} title={t('navigation.collection')} />,
+                    label: <MenuTitle icon={<ApiOutlined />} title={'Collection'} />,
                     key: MenuTypeEnum.Collection,
                     children: (
                       <CollectionMenu
@@ -361,7 +361,7 @@ const MainBox = () => {
                   },
 
                   {
-                    label: <MenuTitle icon={<ApiOutlined />} title={'env'} />,
+                    label: <MenuTitle icon={<ApiOutlined />} title={'Environments'} />,
                     key: MenuTypeEnum.Environment,
                     children: (
                       <EnvironmentMenu

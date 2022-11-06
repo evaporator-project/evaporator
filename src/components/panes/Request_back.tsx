@@ -25,7 +25,12 @@ const RequestPage = ({ id,updateCol }) => {
   } = useRequest(
     () => {
       const a = treeFind(collectionTreeData, (node) => node.key === id);
-      return request({ method: 'POST', url: `/api/retrieverequest`,data:{id:a?.relationshipRequestId} });
+      return request({ method: 'POST', url: `/api/retrieverequest`,data:{id:a?.relationshipRequestId} }).catch(err=>{
+
+        return ({
+
+        })
+      });
     },
     {
       onSuccess: (res) => {
