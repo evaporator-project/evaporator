@@ -2,7 +2,6 @@ import Login from '../pages/login';
 import MainBox from '../pages/MainBox';
 import Welcome from '../pages/welcome';
 
-
 const router = [
   {
     path: '/',
@@ -16,6 +15,6 @@ const router = [
   {
     path: '/login',
     element: <Login />,
-  }
+  },
 ];
 export default router;
