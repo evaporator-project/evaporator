@@ -19,14 +19,14 @@ function App() {
   const theme1 = {};
   // 明亮、黑暗主题
   const darkMode = useDarkMode();
-    const {colorPrimary} = useStore()
+    const {accentColor} = useStore()
   return (
     <div>
       {/*antd全剧配置*/}
       <ConfigProvider
         theme={{
           token: {
-            colorPrimary: colorPrimary,
+            colorPrimary: accentColor,
           },
           // 黑暗主题
           algorithm: darkMode.value ? [darkAlgorithm] : [],

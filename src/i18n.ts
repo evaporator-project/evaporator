@@ -3,12 +3,20 @@ import { initReactI18next } from 'react-i18next';
 
 import cn from './locales/cn.json';
 import en from './locales/en.json';
+import ja from './locales/ja.json';
+import ko from './locales/ko.json';
 const resources = {
   cn: {
     translation: cn,
   },
   en: {
     translation: en,
+  },
+  ko: {
+    translation: ko,
+  },
+  ja: {
+    translation: ja,
   },
 };
 
@@ -17,7 +25,7 @@ i18n
   .init({
     // 初始化
     resources, // 本地多语言数据
-    lng: localStorage.getItem('locale') || 'cn',
+    lng: localStorage.getItem('locale') || 'en',
     fallbackLng: 'en',
   });
 

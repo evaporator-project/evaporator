@@ -3,10 +3,14 @@ import create from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
 type BaseState = {
+  userInfo: any;
+  setUserInfo: (s: any) => void;
   pages: any[];
   setPages: () => void;
-  colorPrimary: string;
-  setColorPrimary: (s: string) => void;
+  accentColor: string;
+  setAccentColor: (s: string) => void;
+  language: string;
+  setLanguage: (s: string) => void;
 };
 
 /**
@@ -17,13 +21,27 @@ type BaseState = {
  */
 export const useStore = create(
   immer<BaseState>((set, get) => ({
+    userInfo: {
+      username: '',
+      nickname: '',
+      avatar: '',
+      email: '',
+      role: [],
+    },
+    setUserInfo: (userInfo) => {
+      set({ userInfo: userInfo });
+    },
     pages: [],
     setPages: () => {
       console.log(123);
     },
-    colorPrimary: '',
-    setColorPrimary: (colorPrimary) => {
-      set({ colorPrimary });
+    accentColor: '',
+    setAccentColor: (accentColor) => {
+      set({ accentColor });
+    },
+    language: '',
+    setLanguage: (language) => {
+      set({ language });
     },
   }))
 );

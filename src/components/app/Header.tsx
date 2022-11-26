@@ -2,13 +2,14 @@ import { SettingOutlined } from '@ant-design/icons';
 import styled from '@emotion/styled';
 import { Avatar, Divider, Dropdown, Menu } from 'antd';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import useDarkMode from '../../hooks/use-dark-mode';
 import { useStore } from '../../store';
 // import { TooltipButton } from '../index';
 // import InviteWorkspace from '../workspace/Invite';
 import GitHubStarButton from './GitHubStarButton';
-import Settings from "./settings";
+import Settings from './settings';
 
 const HeaderWrapper = styled.div`
   .app-header {
@@ -36,6 +37,8 @@ const HeaderWrapper = styled.div`
 
 const AppHeader = () => {
   const darkMode = useDarkMode();
+  const { userInfo } = useStore();
+  const { t } = useTranslation();
 
   const handleSetting = () => {
     console.log(123);
@@ -48,7 +51,8 @@ const AppHeader = () => {
       <div className={'app-header'}>
         <div className={'left'}>
           <span className={'app-name'}>AREX</span>
-          <GitHubStarButton theme={darkMode.value?'dark':'light'} />
+          <GitHubStarButton theme={darkMode.value ? 'dark' : 'light'} />
+          <span>{t('action.clear')}</span>
         </div>
 
         <div className={'right'}>
@@ -76,9 +80,11 @@ const AppHeader = () => {
               },
             }}
           >
-            <Avatar size={20} style={{ marginLeft: '8px', cursor: 'pointer' }}>
-              tzhangm
-            </Avatar>
+            <Avatar
+              src={userInfo.avatar}
+              size={20}
+              style={{ marginLeft: '8px', cursor: 'pointer' }}
+            ></Avatar>
           </Dropdown>
         </div>
       </div>
