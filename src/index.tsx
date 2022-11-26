@@ -1,6 +1,7 @@
 import './i18n';
 import 'antd/dist/reset.css';
-import './assets/css/index.css'
+import './assets/css/index.css';
+import 'allotment/dist/style.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';

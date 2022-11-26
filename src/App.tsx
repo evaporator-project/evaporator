@@ -6,7 +6,8 @@ import { useRoutes } from 'react-router-dom';
 
 import useDarkMode from './hooks/use-dark-mode';
 import routerConfig from './router';
-import {useStore} from "./store";
+import { useStore } from './store';
+import { darkTheme, lightTheme } from './theme';
 const { darkAlgorithm } = theme;
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
   const theme1 = {};
   // 明亮、黑暗主题
   const darkMode = useDarkMode();
-    const {accentColor} = useStore()
+  const { accentColor } = useStore();
   return (
     <div>
       {/*antd全剧配置*/}
@@ -32,7 +33,9 @@ function App() {
           algorithm: darkMode.value ? [darkAlgorithm] : [],
         }}
       >
-        <ThemeProvider theme={theme1}>{routesContent}</ThemeProvider>
+        <ThemeProvider theme={darkMode.value ? darkTheme : lightTheme}>
+          {routesContent}
+        </ThemeProvider>
       </ConfigProvider>
     </div>
   );

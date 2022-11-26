@@ -2,6 +2,16 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 import create from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
+import { MenuTypeEnum, PageTypeEnum } from '../constant';
+// TODO 数据结构待规范
+export type PaneType = {
+  title: string;
+  key: string;
+  menuType?: MenuTypeEnum;
+  // page就是pane
+  pageType: PageTypeEnum;
+  isNew?: boolean;
+};
 type BaseState = {
   userInfo: any;
   setUserInfo: (s: any) => void;
@@ -11,6 +21,18 @@ type BaseState = {
   setAccentColor: (s: string) => void;
   language: string;
   setLanguage: (s: string) => void;
+  activeMenu: [MenuTypeEnum, string | undefined]; // [菜单id, 菜单项目id]
+  setActiveMenu: (menuKey: MenuTypeEnum, menuItemKey?: string) => void;
+  panes: PaneType[];
+
+  /*
+   * 修改工作区标签页数据
+   * @param panes 工作区标签页数据
+   * @param mode 添加模式：push，替换模式：undefined
+   * */
+  setPanes: (panes: PaneType | PaneType[], mode?: 'push') => void;
+  collectionTreeData: any;
+  setCollectionTreeData: (collectionTreeData: any) => void;
 };
 
 /**
@@ -43,6 +65,29 @@ export const useStore = create(
     setLanguage: (language) => {
       set({ language });
     },
+    activeMenu: [MenuTypeEnum.Collection, undefined],
+    setActiveMenu: (menuKey, menuItemKey) => {
+      set({ activeMenu: [menuKey, menuItemKey] });
+    },
+    panes: [],
+    setPanes: (panes, mode) => {
+      if (!mode) {
+        set({ panes: panes as PaneType[] });
+      }
+
+      if (mode === 'push') {
+        // immer push new pane and set activePane
+        const pane = panes as PaneType;
+        set((state) => {
+          if (!state.panes.find((i) => i.key === pane.key)) {
+            state.panes.push(pane);
+          }
+          // state.activePane = pane.key;
+        });
+      }
+    },
+    collectionTreeData: [],
+    setCollectionTreeData: (collectionTreeData) => set({ collectionTreeData }),
   }))
 );
 
