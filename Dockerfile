@@ -6,6 +6,5 @@ COPY . /usr/src/app/
 WORKDIR /usr/src/app
 
 RUN node -v
-RUN npm install yarn -g
 RUN yarn
 RUN yarn build
