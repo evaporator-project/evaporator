@@ -1,3 +1,12 @@
 .ant-modal-content{
     padding: 0 !important;
 }
+
+.site-tree-search-value{
+    color: orange;
+}
+
+.ant-tree-title{
+    width: 100% !important;
+    /*display: flex;*/
+}

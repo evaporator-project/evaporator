@@ -6,6 +6,7 @@ import { theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import AppHeader from '../components/app/Header';
+import DraggableTabs from '../components/DraggableTabs';
 import CollectionMenu from '../components/menus/CollectionMenu';
 import RequestPane from '../components/panes/RequestPane';
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
@@ -125,6 +126,7 @@ const MainBox = () => {
                 <span></span>
                 <Button size={'small'}>Import</Button>
               </div>
+
               <Tabs
                 tabPosition="left"
                 activeKey={activeMenu[0]}
@@ -151,25 +153,34 @@ const MainBox = () => {
                 overflow-y: auto;
               `}
             >
-              <Tabs
+              <DraggableTabs
                 size="small"
                 type="editable-card"
-                onEdit={handleTabsEdit}
-                activeKey={activeMenu[1]}
-                onChange={handleTabsChange}
-              >
-                {panes.map((pane) => (
-                  <TabPane
-                    className="main-tab-pane"
-                    tab={pane.title}
-                    key={pane.key}
-                  >
-                    {pane.pageType === PageTypeEnum.Request && (
-                      <RequestPane id={pane.key} />
-                    )}
-                  </TabPane>
-                ))}
-              </Tabs>
+                tabBarGutter={-1}
+                tabBarStyle={{
+                  top: '-1px',
+                  marginBottom: '8px',
+                }}
+                items={panes.map((pane, i) => {
+                  const id = String(i + 1);
+
+                  if (pane.pageType === PageTypeEnum.Request) {
+                    return {
+                      label: `tab ${id}`,
+                      key: id,
+                      children: pane.pageType === PageTypeEnum.Request && (
+                        <RequestPane id={pane.key} />
+                      ),
+                    };
+                  } else {
+                    return {
+                      label: `tab ${id}`,
+                      key: id,
+                      children: 'hi',
+                    };
+                  }
+                })}
+              />
             </div>
           </Allotment.Pane>
         </Allotment>
