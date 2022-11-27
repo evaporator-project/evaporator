@@ -168,9 +168,14 @@ const CollectionMenu = ({ onSelect }: any) => {
             request({
               method: 'POST',
               url: '/api/createfile',
-              data: { nodeType: 3, name: 'test', pid: '' },
+              data: {
+                nodeType: 3,
+                name: 'New Folder',
+                pid: '',
+                workspaceId: params.workspaceId,
+              },
             }).then((res) => {
-              fetchTreeData()
+              fetchTreeData();
             });
           }}
           css={css`

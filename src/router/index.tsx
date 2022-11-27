@@ -4,9 +4,8 @@ import Welcome from '../pages/welcome';
 
 const router = [
   {
-    path: '/',
+    path: '/:workspaceId/workspace/:workspaceName/:paneType/:paneId',
     element: <MainBox />,
-    auth: true,
   },
   {
     path: '/welcome',

@@ -2,6 +2,7 @@ import { MoreOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import { Dropdown, Input, Popconfirm, Space } from 'antd';
 import { useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { methodMap } from '../../../constant';
 import { treeFindPath } from '../../../helpers/collection/util';
@@ -14,6 +15,7 @@ const CollectionTitle = ({
   treeData,
   updateDirectoryTreeData,
 }: any) => {
+  const params  = useParams();
   const method: any = useMemo(() => {
     return Object.keys(methodMap).includes(val.relationshipRequestMethod)
       ? val.relationshipRequestMethod
@@ -61,7 +63,15 @@ const CollectionTitle = ({
               okText="Yes"
               cancelText="No"
               onConfirm={() => {
-                console.log('del');
+                request({
+                  method: 'POST',
+                  url: '/api/deleteFileService',
+                  data: {
+                    id: val.id
+                  },
+                }).then((res) => {
+                  updateDirectoryTreeData();
+                });
               }}
             >
               <a style={{ color: 'red' }}>Delete</a>
@@ -72,13 +82,15 @@ const CollectionTitle = ({
       onClick(e: any) {
         switch (e.key) {
           case '3':
+            console.log(params)
             request({
               method: 'POST',
               url: '/api/createfile',
               data: {
                 nodeType: 3,
-                name: 'New',
+                name: 'New Folder',
                 pid: paths.map((i: any) => i.key).at(-1),
+                workspaceId: params.workspaceId,
               },
             }).then((res) => {
               updateDirectoryTreeData();
@@ -90,8 +102,9 @@ const CollectionTitle = ({
               url: '/api/createfile',
               data: {
                 nodeType: 1,
-                name: 'New req',
+                name: 'New Request',
                 pid: paths.map((i: any) => i.key).at(-1),
+                workspaceId: params.workspaceId,
               },
             }).then((res) => {
               updateDirectoryTreeData();
@@ -103,8 +116,9 @@ const CollectionTitle = ({
               url: '/api/createfile',
               data: {
                 nodeType: 2,
-                name: 'New Ex',
+                name: 'New Request',
                 pid: paths.map((i: any) => i.key).at(-1),
+                workspaceId: params.workspaceId,
               },
             }).then((res) => {
               updateDirectoryTreeData();

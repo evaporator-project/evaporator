@@ -169,7 +169,7 @@ const MainBox = () => {
                       label: `tab ${id}`,
                       key: id,
                       children: pane.pageType === PageTypeEnum.Request && (
-                        <RequestPane id={pane.key} />
+                        <RequestPane pane={pane} />
                       ),
                     };
                   } else {

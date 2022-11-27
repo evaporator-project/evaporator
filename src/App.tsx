@@ -4,11 +4,21 @@ import { ConfigProvider, theme } from 'antd';
 import { useEffect } from 'react';
 import { useRoutes } from 'react-router-dom';
 
+import { HttpProvider } from './components/arex-request';
 import useDarkMode from './hooks/use-dark-mode';
 import routerConfig from './router';
 import { useStore } from './store';
-import { darkTheme, lightTheme } from './theme';
+import {darkTheme, lightTheme, themeDark, themeLight} from './theme';
 const { darkAlgorithm } = theme;
+const mockEnvironmentData = {
+  envName: 'dev',
+  keyValues: [
+    {
+      key: 'id',
+      value: '45',
+    },
+  ],
+};
 
 function App() {
   useMount(() => {
@@ -33,8 +43,13 @@ function App() {
           algorithm: darkMode.value ? [darkAlgorithm] : [],
         }}
       >
-        <ThemeProvider theme={darkMode.value ? darkTheme : lightTheme}>
-          {routesContent}
+        <ThemeProvider theme={darkMode.value ? {...darkTheme,...themeDark} : {...lightTheme,...themeLight}}>
+          <HttpProvider
+            collectionTreeData={[]}
+            environment={mockEnvironmentData}
+          >
+            {routesContent}
+          </HttpProvider>
         </ThemeProvider>
       </ConfigProvider>
     </div>
