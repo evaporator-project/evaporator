@@ -1,21 +1,21 @@
-// @ts-nocheck
 import { EditorView } from '@codemirror/view';
-import { FC, useRef } from 'react';
+import { FC, useContext, useRef } from 'react';
 
-import useDarkMode from '../../../../../hooks/use-dark-mode';
+import { useStore } from '../../../../../store';
 import { useCodeMirror } from '../../../helpers/editor/codemirror';
 import { HoppRESTResponse } from '../../../helpers/types/HoppRESTResponse';
+import { HttpContext } from '../../../index';
 
 const RawLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
   const jsonResponse = useRef(null);
-  const darkMode = useDarkMode();
+  const { store } = useContext(HttpContext);
   useCodeMirror({
     container: jsonResponse.current,
-    value: response.body,
+    value: response.type === 'success' ? response.body : '',
     height: '300px',
     extensions: [EditorView.lineWrapping],
     lineWrapping: true,
-    theme: darkMode.value ? 'dark' : 'light',
+    theme: store.darkMode ? 'dark' : 'light',
   });
   return (
     <div>

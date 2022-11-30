@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { DownOutlined } from '@ant-design/icons';
 import { css, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -7,7 +6,7 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { treeFindPath } from '../../helpers/collection/util';
-import { GlobalContext, HttpContext } from '../../index';
+import { HttpContext } from '../../index';
 import SmartEnvInput from '../smart/EnvInput';
 
 const HeaderWrapper = styled.div`
@@ -28,9 +27,8 @@ const HeaderWrapper = styled.div`
 
 const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
 
-const HttpRequest = ({ currentRequestId, onEdit, onSend }) => {
+const HttpRequest = ({ currentRequestId, onEdit, onSend }:any) => {
   const { store, dispatch } = useContext(HttpContext);
-  const { store: globalStore } = useContext(GlobalContext);
 
   const { t } = useTranslation();
   const onMenuClick: MenuProps['onClick'] = (e) => {
@@ -49,12 +47,12 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }) => {
     />
   );
 
-  const handleRequest = ({ type }) => {
+  const handleRequest = ({ type }:any) => {
     console.log({ type });
     const urlPretreatment = (url: string) => {
       const editorValueMatch = url.match(/\{\{(.+?)\}\}/g) || [''];
       let replaceVar = editorValueMatch[0];
-      const env = globalStore.environment?.keyValues || [];
+      const env = store.environment?.keyValues || [];
       for (let i = 0; i < env.length; i++) {
         if (
           env[i].key === editorValueMatch[0].replace('{{', '').replace('}}', '')
@@ -132,9 +130,11 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }) => {
       >
         <Breadcrumb style={{ paddingBottom: '14px' }}>
           {treeFindPath(
-            globalStore.collectionTreeData,
-            (node) => node.key === currentRequestId
-          ).map((i, index) => (
+            store.collectionTreeData,
+            (node:any) => {
+              return node.relationshipRequestId === currentRequestId
+            }
+          ).map((i:any, index:number) => (
             <Breadcrumb.Item key={index}>{i.title}</Breadcrumb.Item>
           ))}
         </Breadcrumb>

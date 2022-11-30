@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const HOPP_ENVIRONMENT_REGEX = /\{\{(.+?)\}\}/g;
 // 获取文本标志位坐标数组
 export const getMarkFromToArr = (

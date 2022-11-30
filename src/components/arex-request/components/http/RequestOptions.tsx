@@ -1,10 +1,9 @@
-// @ts-nocheck
 import { css } from '@emotion/react';
 import { Badge, Tabs, Tag } from 'antd';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { GlobalContext, HttpContext } from '../../index';
+import { HttpContext } from '../../index';
 import HttpBody from './Body';
 import HttpHeaders from './Headers';
 import HttpParameters from './Parameters';

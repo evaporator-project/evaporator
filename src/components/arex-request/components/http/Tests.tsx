@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { javascript } from '@codemirror/lang-javascript';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -8,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import useDarkMode from '../../../../hooks/use-dark-mode';
 import { useCodeMirror } from '../../helpers/editor/codemirror';
-import { GlobalContext, HttpContext } from '../../index';
+import { HttpContext } from '../../index';
 
 export const ResponseTestHeader = styled.div`
   display: flex;
@@ -22,7 +21,7 @@ export const ResponseTestHeader = styled.div`
 `;
 
 const ThemeColorPrimaryButton = styled(Button)`
-  color: ${(props) => props.theme.color.primary} !important;
+  color: ${(props) => props.theme.colorPrimary} !important;
 `;
 
 export const ResponseTestWrapper = styled.div`
@@ -58,10 +57,8 @@ export const ResponseTestWrapper = styled.div`
 `;
 
 const HttpTests = () => {
-  const darkMode = useDarkMode();
   const { store, dispatch } = useContext(HttpContext);
   const { t } = useTranslation();
-  const [isLineWrapping, setIsLineWrapping] = useState<boolean>(true);
   const codeSnippet = [
     {
       name: 'Response: Status code is 200',
@@ -122,8 +119,8 @@ arex.test("Status code is 5xx", ()=> {
     value: store.request.testScript,
     height: '100%',
     extensions: [javascript()],
-    theme: darkMode.value ? 'dark' : 'light',
-    onChange: (val) => {
+    theme: store.darkMode ? 'dark' : 'light',
+    onChange: (val:string) => {
       dispatch({
         type: 'request.testScript',
         payload: val,

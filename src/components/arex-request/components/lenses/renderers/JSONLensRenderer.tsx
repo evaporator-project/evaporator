@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { CopyOutlined } from '@ant-design/icons';
 import { json } from '@codemirror/lang-json';
 import { EditorView } from '@codemirror/view';
@@ -8,21 +7,22 @@ import { FC, useContext, useRef } from 'react';
 
 import { useCodeMirror } from '../../../helpers/editor/codemirror';
 import { HoppRESTResponse } from '../../../helpers/types/HoppRESTResponse';
-import { GlobalContext, HttpContext } from '../../../index';
-import useDarkMode from '../.././../../../hooks/use-dark-mode';
+import { HttpContext } from '../../../index';
 function coppyUrl() {
   message.success('copy success🎉');
 }
 const JSONLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
   const jsonResponse = useRef(null);
+  // @ts-ignore
   const jsonObj = JSON.parse(response.body || '{}');
-  const darkMode = useDarkMode();
+  const { store } = useContext(HttpContext);
   useCodeMirror({
     container: jsonResponse.current,
+    // @ts-ignore
     value: JSON.stringify(jsonObj, null, 2),
     height: '100%',
     extensions: [json(), EditorView.lineWrapping],
-    theme: darkMode.value ? 'dark' : 'light',
+    theme: store.darkMode ? 'dark' : 'light',
   });
   return (
     <div
@@ -47,6 +47,7 @@ const JSONLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
                   padding: 8px;
                   display: block;
                 `}
+                // @ts-ignore
                 onClick={() => coppyUrl(JSON.stringify(jsonObj, null, 2))}
               >
                 <CopyOutlined />

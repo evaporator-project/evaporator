@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { css } from '@emotion/react';
 import { Radio, RadioChangeEvent } from 'antd';
 import { useRef, useState } from 'react';
@@ -15,7 +14,7 @@ const HttpBody = () => {
     console.log('radio1 checked', value);
     setValue1(value);
   };
-  const rawBodyRef = useRef(null);
+  const rawBodyRef = useRef<any>(null);
 
   return (
     <div

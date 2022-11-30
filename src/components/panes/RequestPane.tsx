@@ -1,22 +1,35 @@
-// @ts-nocheck
 import { css } from '@emotion/react';
-import { message } from 'antd';
+import { message, theme } from 'antd';
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { treeFind } from '../../helpers/collection/util';
 // import Http from './../../components/http'
 import { AgentAxiosAndTest } from '../../helpers/request';
+import useDarkMode from '../../hooks/use-dark-mode';
 import request from '../../services/request';
 import { useStore } from '../../store';
 import Http from '../arex-request';
+const { useToken } = theme;
 const RequestPane: FC<any> = ({ pane }) => {
+  const { token } = useToken();
   const { collectionTreeData } = useStore();
+  const darkMode = useDarkMode();
+  console.log(token, 'token');
   // console.log(treeFind(collectionTreeData, (node) => node.key === pane.key));
   const { relationshipRequestId } = treeFind(
     collectionTreeData,
-    (node) => node.key === pane.key
+    (node: any) => node.key === pane.key
   );
+  const mockEnvironmentData = {
+    envName: 'dev',
+    keyValues: [
+      {
+        key: 'id',
+        value: '45',
+      },
+    ],
+  };
   return (
     <div
       css={css`
@@ -24,7 +37,7 @@ const RequestPane: FC<any> = ({ pane }) => {
       `}
     >
       <Http
-        currentRequestId={'123'}
+        currentRequestId={relationshipRequestId}
         onEdit={(e: any) => {
           if (e.type === 'retrieve') {
             return request({
@@ -51,6 +64,9 @@ const RequestPane: FC<any> = ({ pane }) => {
         onSend={(e: any) => {
           return AgentAxiosAndTest(e);
         }}
+        collectionTreeData={collectionTreeData}
+        environment={mockEnvironmentData}
+        darkMode={darkMode.value}
       />
     </div>
   );

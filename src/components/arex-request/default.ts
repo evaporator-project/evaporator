@@ -1,12 +1,3 @@
-export const globalDefaultState = {
-  collectionTreeData: [],
-  environment: {
-    id: '0',
-    envName: '',
-    keyValues: [],
-  },
-};
-
 export const defaultState = {
   request: {
     preRequestScript: '',
@@ -51,4 +42,7 @@ export const defaultState = {
     },
   },
   testResult: {},
+  environment: {},
+  collectionTreeData: [],
+  darkMode: false,
 };

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   EditorState,
   StateEffect,
@@ -22,7 +21,7 @@ export interface UseCodeMirror {
   container?: HTMLDivElement | null;
 }
 
-export function useEnvCodeMirror(props: UseCodeMirror) {
+export function useEnvCodeMirror(props: any) {
   const {
     value,
     initialState,
@@ -173,7 +172,7 @@ export function useEnvCodeMirror(props: UseCodeMirror) {
 
             if (effect.is(filterMarks)) {
               marks = marks.update({
-                filter: effect.value,
+                filter: effect.value||undefined,
               });
             }
           }
@@ -201,6 +200,7 @@ export function useEnvCodeMirror(props: UseCodeMirror) {
         });
       } else {
         view?.dispatch({
+          // @ts-ignore
           effects: filterMarks.of((from, to) => {
             return to <= 200 || from >= 0;
           }),

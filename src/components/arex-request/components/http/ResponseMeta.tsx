@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { css } from '@emotion/react';
 import { Empty, Spin, Typography } from 'antd';
 import { FC, useMemo } from 'react';
@@ -17,11 +16,14 @@ const HttpResponseMeta: FC<{ response: HoppRESTResponse }> = ({ response }) => {
   `;
 
   const readableResponseSize = useMemo(() => {
-    const size = response.meta.responseSize;
-    if (size >= 100000) return (size / 1000000).toFixed(2) + ' MB';
-    if (size >= 1000) return (size / 1000).toFixed(2) + ' KB';
-
-    return undefined;
+    if (response.type === 'success' || response.type === 'fail') {
+      const size = response.meta.responseSize;
+      if (size >= 100000) return (size / 1000000).toFixed(2) + ' MB';
+      if (size >= 1000) return (size / 1000).toFixed(2) + ' KB';
+      return undefined;
+    } else {
+      return '';
+    }
   }, [response]);
 
   return (

@@ -12,6 +12,7 @@ const LensesResponseBodyRenderer: FC<{
   response: HoppRESTResponse;
   testResult: any;
 }> = ({ response, testResult }) => {
+
   const items = [
     {
       label: 'JSON',
@@ -26,7 +27,8 @@ const LensesResponseBodyRenderer: FC<{
     {
       label: 'Headers',
       key: '2',
-      children: <LensesHeadersRenderer headers={[]} />,
+      // @ts-ignore
+      children: <LensesHeadersRenderer headers={response.headers} />,
     },
     {
       label: 'Result',
@@ -34,7 +36,6 @@ const LensesResponseBodyRenderer: FC<{
       children: <TestResult testResult={testResult} />,
     },
   ];
-  console.log(response, 'response');
   return (
     <div
       css={css`

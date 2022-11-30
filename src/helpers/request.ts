@@ -1,4 +1,4 @@
-// @ts-nocheck
+import axios from 'axios';
 
 function AgentAxios<T>(params: any) {
   return new Promise<T>((resolve, reject) => {
@@ -36,7 +36,7 @@ export const AgentAxiosAndTest = ({ request }: any) =>
   AgentAxios({
     method: request.method,
     url: request.endpoint,
-    headers: request.headers.reduce((p, c) => {
+    headers: request.headers.reduce((p:any, c:any) => {
       return {
         ...p,
         [c.key]: c.value,
@@ -47,7 +47,7 @@ export const AgentAxiosAndTest = ({ request }: any) =>
       : JSON.parse(request.body.body || '{}'),
     params: ['POST'].includes(request.method)
       ? undefined
-      : request.params.reduce((p, c) => {
+      : request.params.reduce((p:any, c:any) => {
           return {
             ...p,
             [c.key]: c.value,
@@ -55,9 +55,18 @@ export const AgentAxiosAndTest = ({ request }: any) =>
         }, {}),
   }).then((res: any) => {
     return new Promise((resolve, reject) => {
-      resolve({
-        response: res,
-        testResult: [],
+      axios({
+        method: 'POST',
+          url:'/api/sandbox',
+        data: {
+          testScript: request.testScript,
+          response: res,
+        },
+      }).then((r) => {
+        resolve({
+          response: res,
+          testResult: r.data.testResult,
+        });
       });
     });
   });

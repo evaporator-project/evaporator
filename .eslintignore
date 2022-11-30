@@ -1,3 +1,2 @@
 node_modules
-config-overrides.js
-src/setupProxy.js
+craco.config.ts

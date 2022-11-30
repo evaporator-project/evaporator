@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { EditorState, StateEffect } from '@codemirror/state';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { EditorView, keymap, ViewUpdate } from '@codemirror/view';
@@ -10,7 +9,7 @@ import { getStatistics } from './utils';
 export interface UseCodeMirror {
   container?: HTMLDivElement | null;
 }
-export function useCodeMirror(props: UseCodeMirror) {
+export function useCodeMirror(props: any) {
   const {
     value,
     initialState,

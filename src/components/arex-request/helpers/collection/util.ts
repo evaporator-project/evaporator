@@ -1,6 +1,3 @@
-// @ts-nocheck
-// 数组转树通用方法
-// import { NodeList } from "../../vite-env";
 export function arrToTree(arr: any, pid = 0) {
   const newArr: any = [];
   arr.forEach((item: any) => {

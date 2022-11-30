@@ -1,26 +1,22 @@
-// @ts-nocheck
 import { hoverTooltip } from '@codemirror/view';
 import { css, useTheme } from '@emotion/react';
 import { FC, useContext, useRef } from 'react';
 
-import useDarkMode from '../../../../hooks/use-dark-mode';
 import { useEnvCodeMirror } from '../../helpers/editor/extensions/EnvCodeMirror';
 import {
   getMarkFromToArr,
   HOPP_ENVIRONMENT_REGEX,
 } from '../../helpers/editor/extensions/HoppEnvironment';
-import { GlobalContext, HttpContext } from '../../index';
+import { HttpContext } from '../../index';
 
 interface SmartEnvInputProps {
   value: string;
   onChange: (e: any) => void;
 }
 const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
-  const darkMode = useDarkMode();
   const theme = useTheme();
   const smartEnvInputRef = useRef(null);
-  const { dispatch } = useContext(HttpContext);
-  const { store: globalStore } = useContext(GlobalContext);
+  const { dispatch, store } = useContext(HttpContext);
   useEnvCodeMirror({
     container: smartEnvInputRef.current,
     value: value,
@@ -32,7 +28,7 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
           const markArrs = getMarkFromToArr(
             text,
             HOPP_ENVIRONMENT_REGEX,
-            globalStore.environment
+            store.environment
           );
           const index = markArrs
             .map((i) => pos < i.to && pos > i.from)
@@ -58,21 +54,21 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
         }),
       ],
     ],
-    onChange: (val) => {
+    onChange: (val: any) => {
       console.log({ val });
       dispatch({
         type: 'request.endpoint',
         payload: val,
       });
     },
-    currentEnv: globalStore.environment,
-    theme: darkMode.value ? 'dark' : 'light',
+    currentEnv: store.environment,
+    theme: store.darkMode ? 'dark' : 'light',
   });
 
   return (
     <div
       css={css`
-        border: 1px solid ${theme.color.border.primary};
+        border: 1px solid ${theme.colorBorder};
         flex: 1;
         overflow: hidden;
       `}
