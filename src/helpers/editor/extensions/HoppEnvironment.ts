@@ -4,8 +4,8 @@ export const getMarkFromToArr = (
   text: string,
   reg: RegExp,
   currentEnv: {
-    name: string;
-    variables: {
+    envName: string;
+    keyValues: {
       key: string;
       value: string;
     }[];
@@ -24,7 +24,7 @@ export const getMarkFromToArr = (
   const editorValueMatch = text.match(reg) || [];
   const arr = [];
   for (let i = 0; i < editorValueMatch.length; i++) {
-    const find = currentEnv.variables.find(
+    const find = currentEnv.keyValues.find(
       (f) => f.key === editorValueMatch[i].replace('{{', '').replace('}}', '')
     );
     arr.push({
@@ -32,7 +32,7 @@ export const getMarkFromToArr = (
       to: text.indexOf(editorValueMatch[i]) + editorValueMatch[i].length,
       found: find ? true : false,
       matchEnv: {
-        name: currentEnv.name || 'choose an environment',
+        name: currentEnv.envName || 'choose an environment',
         key: find ? find.key : 'not found',
         value: find ? find.value : 'not found',
       },

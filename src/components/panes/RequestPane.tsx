@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { message, theme } from 'antd';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { treeFind } from '../../helpers/collection/util';
@@ -13,7 +13,7 @@ import Http from '../arex-request';
 const { useToken } = theme;
 const RequestPane: FC<any> = ({ pane }) => {
   const { token } = useToken();
-  const { collectionTreeData } = useStore();
+  const { collectionTreeData, activeEnvironment, environments } = useStore();
   const darkMode = useDarkMode();
   console.log(token, 'token');
   // console.log(treeFind(collectionTreeData, (node) => node.key === pane.key));
@@ -21,15 +21,13 @@ const RequestPane: FC<any> = ({ pane }) => {
     collectionTreeData,
     (node: any) => node.key === pane.key
   );
-  const mockEnvironmentData = {
-    envName: 'dev',
-    keyValues: [
-      {
-        key: 'id',
-        value: '45',
-      },
-    ],
-  };
+  const mockEnvironmentData = useMemo(() => {
+    return (
+      environments.find((env) => env.name === activeEnvironment) || {
+        variables: [],
+      }
+    );
+  }, [environments, activeEnvironment]);
   return (
     <div
       css={css`

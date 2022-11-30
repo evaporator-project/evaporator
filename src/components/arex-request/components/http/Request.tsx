@@ -52,7 +52,7 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }:any) => {
     const urlPretreatment = (url: string) => {
       const editorValueMatch = url.match(/\{\{(.+?)\}\}/g) || [''];
       let replaceVar = editorValueMatch[0];
-      const env = store.environment?.keyValues || [];
+      const env = store.environment?.variables || [];
       for (let i = 0; i < env.length; i++) {
         if (
           env[i].key === editorValueMatch[0].replace('{{', '').replace('}}', '')

@@ -33,6 +33,12 @@ type BaseState = {
   setPanes: (panes: PaneType | PaneType[], mode?: 'push') => void;
   collectionTreeData: any;
   setCollectionTreeData: (collectionTreeData: any) => void;
+
+  environments: any[];
+  setEnvironments: (environments: any) => void;
+
+  activeEnvironment: any;
+  setActiveEnvironment: (activeEnvironment: any) => void;
 };
 
 /**
@@ -88,6 +94,12 @@ export const useStore = create(
     },
     collectionTreeData: [],
     setCollectionTreeData: (collectionTreeData) => set({ collectionTreeData }),
+
+    environments: [],
+    setEnvironments: (environments) => set({ environments }),
+
+    activeEnvironment: 'No environment',
+    setActiveEnvironment: (activeEnvironment) => set({ activeEnvironment }),
   }))
 );
 

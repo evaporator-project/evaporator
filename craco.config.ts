@@ -7,5 +7,6 @@ export default {
       overlay: false,
     },
     port: 8000,
+    open:false
   },
 };
