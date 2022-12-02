@@ -2,13 +2,14 @@ import { ThemeProvider } from '@emotion/react';
 import { useMount } from 'ahooks';
 import { ConfigProvider, theme } from 'antd';
 import { useEffect, useState } from 'react';
+import React from 'react';
 import { useRoutes } from 'react-router-dom';
 
 import useDarkMode from './hooks/use-dark-mode';
 import routerConfig from './router';
 import { useStore } from './store';
 import { darkTheme, lightTheme, themeDark, themeLight } from './theme';
-import ThemeMidProv from "./theme/ThemeMidProv";
+import ThemeMidProv from './theme/ThemeMidProv';
 const { darkAlgorithm, useToken } = theme;
 
 function App() {
@@ -22,7 +23,6 @@ function App() {
   const darkMode = useDarkMode();
   const { accentColor } = useStore();
 
-
   return (
     <div>
       {/*antd全剧配置*/}
@@ -35,9 +35,7 @@ function App() {
           algorithm: darkMode.value ? [darkAlgorithm] : [],
         }}
       >
-
-          <ThemeMidProv/>
-
+        <ThemeMidProv />
       </ConfigProvider>
     </div>
   );

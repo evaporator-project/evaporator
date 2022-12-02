@@ -1,21 +1,22 @@
 import { MoreOutlined } from '@ant-design/icons';
-import { css } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx } from '@emotion/react';
 import { Dropdown, Input, Popconfirm, Space } from 'antd';
 import { useMemo, useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { methodMap } from '../../../constant';
 import { treeFindPath } from '../../../helpers/collection/util';
 import request from '../../../services/request';
 import SearchHeighLight from './searchHeighLight';
-
 const CollectionTitle = ({
   val,
   searchValue,
   treeData,
   updateDirectoryTreeData,
 }: any) => {
-  const params  = useParams();
+  const params = useParams();
   const method: any = useMemo(() => {
     return Object.keys(methodMap).includes(val.relationshipRequestMethod)
       ? val.relationshipRequestMethod
@@ -67,7 +68,7 @@ const CollectionTitle = ({
                   method: 'POST',
                   url: '/api/deleteFileService',
                   data: {
-                    id: val.id
+                    id: val.id,
                   },
                 }).then((res) => {
                   updateDirectoryTreeData();
@@ -82,7 +83,7 @@ const CollectionTitle = ({
       onClick(e: any) {
         switch (e.key) {
           case '3':
-            console.log(params)
+            console.log(params);
             request({
               method: 'POST',
               url: '/api/createfile',

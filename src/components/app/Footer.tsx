@@ -1,12 +1,17 @@
-import { css } from '@emotion/react';
-
+//
+// import { jsx } from '@emotion/react';
+/** @jsx jsx */
+import { css, jsx } from '@emotion/react';
+// import React from 'react';
 const AppFooter = () => {
   return (
     <div
       css={css`
         height: 32px;
       `}
-    >AppFooter</div>
+    >
+      AppFooter11ddddddd
+    </div>
   );
 };
 

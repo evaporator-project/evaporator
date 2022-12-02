@@ -1,6 +1,8 @@
-import { css } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx } from '@emotion/react';
 import { Tabs } from 'antd';
 import { FC } from 'react';
+import React from 'react';
 
 import { HoppRESTResponse } from '../../helpers/types/HoppRESTResponse';
 import TestResult from '../http/TestResult';
@@ -12,7 +14,6 @@ const LensesResponseBodyRenderer: FC<{
   response: HoppRESTResponse;
   testResult: any;
 }> = ({ response, testResult }) => {
-
   const items = [
     {
       label: 'JSON',

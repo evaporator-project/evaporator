@@ -1,14 +1,15 @@
 import { DownOutlined } from '@ant-design/icons';
-import { css, useTheme } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Breadcrumb, Button, Dropdown, Menu, MenuProps, Select } from 'antd';
 import { useContext } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { treeFindPath } from '../../helpers/collection/util';
 import { HttpContext } from '../../index';
 import SmartEnvInput from '../smart/EnvInput';
-
 const HeaderWrapper = styled.div`
   display: flex;
 
@@ -27,12 +28,12 @@ const HeaderWrapper = styled.div`
 
 const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
 
-const HttpRequest = ({ currentRequestId, onEdit, onSend }:any) => {
+const HttpRequest = ({ currentRequestId, onEdit, onSend }: any) => {
   const { store, dispatch } = useContext(HttpContext);
 
   const { t } = useTranslation();
   const onMenuClick: MenuProps['onClick'] = (e) => {
-    console.log(1)
+    console.log(1);
   };
 
   const menu = (
@@ -47,7 +48,7 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }:any) => {
     />
   );
 
-  const handleRequest = ({ type }:any) => {
+  const handleRequest = ({ type }: any) => {
     console.log({ type });
     const urlPretreatment = (url: string) => {
       const editorValueMatch = url.match(/\{\{(.+?)\}\}/g) || [''];
@@ -71,7 +72,7 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }:any) => {
     const start = new Date().getTime();
 
     if (type === 'compare') {
-      console.log(1)
+      console.log(1);
     } else {
       onSend({
         request: {
@@ -129,12 +130,9 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }:any) => {
         `}
       >
         <Breadcrumb style={{ paddingBottom: '14px' }}>
-          {treeFindPath(
-            store.collectionTreeData,
-            (node:any) => {
-              return node.relationshipRequestId === currentRequestId
-            }
-          ).map((i:any, index:number) => (
+          {treeFindPath(store.collectionTreeData, (node: any) => {
+            return node.relationshipRequestId === currentRequestId;
+          }).map((i: any, index: number) => (
             <Breadcrumb.Item key={index}>{i.title}</Breadcrumb.Item>
           ))}
         </Breadcrumb>

@@ -1,11 +1,14 @@
-import { css, useTheme } from '@emotion/react';
+/** @jsx jsx */
+import { css, jsx, useTheme } from '@emotion/react';
 import { useMount } from 'ahooks';
 import { Allotment } from 'allotment';
 import { Button, Select, Tabs } from 'antd';
 import { theme } from 'antd';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
+import AppFooter from '../components/app/Footer';
 import AppHeader from '../components/app/Header';
 import DraggableTabs from '../components/DraggableTabs';
 import CollectionMenu from '../components/menus/CollectionMenu';
@@ -188,14 +191,16 @@ const MainBox = () => {
                 size="small"
                 type="editable-card"
                 tabBarGutter={-1}
-                tabBarStyle={{
-                  // top: '-1px',
-                  // marginBottom: '8px',
-                }}
+                tabBarStyle={
+                  {
+                    // top: '-1px',
+                    // marginBottom: '8px',
+                  }
+                }
                 activeKey={activeMenu[1]}
                 items={panes.map((pane, i) => {
-                  const id = pane.key
-                  const title = pane.title
+                  const id = pane.key;
+                  const title = pane.title;
                   if (pane.pageType === PageTypeEnum.Request) {
                     return {
                       forceRender: true,
@@ -235,6 +240,7 @@ const MainBox = () => {
           </Allotment.Pane>
         </Allotment>
       </div>
+      <AppFooter />
     </div>
   );
 };

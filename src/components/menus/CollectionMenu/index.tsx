@@ -4,7 +4,8 @@ import {
   PlusOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { css } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx } from '@emotion/react';
 import { useRequest } from 'ahooks';
 import { Input, Tree } from 'antd';
 import type { DataNode, TreeProps } from 'antd/es/tree';

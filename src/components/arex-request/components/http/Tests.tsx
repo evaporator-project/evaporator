@@ -1,8 +1,10 @@
 import { javascript } from '@codemirror/lang-javascript';
-import { css } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button } from 'antd';
 import { useContext, useRef, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import useDarkMode from '../../../../hooks/use-dark-mode';
@@ -120,7 +122,7 @@ arex.test("Status code is 5xx", ()=> {
     height: '100%',
     extensions: [javascript()],
     theme: store.darkMode ? 'dark' : 'light',
-    onChange: (val:string) => {
+    onChange: (val: string) => {
       dispatch({
         type: 'request.testScript',
         payload: val,

@@ -1,5 +1,6 @@
+/** @jsx jsx */
 import { json } from '@codemirror/lang-json';
-import { css } from '@emotion/react';
+import { css, jsx } from '@emotion/react';
 import { Button, message } from 'antd';
 import {
   useContext,
@@ -8,6 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import React from 'react';
 
 import { useCodeMirror } from '../../helpers/editor/codemirror';
 import { HttpContext } from '../../index';

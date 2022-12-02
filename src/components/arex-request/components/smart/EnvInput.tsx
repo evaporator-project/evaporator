@@ -1,6 +1,8 @@
 import { hoverTooltip } from '@codemirror/view';
-import { css, useTheme } from '@emotion/react';
+/** @jsx jsx */
+import { css, useTheme,jsx } from '@emotion/react';
 import { FC, useContext, useRef } from 'react';
+import React from 'react';
 
 import { useEnvCodeMirror } from '../../helpers/editor/extensions/EnvCodeMirror';
 import {

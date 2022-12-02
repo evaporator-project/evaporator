@@ -1,9 +1,11 @@
 import { CopyOutlined } from '@ant-design/icons';
 import { json } from '@codemirror/lang-json';
 import { EditorView } from '@codemirror/view';
-import { css } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx } from '@emotion/react';
 import { Button, message, Space, Tooltip } from 'antd';
 import { FC, useContext, useRef } from 'react';
+import React from 'react';
 
 import { useCodeMirror } from '../../../helpers/editor/codemirror';
 import { HoppRESTResponse } from '../../../helpers/types/HoppRESTResponse';

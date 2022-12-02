@@ -1,5 +1,6 @@
 import { SettingOutlined } from '@ant-design/icons';
-import { css } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx } from '@emotion/react';
 import { Button, Menu, Modal, Select, Switch, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 // @ts-ignore
@@ -11,6 +12,8 @@ import request from '../../../services/request';
 import { useStore } from '../../../store';
 // import Title from "antd/es/skeleton/Title";
 const { Title, Text } = Typography;
+import React from 'react';
+
 import logo from '../../../assets/logo.svg';
 import languages from '../../../languages.json';
 const Settings = () => {

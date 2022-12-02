@@ -1,6 +1,8 @@
-import { css } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx } from '@emotion/react';
 import { DatePicker, TimePicker } from 'antd';
 import { useContext, useMemo } from 'react';
+import React from 'react';
 
 import { HttpContext } from '../..';
 import LensesResponseBodyRenderer from '../lenses/ResponseBodyRenderer';

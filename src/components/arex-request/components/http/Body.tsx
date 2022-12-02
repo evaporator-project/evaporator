@@ -1,10 +1,11 @@
-import { css } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx } from '@emotion/react';
 import { Radio, RadioChangeEvent } from 'antd';
 import { useRef, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import RawBody from './RawBody';
-
 const HttpBody = () => {
   const { t } = useTranslation();
 
@@ -31,9 +32,15 @@ const HttpBody = () => {
           margin-bottom: 4px;
         `}
       >
-        <Radio.Group options={plainOptions} onChange={onChange1} value={value1} />
+        <Radio.Group
+          options={plainOptions}
+          onChange={onChange1}
+          value={value1}
+        />
         <div>
-          <a onClick={() => rawBodyRef.current.prettifyRequestBody()}>{t('action.prettify')}</a>
+          <a onClick={() => rawBodyRef.current.prettifyRequestBody()}>
+            {t('action.prettify')}
+          </a>
         </div>
       </div>
 

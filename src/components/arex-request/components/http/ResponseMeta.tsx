@@ -1,6 +1,8 @@
-import { css } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx } from '@emotion/react';
 import { Empty, Spin, Typography } from 'antd';
 import { FC, useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { HoppRESTResponse } from '../../helpers/types/HoppRESTResponse';

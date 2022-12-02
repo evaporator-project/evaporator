@@ -1,5 +1,6 @@
 import { EditorView } from '@codemirror/view';
 import { FC, useContext, useRef } from 'react';
+import React from 'react';
 
 import { useStore } from '../../../../../store';
 import { useCodeMirror } from '../../../helpers/editor/codemirror';

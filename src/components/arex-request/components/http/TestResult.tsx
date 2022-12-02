@@ -1,8 +1,10 @@
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { css } from '@emotion/react';
+/** @jsx jsx */
+import { css,jsx } from '@emotion/react';
 import styled from '@emotion/styled';
 import { List, Progress } from 'antd';
 import { useContext } from 'react';
+import React from 'react';
 
 import { HttpContext } from '../../index';
 const TestError = styled.div`
@@ -18,7 +20,7 @@ const TestResult = ({ testResult }: any) => {
   console.log(store, 'store');
   return (
     <div>
-      {testResult.children?.map((e: any, i:any) => (
+      {testResult.children?.map((e: any, i: any) => (
         <List
           key={i}
           size="large"
