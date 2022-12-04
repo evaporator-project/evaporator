@@ -1,5 +1,4 @@
-
-import { css,jsx } from '@emotion/react';
+import { css, jsx } from '@emotion/react';
 import { message, theme } from 'antd';
 import { FC, useMemo } from 'react';
 import React from 'react';
@@ -11,11 +10,25 @@ import { AgentAxiosAndTest } from '../../helpers/request';
 import useDarkMode from '../../hooks/use-dark-mode';
 import request from '../../services/request';
 import { useStore } from '../../store';
+import { useSettingsStore } from '../../store/settings';
 import Http from '../arex-request';
 const { useToken } = theme;
 const RequestPane: FC<any> = ({ pane }) => {
   const { token } = useToken();
-  const { collectionTreeData, activeEnvironment, environments } = useStore();
+  const { collectionTreeData, activeEnvironment, environments, requestType } =
+    useStore();
+  const { PROXY_URL, EXTENSIONS_ENABLED, PROXY_ENABLED } = useSettingsStore();
+  const interceptorSelection = useMemo(() => {
+    if (PROXY_ENABLED === false && EXTENSIONS_ENABLED === false) {
+      return 'BROWSER_ENABLED';
+    } else if (PROXY_ENABLED === true && EXTENSIONS_ENABLED === false) {
+      return 'PROXY_ENABLED';
+    } else if (PROXY_ENABLED === false && EXTENSIONS_ENABLED === true) {
+      return 'EXTENSIONS_ENABLED';
+    } else {
+      return 'BROWSER_ENABLED';
+    }
+  }, [PROXY_ENABLED, EXTENSIONS_ENABLED]);
   const darkMode = useDarkMode();
   console.log(token, 'token');
   // console.log(treeFind(collectionTreeData, (node) => node.key === pane.key));
@@ -62,7 +75,7 @@ const RequestPane: FC<any> = ({ pane }) => {
           }
         }}
         onSend={(e: any) => {
-          return AgentAxiosAndTest(e);
+          return AgentAxiosAndTest(e, interceptorSelection, PROXY_URL);
         }}
         collectionTreeData={collectionTreeData}
         environment={mockEnvironmentData}

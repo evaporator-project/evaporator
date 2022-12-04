@@ -1,10 +1,8 @@
-
-import { css, jsx, useTheme } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 import { useMount } from 'ahooks';
 import { Allotment } from 'allotment';
 import { Button, Select, Tabs } from 'antd';
 import { theme } from 'antd';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -15,6 +13,7 @@ import CollectionMenu from '../components/menus/CollectionMenu';
 import EnvironmentMenu from '../components/menus/EnvironmentMenu';
 import RequestPane from '../components/panes/RequestPane';
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
+import { treeFind } from '../helpers/collection/util';
 import useDarkMode from '../hooks/use-dark-mode';
 import request from '../services/request';
 import { useStore } from '../store';
@@ -36,6 +35,8 @@ const MainBox = () => {
     setEnvironments,
     setActiveEnvironment,
     activeEnvironment,
+    collectionTreeData,
+    setRequestType,
   } = useStore();
 
   const darkMode = useDarkMode();
@@ -53,6 +54,10 @@ const MainBox = () => {
       darkMode.toggle(res.settings.colorMode === 'dark');
       setLanguage(res.settings.language);
       i18n.changeLanguage(res.settings.language);
+      // setSettings({
+      //   s:res.settings.PROXY_ENABLED
+      // })
+      setRequestType(res.settings.EXTENSIONS_ENABLED);
     });
 
     request({
@@ -107,7 +112,8 @@ const MainBox = () => {
     setPanes(
       {
         key,
-        title: node.title,
+        title: treeFind(collectionTreeData, (node: any) => node.key === key)
+          ?.title,
         menuType: MenuTypeEnum.Collection,
         pageType:
           node.nodeType === 3 ? PageTypeEnum.Folder : PageTypeEnum.Request,
@@ -124,17 +130,16 @@ const MainBox = () => {
       <AppHeader />
       <div
         css={css`
-          height: calc(100vh - 80px);
+          height: calc(100vh - 82px);
         `}
       >
         <Allotment>
           <Allotment.Pane preferredSize={500} minSize={400}>
             <div
               css={css`
-                height: calc(100vh - 72px);
-                overflow-y: auto;
                 display: flex;
                 flex-direction: column;
+                height: 100%;
               `}
             >
               <div
@@ -150,6 +155,7 @@ const MainBox = () => {
               </div>
 
               <Tabs
+                  css={css`flex: 1`}
                 tabPosition="left"
                 activeKey={activeMenu[0]}
                 onChange={(key) => setActiveMenu(key as MenuTypeEnum)}
@@ -165,7 +171,7 @@ const MainBox = () => {
                     ),
                   },
                   {
-                    label: 'Collection',
+                    label: 'Environment',
                     key: MenuTypeEnum.Environment,
                     children: (
                       <EnvironmentMenu
@@ -179,15 +185,9 @@ const MainBox = () => {
             </div>
           </Allotment.Pane>
           <Allotment.Pane>
-            <div
-              css={css`
-                height: calc(100vh - 72px);
-                overflow-y: auto;
-              `}
-            >
-              {activeMenu[1]}
-              {activeMenu[0]}
+            <div>
               <DraggableTabs
+                onChange={handleTabsChange}
                 size="small"
                 type="editable-card"
                 tabBarGutter={-1}
@@ -221,7 +221,11 @@ const MainBox = () => {
                 tabBarExtraContent={
                   <Select
                     value={activeEnvironment}
-                    style={{ width: '180px', padding: '4px' }}
+                    style={{
+                      width: '180px',
+                      padding: '4px',
+                      marginRight: '10px',
+                    }}
                     options={[
                       { label: 'No environment', value: 'No environment' },
                     ].concat(

@@ -25,6 +25,9 @@ type BaseState = {
   setActiveMenu: (menuKey: MenuTypeEnum, menuItemKey?: string) => void;
   panes: PaneType[];
 
+  requestType: string;
+  setRequestType: (s: string) => void;
+
   /*
    * 修改工作区标签页数据
    * @param panes 工作区标签页数据
@@ -100,6 +103,8 @@ export const useStore = create(
 
     activeEnvironment: 'No environment',
     setActiveEnvironment: (activeEnvironment) => set({ activeEnvironment }),
+    requestType: '',
+    setRequestType: (requestType) => set({ requestType }),
   }))
 );
 

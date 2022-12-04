@@ -1,8 +1,8 @@
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, UserOutlined } from '@ant-design/icons';
 
 import { css,jsx, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Breadcrumb, Button, Dropdown, Menu, MenuProps, Select } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, MenuProps, message, Select } from 'antd';
 import { useContext } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -32,21 +32,29 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }: any) => {
   const { store, dispatch } = useContext(HttpContext);
 
   const { t } = useTranslation();
-  const onMenuClick: MenuProps['onClick'] = (e) => {
-    console.log(1);
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    message.info('Click on menu item.');
+    console.log('click', e);
   };
 
-  const menu = (
-    <Menu
-      onClick={onMenuClick}
-      items={[
-        {
-          key: '1',
-          label: 'Send C',
-        },
-      ]}
-    />
-  );
+  const items: MenuProps['items'] = [
+    {
+      label: '1st menu item',
+      key: '1',
+      icon: <UserOutlined />,
+    },
+    {
+      label: '2nd menu item',
+      key: '2',
+      icon: <UserOutlined />,
+    },
+    {
+      label: '3rd menu item',
+      key: '3',
+      icon: <UserOutlined />,
+    },
+  ];
+
 
   const handleRequest = ({ type }: any) => {
     console.log({ type });
@@ -120,6 +128,7 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }: any) => {
     <div
       css={css`
         padding: 16px;
+padding-top: 0;
       `}
     >
       <div
@@ -174,9 +183,12 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }: any) => {
           `}
         >
           <Dropdown.Button
+              onClick={()=>handleRequest({type:null})}
             type="primary"
-            onClick={() => handleRequest({ type: null })}
-            overlay={menu}
+            menu={{
+              onClick:handleMenuClick,
+              items:items
+            }}
             icon={<DownOutlined />}
           >
             {t('action.send')}

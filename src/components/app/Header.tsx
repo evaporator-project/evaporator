@@ -13,7 +13,7 @@ import Settings from './settings';
 
 const HeaderWrapper = styled.div`
   .app-header {
-    height: 46px;
+    height: 48px;
     padding: 7px;
     display: flex;
     justify-content: space-between;
@@ -50,9 +50,8 @@ const AppHeader = () => {
     <HeaderWrapper>
       <div className={'app-header'}>
         <div className={'left'}>
-          <span className={'app-name'}>AREX</span>
+          <span className={'app-name'}>EVAPORATOR</span>
           <GitHubStarButton theme={darkMode.value ? 'dark' : 'light'} />
-          <span>{t('action.clear')}</span>
         </div>
 
         <div className={'right'}>

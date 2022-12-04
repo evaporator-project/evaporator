@@ -152,7 +152,6 @@ const CollectionMenu = ({ onSelect }: any) => {
   return (
     <div
       css={css`
-        height: 500px;
         padding-right: 12px;
       `}
     >

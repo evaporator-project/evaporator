@@ -1,5 +1,21 @@
 import axios from 'axios';
 
+import { runTestScript } from './sandbox';
+
+function realRequest(reqParams: any, requestType: any, url: string) {
+  if (requestType === 'EXTENSIONS_ENABLED') {
+    return AgentAxios(reqParams);
+  } else if (requestType === 'BROWSER_ENABLED') {
+    return axios(reqParams);
+  } else if (requestType === 'PROXY_ENABLED') {
+    return axios.post(url, reqParams);
+  } else {
+    return new Promise((resolve, reject) => {
+      resolve({});
+    });
+  }
+}
+
 function AgentAxios<T>(params: any) {
   return new Promise<T>((resolve, reject) => {
     const tid = String(Math.random());
@@ -32,41 +48,41 @@ function AgentAxios<T>(params: any) {
 
 export default AgentAxios;
 
-export const AgentAxiosAndTest = ({ request }: any) =>
-  AgentAxios({
-    method: request.method,
-    url: request.endpoint,
-    headers: request.headers.reduce((p:any, c:any) => {
+export const AgentAxiosAndTest = ({ request }: any, requestType: string, url:string) =>
+  realRequest(
+    {
+      method: request.method,
+      url: request.endpoint,
+      headers: request.headers.reduce((p: any, c: any) => {
+        return {
+          ...p,
+          [c.key]: c.value,
+        };
+      }, {}),
+      data: ['GET'].includes(request.method)
+        ? undefined
+        : JSON.parse(request.body.body || '{}'),
+      params: ['POST'].includes(request.method)
+        ? undefined
+        : request.params.reduce((p: any, c: any) => {
+            return {
+              ...p,
+              [c.key]: c.value,
+            };
+          }, {}),
+    },
+    requestType,
+    url
+  ).then((res: any) => {
+    console.log(res);
+    return runTestScript(request.testScript, {
+      body: res.data,
+      headers: res.headers,
+      status: res.status,
+    }).then((test) => {
       return {
-        ...p,
-        [c.key]: c.value,
+        response: res,
+        testResult: test.tests,
       };
-    }, {}),
-    data: ['GET'].includes(request.method)
-      ? undefined
-      : JSON.parse(request.body.body || '{}'),
-    params: ['POST'].includes(request.method)
-      ? undefined
-      : request.params.reduce((p:any, c:any) => {
-          return {
-            ...p,
-            [c.key]: c.value,
-          };
-        }, {}),
-  }).then((res: any) => {
-    return new Promise((resolve, reject) => {
-      axios({
-        method: 'POST',
-          url:'/api/sandbox',
-        data: {
-          testScript: request.testScript,
-          response: res,
-        },
-      }).then((r) => {
-        resolve({
-          response: res,
-          testResult: r.data.testResult,
-        });
-      });
     });
   });

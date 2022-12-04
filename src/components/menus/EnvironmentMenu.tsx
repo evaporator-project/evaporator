@@ -11,7 +11,7 @@ import { EditorView } from '@codemirror/view';
 import { css,jsx } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useRequest } from 'ahooks';
-import { Button, Dropdown, Input, Menu, Modal, Tooltip } from 'antd';
+import {Button, Dropdown, Input, Menu, message, Modal, Tooltip} from 'antd';
 import React, { FC, useContext, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -66,7 +66,8 @@ const EnvironmentMenu: FC<{ onSelect: any; value: any }> = ({
               environments: jsonData,
             },
           }).then((res) => {
-            console.log(res);
+            // console.log(res);
+            message.info(JSON.stringify(res))
           });
         }}
       >

@@ -1,7 +1,15 @@
-import { SettingOutlined } from '@ant-design/icons';
-
-import { css,jsx } from '@emotion/react';
-import { Button, Menu, Modal, Select, Switch, Typography } from 'antd';
+import { SettingOutlined, UndoOutlined } from '@ant-design/icons';
+import { css, jsx } from '@emotion/react';
+import {
+  Button,
+  Input,
+  Menu,
+  Modal,
+  Select,
+  Space,
+  Switch,
+  Typography,
+} from 'antd';
 import { useEffect, useState } from 'react';
 // @ts-ignore
 import { CirclePicker } from 'react-color';
@@ -14,10 +22,19 @@ import { useStore } from '../../../store';
 const { Title, Text } = Typography;
 import React from 'react';
 
+import chromeSvg from '../../../assets/icons/brands/chrome.svg';
 import logo from '../../../assets/logo.svg';
 import languages from '../../../languages.json';
+import {defaultSettings, useSettingsStore} from '../../../store/settings';
 const Settings = () => {
   const { setAccentColor, accentColor, language, setLanguage } = useStore();
+  const {
+    setInterceptor,
+    EXTENSIONS_ENABLED,
+    PROXY_ENABLED,
+    PROXY_URL,
+    setProxyUrl,
+  } = useSettingsStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { i18n, t } = useTranslation();
 
@@ -36,7 +53,8 @@ const Settings = () => {
   const items = [
     { label: t('settings.theme'), key: '0' }, // 菜单项务必填写 key
     { label: t('shortcut.general.title'), key: '1' },
-    { label: `About Evaporator`, key: '2' },
+    { label: t('settings.interceptor'), key: '2' },
+    { label: `About Evaporator`, key: '3' },
   ];
   const colors = [
     '#10b981',
@@ -244,6 +262,144 @@ const Settings = () => {
             <div
               css={css`
                 display: ${selectKey === '2' ? 'block' : 'none'};
+              `}
+            >
+              <Space direction="vertical">
+                <p
+                  css={css`
+                    font-size: 16px;
+                  `}
+                >
+                  {t('settings.interceptor')}
+                </p>
+
+                <p>
+                  <Text type="secondary">{t('settings.extensions')}</Text>
+                </p>
+
+                <Button
+                  css={css`
+                    margin-bottom: 20px;
+                  `}
+                  onClick={() =>
+                    window.open(
+                      'https://chrome.google.com/webstore/detail/arex-chrome-extension/jmmficadjneeekafmnheppeoehlgjdjj?hl=zh-CN&authuser=0'
+                    )
+                  }
+                  icon={
+                    <img
+                      style={{
+                        width: '18px',
+                        display: 'inline-block',
+                        marginRight: '4px',
+                        transform: 'translateY(-2px)',
+                      }}
+                      src={chromeSvg}
+                      alt=""
+                    />
+                  }
+                >
+                  Chrome
+                </Button>
+
+                <div>
+                  <Switch
+                    checked={EXTENSIONS_ENABLED}
+                    onChange={(val) => {
+                      if (val){
+                        setInterceptor('EXTENSIONS_ENABLED');
+                      } else {
+                        setInterceptor('PROXY_ENABLED');
+                      }
+                    }}
+                  />
+                  <span
+                    css={css`
+                      margin-left: 8px;
+                    `}
+                  >
+                    {t('settings.extensions_use_toggle')}
+                  </span>
+                </div>
+              </Space>
+
+              <Space
+                direction="vertical"
+                css={css`
+                  padding-top: 60px;
+                  width: 100%;
+                `}
+              >
+                <p>
+                  <Text type="secondary">{t('settings.proxy')}</Text>
+                </p>
+
+                <div>
+                  <Switch
+                    checked={PROXY_ENABLED}
+                    onChange={(val) => {
+                      console.log(val,'val')
+                      if (val){
+                        setInterceptor('PROXY_ENABLED');
+                      } else {
+                        setInterceptor('EXTENSIONS_ENABLED');
+                      }
+
+                    }}
+                  />
+                  <span
+                    css={css`
+                      margin-left: 8px;
+                    `}
+                  >
+                    {t('settings.proxy_use_toggle')}
+                  </span>
+                </div>
+
+                <div
+                  css={css`
+                    position: relative;
+                    margin-top: 20px;
+                    display: flex;
+                  `}
+                >
+                  <span
+                    css={css`
+                      position: absolute;
+                      left: 16px;
+                      top: -8px;
+                      z-index: 10000;
+                      font-size: 10px;
+                      background-color: ${darkMode.value ? '#141414' : '#fff'};
+                      padding: 0 4px;
+                    `}
+                  >
+                    {t('settings.proxy_url')}
+                  </span>
+                  <Input
+                    value={PROXY_URL}
+                    onChange={(val) => {
+                      setProxyUrl(val.target.value);
+                    }}
+                  />
+                  <Button
+                    css={css`
+                      margin-left: 8px;
+                    `}
+                    onClick={()=>{setProxyUrl(defaultSettings.PROXY_URL)}}
+                  >
+                    <UndoOutlined />
+                  </Button>
+                </div>
+              </Space>
+
+              {/*"extensions": "扩展",*/}
+              {/*"extensions_use_toggle": "使用浏览器扩展发送请求（如果存在）",*/}
+            </div>
+
+            <div
+              css={css`
+                display: ${selectKey === '3' ? 'block' : 'none'};
               `}
             >
               <p
