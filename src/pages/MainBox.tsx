@@ -1,10 +1,12 @@
+import { UserOutlined } from '@ant-design/icons';
 import { css, useTheme } from '@emotion/react';
 import { useMount } from 'ahooks';
 import { Allotment } from 'allotment';
-import { Button, Select, Tabs } from 'antd';
+import { Button, Select, Space, Tabs } from 'antd';
 import { theme } from 'antd';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import AppFooter from '../components/app/Footer';
 import AppHeader from '../components/app/Header';
@@ -12,6 +14,7 @@ import DraggableTabs from '../components/DraggableTabs';
 import CollectionMenu from '../components/menus/CollectionMenu';
 import EnvironmentMenu from '../components/menus/EnvironmentMenu';
 import RequestPane from '../components/panes/RequestPane';
+import AddWorkspace from '../components/workspace/Add';
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
 import { treeFind } from '../helpers/collection/util';
 import useDarkMode from '../hooks/use-dark-mode';
@@ -22,6 +25,7 @@ const { TabPane } = Tabs;
 const { useToken } = theme;
 const MainBox = () => {
   const theme: any = useTheme();
+  const nav = useNavigate();
   const { token } = useToken();
   const {
     setUserInfo,
@@ -37,38 +41,13 @@ const MainBox = () => {
     activeEnvironment,
     collectionTreeData,
     setRequestType,
+    workspaces,
+    setWorkspaces,
   } = useStore();
 
   const darkMode = useDarkMode();
   const { i18n } = useTranslation();
   const params = useParams();
-  useMount(() => {
-    console.log(localStorage.getItem('token'));
-    request({
-      method: 'GET',
-      url: '/api/user',
-    }).then((res: any) => {
-      console.log(res);
-      setUserInfo(res);
-      setAccentColor(res.settings.accentColor);
-      darkMode.toggle(res.settings.colorMode === 'dark');
-      setLanguage(res.settings.language);
-      i18n.changeLanguage(res.settings.language);
-      // setSettings({
-      //   s:res.settings.PROXY_ENABLED
-      // })
-      setRequestType(res.settings.EXTENSIONS_ENABLED);
-    });
-
-    request({
-      method: 'POST',
-      url: '/api/listworkspace',
-    }).then((res: any) => {
-      setEnvironments(
-        res.find((r: any) => r._id === params.workspaceId).environments
-      );
-    });
-  });
 
   const handleTabsChange = (activePane: string) => {
     const pane = panes.find((i) => i.key === activePane);
@@ -150,12 +129,37 @@ const MainBox = () => {
                   border-bottom: 1px solid ${token.colorBorder};
                 `}
               >
-                <span></span>
-                <Button size={'small'}>Import</Button>
+                <div
+                  css={css`
+                    display: flex;
+                    align-items: center;
+                  `}
+                >
+                  <UserOutlined />
+                  <Select
+                    size={'small'}
+                    value={params.workspaceId}
+                    style={{ width: 120 }}
+                    bordered={false}
+                    options={workspaces.map((w: any) => ({
+                      value: w._id,
+                      label: w.name,
+                    }))}
+                    onSelect={(val) => {
+                      window.location.href = `/${val}/workspace/testname/request/6357a30a1708ec36bd90564d`
+                    }}
+                  ></Select>
+                </div>
+                <Space>
+                  <AddWorkspace></AddWorkspace>
+                  <Button size={'small'}>Import</Button>
+                </Space>
               </div>
 
               <Tabs
-                  css={css`flex: 1`}
+                css={css`
+                  flex: 1;
+                `}
                 tabPosition="left"
                 activeKey={activeMenu[0]}
                 onChange={(key) => setActiveMenu(key as MenuTypeEnum)}

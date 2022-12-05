@@ -42,6 +42,8 @@ type BaseState = {
 
   activeEnvironment: any;
   setActiveEnvironment: (activeEnvironment: any) => void;
+    workspaces: any[];
+    setWorkspaces: (workspaces: any) => void;
 };
 
 /**
@@ -105,6 +107,8 @@ export const useStore = create(
     setActiveEnvironment: (activeEnvironment) => set({ activeEnvironment }),
     requestType: '',
     setRequestType: (requestType) => set({ requestType }),
+      workspaces:[],
+      setWorkspaces:(workspaces)=>set({workspaces})
   }))
 );
 
