@@ -30,17 +30,27 @@
     border-radius: 2px;
 }
 
-/*::-webkit-scrollbar {*/
-/*    width: 6px;*/
-/*    height: 6px;*/
-/*    background-color: #88888844 !important;*/
-/*}*/
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: #88888844 !important;
+}
 
-/*::-webkit-scrollbar-thumb {*/
-/*    border-radius: 3px;*/
-/*    background: #88888844 !important;*/
-/*}*/
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: #88888844 !important;
+}
 
-/*::-webkit-scrollbar-corner {*/
-/*    background-color: transparent !important;*/
-/*}*/
+::-webkit-scrollbar-corner {
+    background-color: transparent !important;
+}
+
+
+.ant-tabs-content {
+    height: 100%;
+    .ant-tabs-tabpane {
+        height: inherit;
+        //padding: 0 16px;
+        overflow: auto;
+    }
+}
