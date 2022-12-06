@@ -71,7 +71,6 @@ const Settings = () => {
   const [selectKey, setSelectKey] = useState('0');
 
   function handleMenuClick(e: any) {
-    console.log(e);
     setSelectKey(e.key);
   }
 
@@ -79,7 +78,6 @@ const Settings = () => {
   const darkMode = useDarkMode();
 
   useEffect(() => {
-    // console.log(darkMode.value);
     setMode(darkMode.value);
 
     //  记录
@@ -185,12 +183,7 @@ const Settings = () => {
                 color={accentColor}
                 colors={colors}
                 onChangeComplete={(color: any) => {
-                  // console.log(color,'color')
-
                   setAccentColor(color.hex);
-
-                  // setAccentColor(color.hex);
-
                   request({
                     method: 'POST',
                     url: '/api/usersettings',
@@ -283,7 +276,7 @@ const Settings = () => {
                   `}
                   onClick={() =>
                     window.open(
-                      'https://chrome.google.com/webstore/detail/arex-chrome-extension/jmmficadjneeekafmnheppeoehlgjdjj?hl=zh-CN&authuser=0'
+                      'https://chrome.google.com/webstore/detail/evaporator-extension/gnphghnfglloobkomochoifenbdompjf?hl=zh-CN'
                     )
                   }
                   icon={
@@ -338,7 +331,6 @@ const Settings = () => {
                   <Switch
                     checked={PROXY_ENABLED}
                     onChange={(val) => {
-                      console.log(val,'val')
                       if (val){
                         setInterceptor('PROXY_ENABLED');
                       } else {

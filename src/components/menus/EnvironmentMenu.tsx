@@ -66,7 +66,6 @@ const EnvironmentMenu: FC<{ onSelect: any; value: any }> = ({
               environments: jsonData,
             },
           }).then((res) => {
-            // console.log(res);
             message.info(JSON.stringify(res))
           });
         }}

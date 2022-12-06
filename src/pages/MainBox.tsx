@@ -1,11 +1,8 @@
-import {EditOutlined, UserOutlined} from '@ant-design/icons';
-import { css, useTheme } from '@emotion/react';
-import { useMount } from 'ahooks';
+import { EditOutlined, UserOutlined } from '@ant-design/icons';
+import { css } from '@emotion/react';
 import { Allotment } from 'allotment';
 import { Button, Select, Space, Tabs } from 'antd';
 import { theme } from 'antd';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import AppFooter from '../components/app/Footer';
@@ -14,66 +11,41 @@ import DraggableTabs from '../components/DraggableTabs';
 import CollectionMenu from '../components/menus/CollectionMenu';
 import EnvironmentMenu from '../components/menus/EnvironmentMenu';
 import RequestPane from '../components/panes/RequestPane';
+import WorkspacePane from '../components/panes/WorkspacePane';
 import AddWorkspace from '../components/workspace/Add';
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
 import { treeFind } from '../helpers/collection/util';
-import useDarkMode from '../hooks/use-dark-mode';
-import request from '../services/request';
 import { useStore } from '../store';
-import WorkspacePane from "../components/panes/WorkspacePane";
 
-const { TabPane } = Tabs;
 const { useToken } = theme;
 const MainBox = () => {
-  const theme: any = useTheme();
-  const nav = useNavigate();
   const { token } = useToken();
+  const nav = useNavigate();
   const {
-    setUserInfo,
-    setAccentColor,
-    setLanguage,
     panes,
     setPanes,
     activeMenu,
     setActiveMenu,
     environments,
-    setEnvironments,
     setActiveEnvironment,
     activeEnvironment,
     collectionTreeData,
-    setRequestType,
     workspaces,
-    setWorkspaces,
   } = useStore();
-
-  const darkMode = useDarkMode();
-  const { i18n } = useTranslation();
   const params = useParams();
 
   const handleTabsChange = (activePane: string) => {
     const pane = panes.find((i) => i.key === activePane);
     setActiveMenu(pane?.menuType || MenuTypeEnum.Collection, activePane);
   };
-
   const addTab = () => {
-    // const newActiveKey = String(Math.random());
-    // setPanes(
-    //   {
-    //     key: newActiveKey,
-    //     title: 'New Request',
-    //     pageType: PageTypeEnum.Request,
-    //     menuType: MenuTypeEnum.Collection,
-    //     isNew: true,
-    //   },
-    //   'push'
-    // );
+    console.log();
   };
 
   const removeTab = (targetKey: string) => {
     const menuType = activeMenu[0];
     const filteredPanes = panes.filter((i) => i.key !== targetKey);
     setPanes(filteredPanes);
-
     if (filteredPanes.length) {
       const lastPane = filteredPanes[filteredPanes.length - 1];
       const lastKey = lastPane.key;
@@ -100,6 +72,9 @@ const MainBox = () => {
         isNew: false,
       },
       'push'
+    );
+    nav(
+      `/${params.workspaceId}/workspace/${params.workspaceName}/request/${node.key}`
     );
   };
   const handleEnvironmentMenuClick = (key: any, node: any) => {
@@ -140,20 +115,24 @@ const MainBox = () => {
                   <Select
                     size={'small'}
                     value={params.workspaceId}
-                    style={{ width: 120 }}
+                    style={{ width: 160 }}
                     bordered={false}
                     options={workspaces.map((w: any) => ({
                       value: w._id,
                       label: w.name,
                     }))}
                     onSelect={(value, option) => {
-                      // window.location.href = `/${val}/workspace/testname/request/6357a30a1708ec36bd90564d`
                       location.href = `/${value}/workspace/${option.label}/workspace/overview`;
                     }}
                   />
 
-                  <EditOutlined css={css`margin-left: 8px;cursor: pointer`} onClick={()=>{
-                    setPanes(
+                  <EditOutlined
+                    css={css`
+                      margin-left: 8px;
+                      cursor: pointer;
+                    `}
+                    onClick={() => {
+                      setPanes(
                         {
                           key: 'newActiveKey',
                           title: 'New Request',
@@ -162,12 +141,15 @@ const MainBox = () => {
                           isNew: true,
                         },
                         'push'
-                    );
-                  }} />
+                      );
+                    }}
+                  />
                 </div>
                 <Space>
                   <AddWorkspace></AddWorkspace>
-                  <Button size={'small'} disabled>Import</Button>
+                  <Button size={'small'} disabled>
+                    Import
+                  </Button>
                 </Space>
               </div>
 
@@ -236,15 +218,15 @@ const MainBox = () => {
                       label: title,
                       key: id,
                       children: pane.pageType === PageTypeEnum.Workspace && (
-                          <WorkspacePane pane={pane} />
+                        <WorkspacePane pane={pane} />
                       ),
                     };
                   } else {
                     return {
                       label: title,
                       key: id,
-                      children: <div>你好</div>
-                    }
+                      children: <div>你好</div>,
+                    };
                   }
                 })}
                 tabBarExtraContent={

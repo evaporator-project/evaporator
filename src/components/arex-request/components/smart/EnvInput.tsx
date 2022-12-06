@@ -57,7 +57,6 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
       ],
     ],
     onChange: (val: any) => {
-      console.log({ val });
       dispatch({
         type: 'request.endpoint',
         payload: val,

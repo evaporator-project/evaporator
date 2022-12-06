@@ -63,7 +63,6 @@ const CollectionMenu = ({ onSelect }: any) => {
     const generateList = (data: DataNode[]) => {
       for (let i = 0; i < data.length; i++) {
         const node = data[i];
-        // console.log(node)
         const { key, title: name } = node;
         dataListsss.push({ key, title: name });
         if (node.children) {
@@ -72,7 +71,6 @@ const CollectionMenu = ({ onSelect }: any) => {
       }
     };
     generateList(treeData);
-    console.log(dataListsss, 'dataListsss');
     return dataListsss;
   }, [treeData]);
 
@@ -128,10 +126,6 @@ const CollectionMenu = ({ onSelect }: any) => {
     return loop(treeData);
   }, [treeData, searchValue]);
 
-  useEffect(() => {
-    // console.log(ffftreeData);
-  }, [ffftreeData]);
-
   // 树拖拽
   const onDrop: TreeProps['onDrop'] = (info: any) => {
     const { fromNodePath, toParentPath, toIndex } = handleDrop(treeData, info);
@@ -145,7 +139,6 @@ const CollectionMenu = ({ onSelect }: any) => {
         toIndex,
       },
     }).then((res) => {
-      console.log(res, 'res');
       fetchTreeData();
     });
   };

@@ -67,17 +67,13 @@ const AddWorkspace: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   const onCreate = (values: any) => {
-    console.log('Received values of form: ', values);
-
     request({
       method: 'POST',
       url: '/api/createworkspace',
       data: { name: values.name },
     }).then((res:any) => {
-      // console.log(res._id);
         window.location.href = `/${res._id}/workspace/testname/request/6357a30a1708ec36bd90564d`
     });
-    // setOpen(false);
   };
 
   return (

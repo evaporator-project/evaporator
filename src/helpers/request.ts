@@ -1,14 +1,46 @@
 import axios from 'axios';
 
 import { runTestScript } from './sandbox';
-
+function handleResHeaders(headers: any) {
+  const newHeaders: any = [];
+  for (const k in headers) {
+    const v = headers[k];
+    newHeaders.push({
+      key: k,
+      value: v,
+    });
+  }
+  return newHeaders;
+}
 function realRequest(reqParams: any, requestType: any, url: string) {
   if (requestType === 'EXTENSIONS_ENABLED') {
     return AgentAxios(reqParams);
   } else if (requestType === 'BROWSER_ENABLED') {
-    return axios(reqParams);
+    // return axios(reqParams);
+
+    return axios(reqParams)
+      .then((axiosRes) => {
+        const { status, data, headers } = axiosRes;
+        return {
+          status: status,
+          data: data,
+          headers: handleResHeaders(headers),
+        };
+      })
+      .catch((axiosErr) => {
+        const { status, data, headers } = axiosErr?.response || {
+          status: 500,
+          data: {},
+          headers: {},
+        };
+        return {
+          status: status,
+          data: data,
+          headers: handleResHeaders(headers),
+        };
+      });
   } else if (requestType === 'PROXY_ENABLED') {
-    return axios.post(url, reqParams);
+    return axios.post(url, reqParams).then((r) => r.data);
   } else {
     return new Promise((resolve, reject) => {
       resolve({});
@@ -48,7 +80,11 @@ function AgentAxios<T>(params: any) {
 
 export default AgentAxios;
 
-export const AgentAxiosAndTest = ({ request }: any, requestType: string, url:string) =>
+export const AgentAxiosAndTest = (
+  { request }: any,
+  requestType: string,
+  url: string
+) =>
   realRequest(
     {
       method: request.method,
@@ -74,7 +110,6 @@ export const AgentAxiosAndTest = ({ request }: any, requestType: string, url:str
     requestType,
     url
   ).then((res: any) => {
-    console.log(res);
     return runTestScript(request.testScript, {
       body: res.data,
       headers: res.headers,

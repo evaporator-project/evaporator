@@ -26,12 +26,6 @@ const Welcome = () => {
     });
   });
 
-  useEffect(() => {
-    console.log(
-      `${baseInfo.thAppUri}/oauth/authorize?response_type=code&state=STATE&scope=api&client_id=${baseInfo.thAppClientId}&redirect_uri=${baseInfo.thAppRedirectUri}`
-    );
-  }, [baseInfo]);
-
   return (
     <div className={'welcome'}>
       <div className={'left-box'}>

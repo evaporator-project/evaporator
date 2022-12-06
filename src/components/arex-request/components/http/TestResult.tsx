@@ -17,7 +17,6 @@ const TestError = styled.div`
 `;
 const TestResult = ({ testResult }: any) => {
   const { store } = useContext(HttpContext);
-  console.log(store, 'store');
   return (
     <div>
       {testResult.children?.map((e: any, i: any) => (

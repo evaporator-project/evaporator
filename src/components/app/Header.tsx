@@ -95,12 +95,10 @@ const AppHeader = () => {
   // const darkMode = useDarkMode();
 
   useMount(() => {
-    console.log(localStorage.getItem('token'));
     request({
       method: 'GET',
       url: '/api/user',
     }).then((res: any) => {
-      console.log(res);
       setUserInfo(res);
       setAccentColor(res.settings.accentColor);
       darkMode.toggle(res.settings.colorMode === 'dark');
@@ -126,12 +124,8 @@ const AppHeader = () => {
       }
     });
   });
-
-  const handleSetting = () => {
-    console.log(123);
-  };
   const handleLogout = () => {
-    localStorage.clear()
+    localStorage.clear();
     window.location.href = '/welcome';
   };
   return (

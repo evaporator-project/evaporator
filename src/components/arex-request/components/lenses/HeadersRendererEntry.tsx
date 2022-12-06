@@ -17,10 +17,6 @@ const LensesHeadersRendererEntry: FC<{ header: HoppRESTHeader }> = ({
   header,
 }) => {
   const token = useToken();
-  const theme = useTheme();
-  useEffect(() => {
-    console.log(token.token, 'token.token');
-  }, [token.token]);
   return (
     <div>
       <Row>

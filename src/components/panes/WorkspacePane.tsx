@@ -6,8 +6,6 @@ import request from '../../services/request';
 
 const WorkspacePane = ({ pane }: any) => {
   const onFinish = (values: any) => {
-    console.log('Success:', values);
-
     request({
       method: 'POST',
       url: '/api/updateworkspace',

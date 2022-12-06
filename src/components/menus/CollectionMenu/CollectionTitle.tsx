@@ -1,6 +1,5 @@
 import { MoreOutlined } from '@ant-design/icons';
-
-import { css,jsx } from '@emotion/react';
+import { css, jsx } from '@emotion/react';
 import { Dropdown, Input, Popconfirm, Space } from 'antd';
 import { useMemo, useState } from 'react';
 import React from 'react';
@@ -83,7 +82,6 @@ const CollectionTitle = ({
       onClick(e: any) {
         switch (e.key) {
           case '3':
-            console.log(params);
             request({
               method: 'POST',
               url: '/api/createfile',
@@ -168,6 +166,7 @@ const CollectionTitle = ({
         display: flex;
         justify-content: space-between;
         width: 100%;
+        //cursor: pointer;
       `}
     >
       <div

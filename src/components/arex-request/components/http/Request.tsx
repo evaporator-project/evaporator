@@ -34,7 +34,6 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }: any) => {
   const { t } = useTranslation();
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     message.info('Click on menu item.');
-    console.log('click', e);
   };
 
   const items: MenuProps['items'] = [
@@ -57,7 +56,6 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }: any) => {
 
 
   const handleRequest = ({ type }: any) => {
-    console.log({ type });
     const urlPretreatment = (url: string) => {
       const editorValueMatch = url.match(/\{\{(.+?)\}\}/g) || [''];
       let replaceVar = editorValueMatch[0];
@@ -88,7 +86,6 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }: any) => {
           endpoint: urlPretreatment(store.request.endpoint),
         },
       }).then((agentAxiosAndTest: any) => {
-        console.log(agentAxiosAndTest, 'agentAxiosAndTest');
         dispatch({
           type: 'response.type',
           payload: 'success',

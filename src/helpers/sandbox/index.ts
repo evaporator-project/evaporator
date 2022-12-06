@@ -27,11 +27,6 @@ export function runTestScript(
   testResponse: TestResponse
 ): Promise<SandboxTestResult> {
   return new Promise((resolve, reject) => {
-    console.log(
-      testScript.replace(/arex\./g, 'pw.'),
-      'testScript',
-      testResponse
-    );
     return _runTestScript(
       testScript.replace(/arex\./g, 'pw.'),
       {

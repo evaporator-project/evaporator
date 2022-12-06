@@ -30,8 +30,6 @@ const RequestPane: FC<any> = ({ pane }) => {
     }
   }, [PROXY_ENABLED, EXTENSIONS_ENABLED]);
   const darkMode = useDarkMode();
-  console.log(token, 'token');
-  // console.log(treeFind(collectionTreeData, (node) => node.key === pane.key));
   const { relationshipRequestId } = treeFind(
     collectionTreeData,
     (node: any) => node.key === pane.key
@@ -61,7 +59,6 @@ const RequestPane: FC<any> = ({ pane }) => {
               },
             });
           } else if (e.type === 'update') {
-            console.log(e);
             return request({
               method: 'POST',
               url: '/api/updaterequest',

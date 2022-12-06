@@ -1,4 +1,8 @@
-import { SafetyOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  SafetyOutlined,
+} from '@ant-design/icons';
 import { css } from '@emotion/react';
 import {
   Button,
@@ -34,20 +38,16 @@ const AppFooter = () => {
     }
   }, [PROXY_ENABLED, EXTENSIONS_ENABLED]);
 
-  const interceptors = useMemo(
-    () => [
-      { value: 'BROWSER_ENABLED' as const, label: t('state.none') },
-      { value: 'PROXY_ENABLED' as const, label: t('settings.proxy') },
-      {
-        value: 'EXTENSIONS_ENABLED' as const,
-        label: t('settings.extensions'),
-      },
-    ],
-    []
-  );
+  const interceptors = [
+    { value: 'BROWSER_ENABLED' as const, label: t('state.none') },
+    { value: 'PROXY_ENABLED' as const, label: t('settings.proxy') },
+    {
+      value: 'EXTENSIONS_ENABLED' as const,
+      label: t('settings.extensions'),
+    },
+  ];
 
   const onChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
     setInterceptor(e.target.value);
   };
   const hide = () => {
@@ -66,94 +66,120 @@ const AppFooter = () => {
       className={'test123'}
     >
       <Divider style={{ margin: '0' }} />
-      <Popover
-        placement={'topRight'}
-        // @ts-ignore
-        getPopupContainer={() => document.querySelector('.test123')}
-        content={
-          <div
-            css={css`
-              padding: 0 16px;
-            `}
-          >
-            <div
-              css={css`
-                flex-direction: column;
-                display: flex;
-                margin-bottom: 16px;
-              `}
-            >
-              <Text>{t('settings.interceptor')}</Text>
-              <Text type="secondary">
-                {t('settings.interceptor_description')}
-              </Text>
-            </div>
-
-            <Radio.Group
-              onChange={onChange}
-              value={interceptorSelection}
-              css={css`
-                margin-bottom: 16px;
-              `}
-            >
-              <Space direction="vertical">
-                {interceptors.map((i) => (
-                  <Radio key={i.value} value={i.value}>
-                    {i.label}
-                  </Radio>
-                ))}
-              </Space>
-            </Radio.Group>
-            {interceptorSelection === 'EXTENSIONS_ENABLED' &&
-            // @ts-ignore
-            !window.__AREX_EXTENSION_INSTALLED__ ? (
-              <div>
-                <Button
-                  onClick={() =>
-                    window.open(
-                      'https://chrome.google.com/webstore/detail/arex-chrome-extension/jmmficadjneeekafmnheppeoehlgjdjj?hl=zh-CN&authuser=0'
-                    )
-                  }
-                  icon={
-                    <img
-                      style={{
-                        width: '18px',
-                        display: 'inline-block',
-                        marginRight: '4px',
-                        transform: 'translateY(-2px)',
-                      }}
-                      src={chromeSvg}
-                      alt=""
-                    />
-                  }
-                >
-                  Chrome
-                </Button>
-              </div>
-            ) : null}
-          </div>
-        }
-        title={false}
-        trigger="click"
-        open={open}
-        onOpenChange={handleOpenChange}
+      <div
+        css={css`
+          display: flex;
+          justify-content: space-between;
+          padding: 0 10px;
+        `}
       >
-        <a
-          css={css`
-            cursor: pointer;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            &:hover {
-              color: white;
+        <div>{/*left*/}</div>
+
+        {/*right*/}
+        <div>
+          <Popover
+            placement={'topRight'}
+            // @ts-ignore
+            getPopupContainer={() => document.querySelector('.test123')}
+            content={
+              <div
+                css={css`
+                  padding: 0 16px;
+                `}
+              >
+                <div
+                  css={css`
+                    flex-direction: column;
+                    display: flex;
+                    margin-bottom: 16px;
+                  `}
+                >
+                  <Text>{t('settings.interceptor')}</Text>
+                  <Text type="secondary">
+                    {t('settings.interceptor_description')}
+                  </Text>
+                </div>
+
+                <Radio.Group
+                  onChange={onChange}
+                  value={interceptorSelection}
+                  css={css`
+                    margin-bottom: 16px;
+                  `}
+                >
+                  <Space direction="vertical">
+                    {interceptors.map((i) => (
+                      <Radio key={i.value} value={i.value}>
+                        {i.label}
+                      </Radio>
+                    ))}
+                  </Space>
+                </Radio.Group>
+                {interceptorSelection === 'EXTENSIONS_ENABLED' &&
+                // @ts-ignore
+                !window.__AREX_EXTENSION_INSTALLED__ ? (
+                  <div>
+                    <Button
+                      onClick={() =>
+                        window.open(
+                          'https://chrome.google.com/webstore/detail/evaporator-extension/gnphghnfglloobkomochoifenbdompjf?hl=zh-CN'
+                        )
+                      }
+                      icon={
+                        <img
+                          style={{
+                            width: '18px',
+                            display: 'inline-block',
+                            marginRight: '4px',
+                            transform: 'translateY(-2px)',
+                          }}
+                          src={chromeSvg}
+                          alt=""
+                        />
+                      }
+                    >
+                      Chrome
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
             }
-          `}
-        >
-          <SafetyOutlined />
-        </a>
-      </Popover>
+            title={false}
+            trigger="click"
+            open={open}
+            onOpenChange={handleOpenChange}
+          >
+            <a
+              css={css`
+                cursor: pointer;
+                //width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                &:hover {
+                  //color: white;
+                }
+              `}
+            >
+              {/*<SafetyOutlined />*/}
+              {/*<ExclamationCircleOutlined css={css`color: rgb(188,89,77)`} />*/}
+              <CheckCircleOutlined
+                css={css`
+                  color: rgb(58, 130, 70);
+                  margin-right: 8px;
+                `}
+              />
+              <Text>
+                {
+                  interceptors.find((i) => i.value === interceptorSelection)
+                    ?.label
+                }
+              </Text>
+            </a>
+          </Popover>
+        </div>
+      </div>
     </div>
   );
 };

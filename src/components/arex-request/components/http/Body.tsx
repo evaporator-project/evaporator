@@ -12,7 +12,6 @@ const HttpBody = () => {
   const [value1, setValue1] = useState('application/json');
   const plainOptions = ['application/json'];
   const onChange1 = ({ target: { value } }: RadioChangeEvent) => {
-    console.log('radio1 checked', value);
     setValue1(value);
   };
   const rawBodyRef = useRef<any>(null);
