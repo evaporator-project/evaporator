@@ -5,6 +5,10 @@ import MainBox from '../pages/MainBox';
 import Welcome from '../pages/welcome';
 const router = [
   {
+    path: '/',
+    element: <MainBox />,
+  },
+  {
     path: '/:workspaceId/workspace/:workspaceName/:paneType/:paneId',
     element: <MainBox />,
   },

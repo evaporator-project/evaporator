@@ -1,9 +1,11 @@
+import './welcome.less';
+
 import { useMount } from 'ahooks';
 import { Button } from 'antd';
 import React, { useEffect, useState } from 'react';
 
-// import logoSvg from '../assets/img/logo.svg';
-// import WelcomeSvg from '../assets/img/sss.svg';
+import logoSvg from '../assets/logo.svg';
+import WelcomeSvg from '../assets/img/sss.svg';
 import request from '../services/request';
 
 const Welcome = () => {
@@ -26,25 +28,26 @@ const Welcome = () => {
 
   useEffect(() => {
     console.log(
-      `${baseInfo.thAppUri}/oauth/authorize?response_type=code&state=STATE&scope=api&client_id=${baseInfo.thAppClientId}&redirect_uri=${baseInfo.thAppRedirectUri}`,
+      `${baseInfo.thAppUri}/oauth/authorize?response_type=code&state=STATE&scope=api&client_id=${baseInfo.thAppClientId}&redirect_uri=${baseInfo.thAppRedirectUri}`
     );
   }, [baseInfo]);
 
   return (
     <div className={'welcome'}>
       <div className={'left-box'}>
-        <div className='login-form'>
-          <div className='logo'>
-            {/*<img src={logoSvg} alt='' />*/}
-            <span>CANYON</span>
+        <div className="login-form">
+          <div className="logo">
+            <img src={logoSvg} alt='' />
+            <span>EVAPORATOR</span>
           </div>
           <h1 className={'title'}>
             Hello，
             <br />
-            Welcome to Canyon。
+            Welcome to EVAPORATOR。
           </h1>
           <p className={'desc'}>
-            You will be redirected to your source control management system to authenticate.
+            You will be redirected to your source control management system to
+            authenticate.
           </p>
           <Button
             type={'primary'}
@@ -57,8 +60,8 @@ const Welcome = () => {
         </div>
       </div>
       <div className={'right-box'}>
-        {/*<div className={'img-wrap'} style={{ backgroundImage: `url(${WelcomeSvg})` }}>*/}
-        {/*</div>*/}
+        <div className={'img-wrap'} style={{ backgroundImage: `url(${WelcomeSvg})` }}>
+        </div>
       </div>
     </div>
   );

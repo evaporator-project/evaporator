@@ -1,4 +1,4 @@
-import { UserOutlined } from '@ant-design/icons';
+import {EditOutlined, UserOutlined} from '@ant-design/icons';
 import { css, useTheme } from '@emotion/react';
 import { useMount } from 'ahooks';
 import { Allotment } from 'allotment';
@@ -20,6 +20,7 @@ import { treeFind } from '../helpers/collection/util';
 import useDarkMode from '../hooks/use-dark-mode';
 import request from '../services/request';
 import { useStore } from '../store';
+import WorkspacePane from "../components/panes/WorkspacePane";
 
 const { TabPane } = Tabs;
 const { useToken } = theme;
@@ -55,17 +56,17 @@ const MainBox = () => {
   };
 
   const addTab = () => {
-    const newActiveKey = String(Math.random());
-    setPanes(
-      {
-        key: newActiveKey,
-        title: 'New Request',
-        pageType: PageTypeEnum.Request,
-        menuType: MenuTypeEnum.Collection,
-        isNew: true,
-      },
-      'push'
-    );
+    // const newActiveKey = String(Math.random());
+    // setPanes(
+    //   {
+    //     key: newActiveKey,
+    //     title: 'New Request',
+    //     pageType: PageTypeEnum.Request,
+    //     menuType: MenuTypeEnum.Collection,
+    //     isNew: true,
+    //   },
+    //   'push'
+    // );
   };
 
   const removeTab = (targetKey: string) => {
@@ -145,14 +146,28 @@ const MainBox = () => {
                       value: w._id,
                       label: w.name,
                     }))}
-                    onSelect={(val) => {
-                      window.location.href = `/${val}/workspace/testname/request/6357a30a1708ec36bd90564d`
+                    onSelect={(value, option) => {
+                      // window.location.href = `/${val}/workspace/testname/request/6357a30a1708ec36bd90564d`
+                      location.href = `/${value}/workspace/${option.label}/workspace/overview`;
                     }}
-                  ></Select>
+                  />
+
+                  <EditOutlined css={css`margin-left: 8px;cursor: pointer`} onClick={()=>{
+                    setPanes(
+                        {
+                          key: 'newActiveKey',
+                          title: 'New Request',
+                          pageType: PageTypeEnum.Workspace,
+                          menuType: MenuTypeEnum.Replay,
+                          isNew: true,
+                        },
+                        'push'
+                    );
+                  }} />
                 </div>
                 <Space>
                   <AddWorkspace></AddWorkspace>
-                  <Button size={'small'}>Import</Button>
+                  <Button size={'small'} disabled>Import</Button>
                 </Space>
               </div>
 
@@ -192,6 +207,7 @@ const MainBox = () => {
             <div>
               <DraggableTabs
                 onChange={handleTabsChange}
+                onEdit={handleTabsEdit}
                 size="small"
                 type="editable-card"
                 tabBarGutter={-1}
@@ -214,12 +230,21 @@ const MainBox = () => {
                         <RequestPane pane={pane} />
                       ),
                     };
+                  } else if (pane.pageType === PageTypeEnum.Workspace) {
+                    return {
+                      forceRender: true,
+                      label: title,
+                      key: id,
+                      children: pane.pageType === PageTypeEnum.Workspace && (
+                          <WorkspacePane pane={pane} />
+                      ),
+                    };
                   } else {
                     return {
                       label: title,
                       key: id,
-                      children: 'hi',
-                    };
+                      children: <div>你好</div>
+                    }
                   }
                 })}
                 tabBarExtraContent={

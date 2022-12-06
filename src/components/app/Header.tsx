@@ -71,7 +71,7 @@ const AppHeader = () => {
   const { i18n } = useTranslation();
   const params = useParams();
   const darkMode = useDarkMode();
-  const { userInfo,setWorkspaces } = useStore();
+  const { userInfo, setWorkspaces } = useStore();
   const { t } = useTranslation();
 
   // const [workspaces, setWorkspaces] = useState([]);
@@ -116,11 +116,14 @@ const AppHeader = () => {
       method: 'POST',
       url: '/api/listworkspace',
     }).then((res: any) => {
-      setEnvironments(
-        res.find((r: any) => r._id === params.workspaceId).environments
-      );
-
-      setWorkspaces(res);
+      if (params.workspaceId) {
+        setEnvironments(
+          res.find((r: any) => r._id === params.workspaceId).environments
+        );
+        setWorkspaces(res);
+      } else {
+        location.href = `/${res[0]._id}/workspace/${res[0].name}/workspace/overview`;
+      }
     });
   });
 
@@ -128,7 +131,8 @@ const AppHeader = () => {
     console.log(123);
   };
   const handleLogout = () => {
-    window.location.href = '/login';
+    localStorage.clear()
+    window.location.href = '/welcome';
   };
   return (
     <HeaderWrapper>

@@ -32,7 +32,7 @@ const Login = (props: any) => {
       data: { code },
     }).then((res: any) => {
       localStorage.setItem('token', res.token);
-      nav('/a/workspace/c/d/e');
+      nav('/');
     });
   }, []);
   return <div>login</div>;
