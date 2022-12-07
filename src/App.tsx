@@ -22,7 +22,7 @@ function App() {
   // 明亮、黑暗主题
   const darkMode = useDarkMode();
   const { accentColor } = useStore();
-
+  const token = useToken();
   return (
     <div>
       {/*antd全剧配置*/}
@@ -30,6 +30,7 @@ function App() {
         theme={{
           token: {
             colorPrimary: accentColor,
+            colorBorder: token.token.colorSplit,
           },
           // 黑暗主题
           algorithm: darkMode.value ? [darkAlgorithm] : [],

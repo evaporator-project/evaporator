@@ -1,11 +1,11 @@
 import {
   DownOutlined,
+  FilterOutlined,
   MenuOutlined,
   PlusOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-
-import { css,jsx } from '@emotion/react';
+import { css, jsx } from '@emotion/react';
 import { useRequest } from 'ahooks';
 import { Input, Tree } from 'antd';
 import type { DataNode, TreeProps } from 'antd/es/tree';
@@ -113,7 +113,14 @@ const CollectionMenu = ({ onSelect }: any) => {
     const loop = (data: DataNode[]): DataNode[] =>
       data.map((item) => {
         const strTitle = item.title as string;
-        const title = <CollectionTitle val={item} searchValue={searchValue} updateDirectoryTreeData={fetchTreeData} treeData={treeData} />;
+        const title = (
+          <CollectionTitle
+            val={item}
+            searchValue={searchValue}
+            updateDirectoryTreeData={fetchTreeData}
+            treeData={treeData}
+          />
+        );
         if (item.children) {
           return { title, key: item.key, children: loop(item.children) };
         }
@@ -182,12 +189,12 @@ const CollectionMenu = ({ onSelect }: any) => {
           className={'collection-header-search'}
           size="small"
           placeholder=""
-          prefix={<SearchOutlined />}
+          prefix={<FilterOutlined />}
           onChange={onChange}
         />
       </div>
       <Tree
-          blockNode={true}
+        blockNode={true}
         selectedKeys={[]}
         expandedKeys={expandedKeys}
         autoExpandParent={autoExpandParent}

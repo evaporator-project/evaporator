@@ -44,11 +44,7 @@ const DraggableTabNode = ({
   drop(drag(ref));
 
   return (
-    <div
-      ref={ref}
-      style={{ marginRight: 24 }}
-      className={isOver ? dropClassName : ''}
-    >
+    <div ref={ref} className={isOver ? dropClassName : ''}>
       {children}
     </div>
   );

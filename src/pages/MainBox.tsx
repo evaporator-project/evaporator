@@ -101,8 +101,8 @@ const MainBox = () => {
                 css={css`
                   display: flex;
                   justify-content: space-between;
-                  padding: 10px;
-                  border-bottom: 1px solid ${token.colorBorder};
+                  padding: 7.5px;
+                  border-bottom: 1px solid ${token.colorSplit};
                 `}
               >
                 <div
@@ -232,6 +232,7 @@ const MainBox = () => {
                 tabBarExtraContent={
                   <Select
                     value={activeEnvironment}
+                    bordered={false}
                     style={{
                       width: '180px',
                       padding: '4px',
