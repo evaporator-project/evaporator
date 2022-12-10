@@ -1,13 +1,10 @@
 import { javascript } from '@codemirror/lang-javascript';
-
-import { css,jsx } from '@emotion/react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Button } from 'antd';
-import { useContext, useRef, useState } from 'react';
-import React from 'react';
+import { Button, Typography } from 'antd';
+import { useContext, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import useDarkMode from '../../../../hooks/use-dark-mode';
+const { Text } = Typography;
 import { useCodeMirror } from '../../helpers/editor/codemirror';
 import { HttpContext } from '../../index';
 
@@ -36,25 +33,6 @@ export const ResponseTestWrapper = styled.div`
     text-align: left;
     border-left: 1px solid #eee;
     padding-left: 20px;
-    & > span:first-of-type {
-    }
-    & > div:nth-of-type(2) {
-      margin-top: 15px;
-      margin-bottom: 10px;
-    }
-    & > span:nth-of-type(n + 2) {
-      display: inline-block;
-      color: #10b981;
-      cursor: pointer;
-      font-weight: bold;
-      margin-left: 18px;
-      margin-top: 10px;
-      &:hover {
-        color: #059669;
-        transform: translateX(6px);
-        transition: all 0.2s ease 0s;
-      }
-    }
   }
 `;
 
@@ -121,19 +99,17 @@ arex.test("Status code is 5xx", ()=> {
     value: store.request.testScript,
     height: '100%',
     extensions: [javascript()],
-    theme: store.darkMode ? 'dark' : 'light',
-    onChange: (val: string) => {
-      dispatch({
-        type: 'request.testScript',
-        payload: val,
+    theme: store.theme,
+    onChange: (value: string) => {
+      dispatch((state) => {
+        state.request.testScript = value;
       });
     },
   });
 
   const addTest = (text: string) => {
-    dispatch({
-      type: 'request.testScript',
-      payload: store.request.testScript + text,
+    dispatch((state) => {
+      state.request.testScript = state.request.testScript += text;
     });
   };
 
@@ -151,32 +127,55 @@ arex.test("Status code is 5xx", ()=> {
       </ResponseTestHeader>
       <ResponseTestWrapper>
         <div ref={codeCm} style={{ width: '65%' }} />
-        <div>
-          <div>
+        <div
+          css={css`
+            display: flex;
+            flex-direction: column;
+          `}
+        >
+          <Text
+            type={'secondary'}
+            css={css`
+              margin-bottom: 4px;
+            `}
+          >
             Test scripts are written in JavaScript, and are run after the
             response is received.
-          </div>
-          <Button
-            type="text"
-            onClick={() =>
-              window.open('https://docs.hoppscotch.io/features/tests')
-            }
-          >
-            Read documentation
-          </Button>
-          <div>Snippets</div>
-          {/* <div>测试脚本使用JavaScript编写,并再受到响应后执行</div>
-          <span>阅读文档</span>
-          <div>代码片段</div> */}
-          {codeSnippet.map((e, i) => (
-            <ThemeColorPrimaryButton
+          </Text>
+          <div>
+            <a
               type="text"
-              key={i}
-              onClick={() => addTest(e.text)}
+              onClick={() =>
+                window.open('https://docs.hoppscotch.io/features/tests')
+              }
             >
-              {e.name}
-            </ThemeColorPrimaryButton>
-          ))}
+              Read documentation
+            </a>
+          </div>
+          <Text
+            type={'secondary'}
+            css={css`
+              padding: 16px 0;
+            `}
+          >
+            Snippets
+          </Text>
+          <div
+            css={css`
+              overflow: auto;
+              flex: 1;
+            `}
+          >
+            {codeSnippet.map((e, i) => (
+              <ThemeColorPrimaryButton
+                type="text"
+                key={i}
+                onClick={() => addTest(e.text)}
+              >
+                {e.name}
+              </ThemeColorPrimaryButton>
+            ))}
+          </div>
         </div>
       </ResponseTestWrapper>
     </div>

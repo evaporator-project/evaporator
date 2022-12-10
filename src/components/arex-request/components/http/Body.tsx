@@ -1,8 +1,7 @@
 
-import { css,jsx } from '@emotion/react';
+import { css } from '@emotion/react';
 import { Radio, RadioChangeEvent } from 'antd';
 import { useRef, useState } from 'react';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import RawBody from './RawBody';
@@ -28,7 +27,7 @@ const HttpBody = () => {
         css={css`
           display: flex;
           justify-content: space-between;
-          margin-bottom: 4px;
+          margin: 6px 0;
         `}
       >
         <Radio.Group

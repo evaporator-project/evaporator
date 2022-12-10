@@ -1,34 +1,22 @@
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
-
-import { css,jsx, useTheme } from '@emotion/react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Breadcrumb, Button, Dropdown, Menu, MenuProps, message, Select } from 'antd';
-import { useContext } from 'react';
-import React from 'react';
+import { Button, Dropdown, MenuProps, message, Select } from 'antd';
+import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { treeFindPath } from '../../helpers/collection/util';
-import { HttpContext } from '../../index';
+import { HttpContext, HttpProps } from '../../index';
 import SmartEnvInput from '../smart/EnvInput';
 const HeaderWrapper = styled.div`
   display: flex;
-
-  .ant-select > .ant-select-selector {
-    width: 120px;
-    left: 1px;
-    border-radius: 2px 0 0 2px;
-    .ant-select-selection-item {
-      font-weight: 500;
-    }
-  }
-  .ant-input {
-    border-radius: 0 2px 2px 0;
-  }
 `;
 
 const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
-
-const HttpRequest = ({ currentRequestId, onEdit, onSend }: any) => {
+interface HttpRequestProps {
+  onSend: HttpProps['onSend'];
+  onSave: HttpProps['onSave'];
+}
+const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave,breadcrumb }) => {
   const { store, dispatch } = useContext(HttpContext);
 
   const { t } = useTranslation();
@@ -54,7 +42,6 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }: any) => {
     },
   ];
 
-
   const handleRequest = ({ type }: any) => {
     const urlPretreatment = (url: string) => {
       const editorValueMatch = url.match(/\{\{(.+?)\}\}/g) || [''];
@@ -70,62 +57,29 @@ const HttpRequest = ({ currentRequestId, onEdit, onSend }: any) => {
 
       return url.replace(editorValueMatch[0], replaceVar);
     };
-    dispatch({
-      type: 'response.type',
-      payload: 'loading',
+    dispatch((state) => {
+      state.response = {
+        type: 'loading',
+      };
     });
-
-    const start = new Date().getTime();
-
-    if (type === 'compare') {
-      console.log(1);
-    } else {
-      onSend({
-        request: {
-          ...store.request,
-          endpoint: urlPretreatment(store.request.endpoint),
-        },
-      }).then((agentAxiosAndTest: any) => {
-        dispatch({
-          type: 'response.type',
-          payload: 'success',
-        });
-
-        dispatch({
-          type: 'response.body',
-          payload: JSON.stringify(agentAxiosAndTest.response.data),
-        });
-
-        dispatch({
-          type: 'testResult',
-          payload: agentAxiosAndTest.testResult,
-        });
-        dispatch({
-          type: 'response.headers',
-          payload: agentAxiosAndTest.response.headers,
-        });
-
-        dispatch({
-          type: 'response.meta',
-          payload: {
-            responseSize: JSON.stringify(agentAxiosAndTest.response.data)
-              .length,
-            responseDuration: new Date().getTime() - start,
-          },
-        });
-
-        dispatch({
-          type: 'response.statusCode',
-          payload: agentAxiosAndTest.response.status,
-        });
+    onSend({
+      ...store.request,
+      endpoint: urlPretreatment(store.request.endpoint),
+    }).then((responseAndTestResult) => {
+      dispatch((state) => {
+        console.log(store.response,'sss')
+        if (responseAndTestResult.response.type === 'success') {
+          state.response = responseAndTestResult.response;
+          state.testResult = responseAndTestResult.testResult;
+        }
       });
-    }
+    });
   };
   return (
     <div
       css={css`
         padding: 16px;
-padding-top: 0;
+        padding-top: 0;
       `}
     >
       <div
@@ -135,22 +89,11 @@ padding-top: 0;
           margin-bottom: 8px;
         `}
       >
-        <Breadcrumb style={{ paddingBottom: '14px' }}>
-          {treeFindPath(store.collectionTreeData, (node: any) => {
-            return node.relationshipRequestId === currentRequestId;
-          }).map((i: any, index: number) => (
-            <Breadcrumb.Item key={index}>{i.title}</Breadcrumb.Item>
-          ))}
-        </Breadcrumb>
+        {breadcrumb}
         <div>
           <Button
             onClick={() => {
-              onEdit({
-                type: 'update',
-                payload: {
-                  ...store.request,
-                },
-              });
+              onSave(store.request);
             }}
           >
             {t('action.save')}
@@ -162,16 +105,18 @@ padding-top: 0;
           value={store.request.method}
           options={methods.map((i) => ({ value: i, lable: i }))}
           onChange={(value) => {
-            dispatch({
-              type: 'request.method',
-              payload: value,
+            dispatch((state) => {
+              state.request.method = value;
             });
           }}
         />
         <SmartEnvInput
           value={store.request.endpoint}
-          onChange={() => {
+          onChange={(value) => {
             // console.log('http://127.0.0.1:5173/arex-request/');
+            dispatch((state) => {
+              state.request.endpoint = value;
+            });
           }}
         ></SmartEnvInput>
         <div
@@ -180,11 +125,11 @@ padding-top: 0;
           `}
         >
           <Dropdown.Button
-              onClick={()=>handleRequest({type:null})}
+            onClick={() => handleRequest({ type: null })}
             type="primary"
             menu={{
-              onClick:handleMenuClick,
-              items:items
+              onClick: handleMenuClick,
+              items: items,
             }}
             icon={<DownOutlined />}
           >

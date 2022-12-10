@@ -22,9 +22,8 @@ const HttpHeaders = () => {
   }, []);
 
   useEffect(() => {
-    dispatch({
-      type: 'request.headers',
-      payload: requestHeaders,
+    dispatch((state) => {
+      state.request.headers = requestHeaders;
     });
   }, [requestHeaders]);
 

@@ -56,7 +56,9 @@ export interface HoppRESTRequest {
   body: HoppRESTReqBody;
 }
 
-export function makeRESTRequest(x: Omit<HoppRESTRequest, 'v'>): HoppRESTRequest {
+export function makeRESTRequest(
+  x: Omit<HoppRESTRequest, 'v'>
+): HoppRESTRequest {
   return {
     ...x,
     v: RESTReqSchemaVersion,
@@ -92,11 +94,19 @@ export function translateToNewRequest(x: any): HoppRESTRequest {
 
     // Remove old keys from params
     const params: HoppRESTParam[] = (x?.params ?? []).map(
-      ({ key, value, active }: { key: string; value: string; active: boolean }) => ({
+      ({
         key,
         value,
         active,
-      }),
+      }: {
+        key: string;
+        value: string;
+        active: boolean;
+      }) => ({
+        key,
+        value,
+        active,
+      })
     );
 
     const name = x?.name ?? 'Untitled request';

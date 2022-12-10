@@ -1,4 +1,6 @@
-export const defaultState = {
+import { State } from '.';
+
+export const defaultState: State = {
   request: {
     preRequestScript: '',
     v: '',
@@ -22,27 +24,10 @@ export const defaultState = {
     testScript: '',
     endpoint: '',
     method: '',
-    compareEndpoint: '',
-    compareMethod: '',
     params: [],
   },
-  response: {
-    type: 'null',
-    headers: [],
-    statusCode: 200,
-    body: '',
-    meta: {
-      responseSize: 0,
-      responseDuration: 1,
-    },
-    error: {
-      name: '',
-      message: '',
-      stack: '',
-    },
-  },
-  testResult: {},
-  environment: {},
-  collectionTreeData: [],
-  darkMode: false,
+  response: null,
+  testResult: null,
+  environment: { name: '', variables: [] },
+  theme: 'light',
 };

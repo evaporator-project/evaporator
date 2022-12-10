@@ -1,107 +1,97 @@
-
-import { css,jsx } from '@emotion/react';
-import { useMount } from 'ahooks';
+import { css } from '@emotion/react';
 import { Allotment } from 'allotment';
-import _ from 'lodash-es';
-import { createContext, FC, useEffect, useReducer } from 'react';
-import React from 'react';
+import produce, { Draft } from 'immer';
+import { createContext, Dispatch, FC, useEffect, useReducer } from 'react';
 
 import HttpRequest from './components/http/Request';
 import HttpRequestOptions from './components/http/RequestOptions';
 import HttpResponse from './components/http/Response';
 import TestResult from './components/http/TestResult';
-import { defaultState } from './default';
+import { Environment } from './data/environment';
+import { HoppRESTRequest } from './data/rest';
+import { defaultState } from './defaultState';
+import { HoppRESTResponse } from './helpers/types/HoppRESTResponse';
+import { HoppTestResult } from './helpers/types/HoppTestResult';
 
-export const HttpContext = createContext<any>({});
-
-function reducer(state = defaultState, action: { type: string; payload: any }) {
-  const cloneState = JSON.parse(JSON.stringify(state));
-  _.set(cloneState, action.type, action.payload);
-  return cloneState;
+export interface State {
+  request: HoppRESTRequest;
+  response: HoppRESTResponse | null;
+  testResult: HoppTestResult | null;
+  environment: Environment;
+  theme: 'dark' | 'light';
 }
 
-interface HttpProps {
-  currentRequestId: string;
-  onEdit: any;
-  onSend: any;
-  collectionTreeData: any;
-  environment: any;
-  darkMode: boolean;
+export interface HttpProps {
+  environment: Environment;
+  theme: 'dark' | 'light';
+  value: HoppRESTRequest | null;
+  breadcrumb: any;
+  onSend: (
+    r: HoppRESTRequest
+  ) => Promise<{ response: HoppRESTResponse; testResult: HoppTestResult }>;
+  onSave: (r: HoppRESTRequest) => void;
+  config: any;
 }
 
-const Http: FC<HttpProps> = ({
-  currentRequestId,
-  onEdit,
-  onSend,
-  collectionTreeData = [],
-  environment,
-  darkMode,
-}) => {
-  const [store, dispatch] = useReducer(reducer, {
-    ...defaultState,
-    request: {
-      ...defaultState.request,
-    },
-  });
-  useMount(() => {
-    onEdit({
-      type: 'retrieve',
-      payload: {
-        requestId: currentRequestId,
-      },
-    }).then((res: any) => {
-      dispatch({
-        type: 'request',
-        payload: res,
-      });
-    });
-  });
+export const HttpContext = createContext<
+  { store: State } & { dispatch: Dispatch<(state: State) => void> }
+>({
+  store: defaultState,
+  dispatch: () => undefined,
+});
+function reducer(draft: Draft<State>, action: (state: State) => void) {
+  return action(draft);
+}
+
+const Http: FC<HttpProps> = ({ value, onSend, environment, onSave, theme,breadcrumb }) => {
+  const [store, dispatch] = useReducer(produce(reducer), defaultState);
 
   useEffect(() => {
-    dispatch({
-      type: 'environment',
-      payload: environment,
+    console.log(value, 'value');
+    dispatch((state) => {
+      if (value) {
+        state.request = value;
+      }
     });
-    dispatch({
-      type: 'collectionTreeData',
-      payload: collectionTreeData,
-    });
-    dispatch({
-      type: 'darkMode',
-      payload: darkMode,
-    });
-  }, [collectionTreeData, environment, darkMode]);
+  }, [value]);
 
+  useEffect(() => {
+    dispatch((state) => {
+      state.theme = theme;
+    });
+  }, [theme]);
+
+  useEffect(() => {
+    dispatch((state) => {
+      if (value) {
+        state.environment = environment;
+      }
+    });
+  }, [environment]);
   return (
     <HttpContext.Provider value={{ store, dispatch }}>
-      {store.request.method !== '' ? (
-        <Allotment
-          css={css`
-            height: 100%;
-          `}
-          vertical={true}
-        >
-          <Allotment.Pane preferredSize={400}>
-            <div
-              css={css`
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-              `}
-            >
-              <HttpRequest
-                currentRequestId={currentRequestId}
-                onEdit={onEdit}
-                onSend={onSend}
-              ></HttpRequest>
-              <HttpRequestOptions></HttpRequestOptions>
-            </div>
-          </Allotment.Pane>
-          <Allotment.Pane>
-            <HttpResponse />
-          </Allotment.Pane>
-        </Allotment>
-      ) : null}
+      <Allotment
+        css={css`
+          height: 100%;
+        `}
+        vertical={true}
+      >
+        <Allotment.Pane preferredSize={360}>
+          <div
+            css={css`
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+            `}
+          >
+            <HttpRequest breadcrumb={breadcrumb} onSave={onSave} onSend={onSend}></HttpRequest>
+            <HttpRequestOptions />
+          </div>
+        </Allotment.Pane>
+        <Allotment.Pane>
+          <HttpResponse />
+        </Allotment.Pane>
+      </Allotment>
     </HttpContext.Provider>
   );
 };

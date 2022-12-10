@@ -37,6 +37,17 @@ const CollectionMenu = ({ onSelect }: any) => {
     {
       onSuccess: (res) => {
         setCollectionTreeData(res);
+
+
+        // setTimeout(()=>{
+        //   handleSelect('63906944911a0006564fc68f', {
+        //     node: {
+        //       title: '1',
+        //       key: '63906944911a0006564fc68f',
+        //       nodeType: 1,
+        //     },
+        //   });
+        // },2000)
       },
     }
   );

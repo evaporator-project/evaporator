@@ -1,5 +1,4 @@
-
-import { css,jsx } from '@emotion/react';
+import { css, jsx } from '@emotion/react';
 import { Badge, Tabs, Tag } from 'antd';
 import { useContext, useState } from 'react';
 import React from 'react';
@@ -70,7 +69,12 @@ const HttpRequestOptions = () => {
       `}
     >
       <Tabs
-        style={{ height: '100%' }}
+        css={css`
+height: 100%;
+          .ant-tabs-nav {
+            margin-bottom: 0;
+          }
+        `}
         activeKey={activeKey}
         items={items}
         onChange={(val) => {

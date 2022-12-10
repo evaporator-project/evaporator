@@ -1,8 +1,7 @@
 import { CopyOutlined } from '@ant-design/icons';
 import { json } from '@codemirror/lang-json';
 import { EditorView } from '@codemirror/view';
-
-import { css,jsx } from '@emotion/react';
+import { css, jsx } from '@emotion/react';
 import { Button, message, Space, Tooltip } from 'antd';
 import { FC, useContext, useRef } from 'react';
 import React from 'react';
@@ -16,7 +15,7 @@ function coppyUrl() {
 const JSONLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
   const jsonResponse = useRef(null);
   // @ts-ignore
-  const jsonObj = JSON.parse(response.body || '{}');
+  const jsonObj = response.body
   const { store } = useContext(HttpContext);
   useCodeMirror({
     container: jsonResponse.current,
@@ -24,7 +23,7 @@ const JSONLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
     value: JSON.stringify(jsonObj, null, 2),
     height: '100%',
     extensions: [json(), EditorView.lineWrapping],
-    theme: store.darkMode ? 'dark' : 'light',
+    theme: store.theme,
   });
   return (
     <div
@@ -46,7 +45,7 @@ const JSONLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
             <Tooltip title={'Copy'} placement={'left'}>
               <a
                 css={css`
-                  padding: 8px;
+padding-bottom: 8px;
                   display: block;
                 `}
                 // @ts-ignore

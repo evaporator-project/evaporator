@@ -1,5 +1,6 @@
 import { css, jsx } from '@emotion/react';
-import { message, theme } from 'antd';
+import { useRequest } from 'ahooks';
+import { Breadcrumb, message, theme } from 'antd';
 import { FC, useMemo } from 'react';
 import React from 'react';
 import { useParams } from 'react-router-dom';
@@ -13,6 +14,22 @@ import { useStore } from '../../store';
 import { useSettingsStore } from '../../store/settings';
 import Http from '../arex-request';
 const { useToken } = theme;
+const HttpBreadcrumb = () => {
+  return (
+    <div>
+      <Breadcrumb>
+        <Breadcrumb.Item>Home</Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <a href="">Application Center</a>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <a href="">Application List</a>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>An Application</Breadcrumb.Item>
+      </Breadcrumb>
+    </div>
+  );
+};
 const RequestPane: FC<any> = ({ pane }) => {
   const { token } = useToken();
   const { collectionTreeData, activeEnvironment, environments, requestType } =
@@ -41,42 +58,44 @@ const RequestPane: FC<any> = ({ pane }) => {
       }
     );
   }, [environments, activeEnvironment]);
+
+  const { data } = useRequest(
+    () =>
+      request({
+        method: 'POST',
+        url: '/api/retrieverequest',
+        data: {
+          id: relationshipRequestId,
+        },
+      }),
+    {
+      onSuccess(res) {
+        console.log(res);
+      },
+    }
+  );
+
   return (
     <div
       css={css`
-        height: calc(100vh - 125px);
+        height: calc(100vh - 140px);
       `}
     >
       <Http
-        currentRequestId={relationshipRequestId}
-        onEdit={(e: any) => {
-          if (e.type === 'retrieve') {
-            return request({
-              method: 'POST',
-              url: '/api/retrieverequest',
-              data: {
-                id: relationshipRequestId,
-              },
-            });
-          } else if (e.type === 'update') {
-            return request({
-              method: 'POST',
-              url: '/api/updaterequest',
-              data: {
-                id: relationshipRequestId,
-                ...e.payload,
-              },
-            }).then((res) => {
-              message.info(JSON.stringify(res));
-            });
-          }
-        }}
-        onSend={(e: any) => {
-          return AgentAxiosAndTest(e, interceptorSelection, PROXY_URL);
-        }}
-        collectionTreeData={collectionTreeData}
+        breadcrumb={<HttpBreadcrumb />}
+        value={data}
+        theme={'light'}
         environment={mockEnvironmentData}
-        darkMode={darkMode.value}
+        onSave={(p) => {
+          console.log(p);
+        }}
+        onSend={(req) => {
+          return AgentAxiosAndTest(
+            { request: req },
+            'BROWSER_ENABLED',
+            'http://localhost:8080'
+          );
+        }}
       />
     </div>
   );

@@ -1,8 +1,6 @@
 import { hoverTooltip } from '@codemirror/view';
-
-import { css, jsx, useTheme } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 import { FC, useContext, useRef } from 'react';
-import React from 'react';
 
 import { useEnvCodeMirror } from '../../helpers/editor/extensions/EnvCodeMirror';
 import {
@@ -18,7 +16,7 @@ interface SmartEnvInputProps {
 const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
   const theme = useTheme();
   const smartEnvInputRef = useRef(null);
-  const { dispatch, store } = useContext(HttpContext);
+  const { store } = useContext(HttpContext);
   useEnvCodeMirror({
     container: smartEnvInputRef.current,
     value: value,
@@ -56,14 +54,11 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
         }),
       ],
     ],
-    onChange: (val: any) => {
-      dispatch({
-        type: 'request.endpoint',
-        payload: val,
-      });
+    onChange: (val: string) => {
+      onChange(val);
     },
     currentEnv: store.environment,
-    theme: store.darkMode ? 'dark' : 'light',
+    theme: store.theme,
   });
 
   return (

@@ -1,51 +1,41 @@
-import axios from 'axios';
+import { SandboxTestResult, TestDescriptor } from 'evaporator-js-sandbox';
 
+import { HoppRESTResponse } from '../components/arex-request/helpers/types/HoppRESTResponse';
+import {
+  HoppTestData,
+  HoppTestResult,
+} from '../components/arex-request/helpers/types/HoppTestResult';
 import { runTestScript } from './sandbox';
-function handleResHeaders(headers: any) {
-  const newHeaders: any = [];
-  for (const k in headers) {
-    const v = headers[k];
-    newHeaders.push({
-      key: k,
-      value: v,
-    });
-  }
-  return newHeaders;
-}
-function realRequest(reqParams: any, requestType: any, url: string) {
-  if (requestType === 'EXTENSIONS_ENABLED') {
-    return AgentAxios(reqParams);
-  } else if (requestType === 'BROWSER_ENABLED') {
-    // return axios(reqParams);
 
-    return axios(reqParams)
-      .then((axiosRes) => {
-        const { status, data, headers } = axiosRes;
-        return {
-          status: status,
-          data: data,
-          headers: handleResHeaders(headers),
-        };
-      })
-      .catch((axiosErr) => {
-        const { status, data, headers } = axiosErr?.response || {
-          status: 500,
-          data: {},
-          headers: {},
-        };
-        return {
-          status: status,
-          data: data,
-          headers: handleResHeaders(headers),
-        };
-      });
-  } else if (requestType === 'PROXY_ENABLED') {
-    return axios.post(url, reqParams).then((r) => r.data);
-  } else {
-    return new Promise((resolve, reject) => {
-      resolve({});
-    });
-  }
+function translateToSandboxTestResults(
+  testDesc: SandboxTestResult
+): HoppTestResult {
+  const translateChildTests = (child: TestDescriptor): HoppTestData => {
+    return {
+      description: child.descriptor,
+      expectResults: child.expectResults,
+      tests: child.children.map(translateChildTests),
+    };
+  };
+
+  return {
+    description: '',
+    expectResults: testDesc.tests.expectResults,
+    tests: testDesc.tests.children.map(translateChildTests),
+    scriptError: false,
+    envDiff: {
+      global: {
+        additions: [],
+        deletions: [],
+        updations: [],
+      },
+      selected: {
+        additions: [],
+        deletions: [],
+        updations: [],
+      },
+    },
+  };
 }
 
 function AgentAxios<T>(params: any) {
@@ -80,44 +70,68 @@ function AgentAxios<T>(params: any) {
 
 export default AgentAxios;
 
-export const AgentAxiosAndTest = (
-  { request }: any,
-  requestType: string,
-  url: string
-) =>
-  realRequest(
-    {
-      method: request.method,
-      url: request.endpoint,
-      headers: request.headers.reduce((p: any, c: any) => {
-        return {
-          ...p,
-          [c.key]: c.value,
-        };
-      }, {}),
-      data: ['GET'].includes(request.method)
-        ? undefined
-        : JSON.parse(request.body.body || '{}'),
-      params: ['POST'].includes(request.method)
-        ? undefined
-        : request.params.reduce((p: any, c: any) => {
-            return {
-              ...p,
-              [c.key]: c.value,
-            };
-          }, {}),
-    },
-    requestType,
-    url
-  ).then((res: any) => {
+export const AgentAxiosAndTest = ({
+  request,
+}: any): Promise<{ response: HoppRESTResponse; testResult: HoppTestResult }> =>
+  AgentAxios({
+    method: request.method,
+    url: request.endpoint,
+    headers: request.headers.reduce((p: any, c: any) => {
+      return {
+        ...p,
+        [c.key]: c.value,
+      };
+    }, {}),
+    data: ['GET'].includes(request.method)
+      ? undefined
+      : JSON.parse(request.body.body || '{}'),
+    params: ['POST'].includes(request.method)
+      ? undefined
+      : request.params.reduce((p: any, c: any) => {
+          return {
+            ...p,
+            [c.key]: c.value,
+          };
+        }, {}),
+  }).then((res: any) => {
     return runTestScript(request.testScript, {
       body: res.data,
       headers: res.headers,
       status: res.status,
-    }).then((test) => {
+    }).then((testDescriptor) => {
+      console.log(res.headers)
+      const errRes = {
+        description: '',
+        expectResults: [],
+        tests: [],
+        envDiff: {
+          global: {
+            additions: [],
+            deletions: [],
+            updations: [],
+          },
+          selected: {
+            additions: [],
+            deletions: [],
+            updations: [],
+          },
+        },
+        scriptError: true,
+      };
+      const s = translateToSandboxTestResults(testDescriptor);
+
       return {
-        response: res,
-        testResult: test.tests,
+        response: {
+          type: 'success',
+          headers: res.headers,
+          body: res.data,
+          statusCode: res.status,
+          meta: {
+            responseSize: 0,
+            responseDuration: 0,
+          },
+        },
+        testResult: s,
       };
     });
   });

@@ -1,21 +1,22 @@
-
-import { css,jsx } from '@emotion/react';
+import { css, jsx } from '@emotion/react';
 import { DatePicker, TimePicker } from 'antd';
 import { useContext, useMemo } from 'react';
 import React from 'react';
 
 import { HttpContext } from '../..';
+import { HoppRESTResponse } from '../../helpers/types/HoppRESTResponse';
+import { HoppTestResult } from '../../helpers/types/HoppTestResult';
 import LensesResponseBodyRenderer from '../lenses/ResponseBodyRenderer';
 import HttpResponseMeta from './ResponseMeta';
 
 const HttpResponse = () => {
   const { store } = useContext(HttpContext);
   const hasResponse = useMemo(
-    () => store.response.type === 'success' || store.response.type === 'fail',
+    () => store.response?.type === 'success' || store.response?.type === 'fail',
     [store.response]
   );
   const loading = useMemo(
-    () => store.response.type === null || store.response.type === 'loading',
+    () => store.response === null || store.response.type === 'loading',
     [store.response]
   );
 
@@ -32,8 +33,8 @@ const HttpResponse = () => {
       <HttpResponseMeta response={store.response} />
       {!loading && hasResponse ? (
         <LensesResponseBodyRenderer
-          response={store.response}
-          testResult={store.testResult}
+          response={store.response as HoppRESTResponse}
+          testResult={store.testResult as HoppTestResult}
         />
       ) : null}
     </div>
