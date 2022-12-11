@@ -8,7 +8,7 @@ export const defaultSettings: SettingsState = {
   syncEnvironments: true,
   PROXY_ENABLED: false,
   PROXY_URL: 'http://proxy.evaporator.rico.org.cn/',
-  EXTENSIONS_ENABLED: false,
+  EXTENSIONS_ENABLED: true,
   URL_EXCLUDES: {
     auth: true,
     httpUser: true,

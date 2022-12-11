@@ -1,5 +1,5 @@
 import { SettingOutlined, UndoOutlined } from '@ant-design/icons';
-import { css, jsx } from '@emotion/react';
+import { css } from '@emotion/react';
 import {
   Button,
   Input,
@@ -11,21 +11,17 @@ import {
   Typography,
 } from 'antd';
 import { useEffect, useState } from 'react';
-// @ts-ignore
 import { CirclePicker } from 'react-color';
 import { useTranslation } from 'react-i18next';
 
 import useDarkMode from '../../../hooks/use-dark-mode';
 import request from '../../../services/request';
 import { useStore } from '../../../store';
-// import Title from "antd/es/skeleton/Title";
-const { Title, Text } = Typography;
-import React from 'react';
-
+const { Text } = Typography;
 import chromeSvg from '../../../assets/icons/brands/chrome.svg';
-import logo from '../../../assets/logo.svg';
+import logo from '../../../assets/logo.png';
 import languages from '../../../languages.json';
-import {defaultSettings, useSettingsStore} from '../../../store/settings';
+import { defaultSettings, useSettingsStore } from '../../../store/settings';
 const Settings = () => {
   const { setAccentColor, accentColor, language, setLanguage } = useStore();
   const {
@@ -79,8 +75,6 @@ const Settings = () => {
 
   useEffect(() => {
     setMode(darkMode.value);
-
-    //  记录
   }, [darkMode.value]);
   return (
     <div>
@@ -299,7 +293,7 @@ const Settings = () => {
                   <Switch
                     checked={EXTENSIONS_ENABLED}
                     onChange={(val) => {
-                      if (val){
+                      if (val) {
                         setInterceptor('EXTENSIONS_ENABLED');
                       } else {
                         setInterceptor('PROXY_ENABLED');
@@ -331,12 +325,11 @@ const Settings = () => {
                   <Switch
                     checked={PROXY_ENABLED}
                     onChange={(val) => {
-                      if (val){
+                      if (val) {
                         setInterceptor('PROXY_ENABLED');
                       } else {
                         setInterceptor('EXTENSIONS_ENABLED');
                       }
-
                     }}
                   />
                   <span
@@ -378,7 +371,9 @@ const Settings = () => {
                     css={css`
                       margin-left: 8px;
                     `}
-                    onClick={()=>{setProxyUrl(defaultSettings.PROXY_URL)}}
+                    onClick={() => {
+                      setProxyUrl(defaultSettings.PROXY_URL);
+                    }}
                   >
                     <UndoOutlined />
                   </Button>

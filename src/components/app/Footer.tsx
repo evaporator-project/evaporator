@@ -1,8 +1,4 @@
-import {
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
-  SafetyOutlined,
-} from '@ant-design/icons';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import {
   Button,
@@ -13,17 +9,16 @@ import {
   Space,
   Typography,
 } from 'antd';
-import React, { useMemo, useState, useTransition } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import chromeSvg from '../../assets/icons/brands/chrome.svg';
 import { useSettingsStore } from '../../store/settings';
-const { Text, Link } = Typography;
+const { Text } = Typography;
 const AppFooter = () => {
   const [open, setOpen] = useState(false);
   const { PROXY_ENABLED, EXTENSIONS_ENABLED, setInterceptor } =
     useSettingsStore();
-  // const [interceptorSelection, setInterceptorSelection] = useState('');
   const { t } = useTranslation();
 
   const interceptorSelection = useMemo(() => {

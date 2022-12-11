@@ -71,8 +71,8 @@ const AddWorkspace: React.FC = () => {
       method: 'POST',
       url: '/api/createworkspace',
       data: { name: values.name },
-    }).then((res:any) => {
-        window.location.href = `/${res._id}/workspace/testname/request/6357a30a1708ec36bd90564d`
+    }).then((res: any) => {
+      window.location.href = `/${res._id}/workspace/testname/request/6357a30a1708ec36bd90564d`;
     });
   };
 

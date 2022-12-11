@@ -1,5 +1,5 @@
 const FolderPane = () => {
-  return <div>FolderPane</div>
-}
+  return <div>FolderPane</div>;
+};
 
-export default FolderPane
+export default FolderPane;

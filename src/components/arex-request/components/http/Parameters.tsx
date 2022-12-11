@@ -19,9 +19,9 @@ const HttpParameters = () => {
   }, []);
 
   useEffect(() => {
-      dispatch((state) => {
-          state.request.params = requestParams;
-      });
+    dispatch((state) => {
+      state.request.params = requestParams;
+    });
   }, [requestParams]);
 
   return (

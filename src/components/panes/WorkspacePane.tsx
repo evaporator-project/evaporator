@@ -21,7 +21,7 @@ const WorkspacePane = ({ pane }: any) => {
 
   const params = useParams();
 
-  const { run, data }:any = useRequest(
+  const { run, data }: any = useRequest(
     () =>
       request({
         method: 'POST',

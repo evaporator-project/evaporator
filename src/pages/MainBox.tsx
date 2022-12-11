@@ -60,6 +60,7 @@ const MainBox = () => {
   };
 
   const handleCollectionMenuClick = (key: any, node: any) => {
+    console.log(JSON.parse(JSON.stringify(collectionTreeData)));
     setActiveMenu(MenuTypeEnum.Collection, key);
     setPanes(
       {

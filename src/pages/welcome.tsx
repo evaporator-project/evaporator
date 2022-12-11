@@ -4,8 +4,8 @@ import { useMount } from 'ahooks';
 import { Button } from 'antd';
 import React, { useEffect, useState } from 'react';
 
-import logoSvg from '../assets/logo.svg';
 import WelcomeSvg from '../assets/img/sss.svg';
+import logoSvg from '../assets/logo.png';
 import request from '../services/request';
 
 const Welcome = () => {
@@ -31,7 +31,7 @@ const Welcome = () => {
       <div className={'left-box'}>
         <div className="login-form">
           <div className="logo">
-            <img src={logoSvg} alt='' />
+            <img src={logoSvg} alt="" />
             <span>EVAPORATOR</span>
           </div>
           <h1 className={'title'}>
@@ -54,8 +54,10 @@ const Welcome = () => {
         </div>
       </div>
       <div className={'right-box'}>
-        <div className={'img-wrap'} style={{ backgroundImage: `url(${WelcomeSvg})` }}>
-        </div>
+        <div
+          className={'img-wrap'}
+          style={{ backgroundImage: `url(${WelcomeSvg})` }}
+        ></div>
       </div>
     </div>
   );

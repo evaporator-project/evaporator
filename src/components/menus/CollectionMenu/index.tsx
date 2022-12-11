@@ -12,6 +12,7 @@ import type { DataNode, TreeProps } from 'antd/es/tree';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { treeFind } from '../../../helpers/collection/util';
 import request from '../../../services/request';
 import { useStore } from '../../../store';
 import CollectionTitle from './CollectionTitle';
@@ -22,7 +23,9 @@ const CollectionMenu = ({ onSelect }: any) => {
   const params: any = useParams();
   const [searchValue, setSearchValue] = useState('');
   const [autoExpandParent, setAutoExpandParent] = useState(true);
-  const { setCollectionTreeData } = useStore();
+  const value = useMemo(() => params.paneId, [params]);
+  const selectedKeys = useMemo(() => (value ? [value] : []), [value]);
+  const { setCollectionTreeData, collectionTreeData } = useStore();
   const {
     data: treeData = [],
     loading,
@@ -35,22 +38,30 @@ const CollectionMenu = ({ onSelect }: any) => {
         data: { workspaceId: params.workspaceId },
       }),
     {
-      onSuccess: (res) => {
+      onSuccess: (res: any) => {
         setCollectionTreeData(res);
-
-
-        // setTimeout(()=>{
-        //   handleSelect('63906944911a0006564fc68f', {
-        //     node: {
-        //       title: '1',
-        //       key: '63906944911a0006564fc68f',
-        //       nodeType: 1,
-        //     },
-        //   });
-        // },2000)
       },
     }
   );
+
+  useEffect(() => {
+    const initValue = treeFind(
+      collectionTreeData,
+      (node: any) => node.key === params.paneId
+    );
+
+    console.log(initValue?.title, 'initValue');
+
+    if (initValue && expandedKeys.length === 0) {
+      console.log(initValue);
+      onSelect(params.paneId, {
+        title: initValue.title,
+        key: initValue.key,
+        nodeType: initValue.nodeType,
+      });
+      setExpandedKeys([params.paneId]);
+    }
+  }, [collectionTreeData]);
 
   // const dataList: { key: React.Key; title: string }[] = [];
 
@@ -206,7 +217,7 @@ const CollectionMenu = ({ onSelect }: any) => {
       </div>
       <Tree
         blockNode={true}
-        selectedKeys={[]}
+        selectedKeys={selectedKeys}
         expandedKeys={expandedKeys}
         autoExpandParent={autoExpandParent}
         onExpand={onExpand}

@@ -38,7 +38,10 @@ export function treeFindPath(tree: any, func: any, path: any = []): any {
   return [];
 }
 
-export function treeFind<T>(tree: T[], func: (item: T) => boolean): T | undefined {
+export function treeFind<T>(
+  tree: T[],
+  func: (item: T) => boolean
+): T | undefined {
   for (const data of tree) {
     if (func(data)) return data;
     // @ts-ignore

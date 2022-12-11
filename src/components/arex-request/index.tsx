@@ -43,7 +43,14 @@ function reducer(draft: Draft<State>, action: (state: State) => void) {
   return action(draft);
 }
 
-const Http: FC<HttpProps> = ({ value, onSend, environment, onSave, theme,breadcrumb }) => {
+const Http: FC<HttpProps> = ({
+  value,
+  onSend,
+  environment,
+  onSave,
+  theme,
+  breadcrumb,
+}) => {
   const [store, dispatch] = useReducer(produce(reducer), defaultState);
 
   useEffect(() => {
@@ -84,7 +91,11 @@ const Http: FC<HttpProps> = ({ value, onSend, environment, onSave, theme,breadcr
               flex-direction: column;
             `}
           >
-            <HttpRequest breadcrumb={breadcrumb} onSave={onSave} onSend={onSend}></HttpRequest>
+            <HttpRequest
+              breadcrumb={breadcrumb}
+              onSave={onSave}
+              onSend={onSend}
+            ></HttpRequest>
             <HttpRequestOptions />
           </div>
         </Allotment.Pane>

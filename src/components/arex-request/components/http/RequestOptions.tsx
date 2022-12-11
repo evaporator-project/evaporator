@@ -70,7 +70,7 @@ const HttpRequestOptions = () => {
     >
       <Tabs
         css={css`
-height: 100%;
+          height: 100%;
           .ant-tabs-nav {
             margin-bottom: 0;
           }

@@ -5,7 +5,7 @@ import { FC, useMemo } from 'react';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import { treeFind } from '../../helpers/collection/util';
+import { treeFind, treeFindPath } from '../../helpers/collection/util';
 // import Http from './../../components/http'
 import { AgentAxiosAndTest } from '../../helpers/request';
 import useDarkMode from '../../hooks/use-dark-mode';
@@ -14,18 +14,16 @@ import { useStore } from '../../store';
 import { useSettingsStore } from '../../store/settings';
 import Http from '../arex-request';
 const { useToken } = theme;
-const HttpBreadcrumb = () => {
+const HttpBreadcrumb: FC<{ nodePaths: { title: string }[] }> = ({
+  nodePaths,
+}) => {
+  console.log(nodePaths, 'nodePaths');
   return (
     <div>
       <Breadcrumb>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <a href="">Application Center</a>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <a href="">Application List</a>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>An Application</Breadcrumb.Item>
+        {nodePaths.map((nodePath, index) => (
+          <Breadcrumb.Item key={index}>{nodePath.title}</Breadcrumb.Item>
+        ))}
       </Breadcrumb>
     </div>
   );
@@ -48,6 +46,10 @@ const RequestPane: FC<any> = ({ pane }) => {
   }, [PROXY_ENABLED, EXTENSIONS_ENABLED]);
   const darkMode = useDarkMode();
   const { relationshipRequestId } = treeFind(
+    collectionTreeData,
+    (node: any) => node.key === pane.key
+  );
+  const nodePaths = treeFindPath(
     collectionTreeData,
     (node: any) => node.key === pane.key
   );
@@ -82,7 +84,8 @@ const RequestPane: FC<any> = ({ pane }) => {
       `}
     >
       <Http
-        breadcrumb={<HttpBreadcrumb />}
+        breadcrumb={<HttpBreadcrumb nodePaths={nodePaths} />}
+        // @ts-ignore
         value={data}
         theme={'light'}
         environment={mockEnvironmentData}
@@ -90,11 +93,7 @@ const RequestPane: FC<any> = ({ pane }) => {
           console.log(p);
         }}
         onSend={(req) => {
-          return AgentAxiosAndTest(
-            { request: req },
-            'BROWSER_ENABLED',
-            'http://localhost:8080'
-          );
+          return AgentAxiosAndTest({ request: req });
         }}
       />
     </div>

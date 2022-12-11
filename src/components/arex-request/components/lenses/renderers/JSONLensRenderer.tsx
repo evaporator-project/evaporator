@@ -15,7 +15,7 @@ function coppyUrl() {
 const JSONLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
   const jsonResponse = useRef(null);
   // @ts-ignore
-  const jsonObj = response.body
+  const jsonObj = response.body;
   const { store } = useContext(HttpContext);
   useCodeMirror({
     container: jsonResponse.current,
@@ -45,7 +45,7 @@ const JSONLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
             <Tooltip title={'Copy'} placement={'left'}>
               <a
                 css={css`
-padding-bottom: 8px;
+                  padding-bottom: 8px;
                   display: block;
                 `}
                 // @ts-ignore

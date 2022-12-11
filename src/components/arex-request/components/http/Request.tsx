@@ -1,7 +1,7 @@
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Button, Dropdown, MenuProps, message, Select } from 'antd';
+import { Button, Divider, Dropdown, MenuProps, message, Select } from 'antd';
 import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,8 +15,9 @@ const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
 interface HttpRequestProps {
   onSend: HttpProps['onSend'];
   onSave: HttpProps['onSave'];
+  breadcrumb: any;
 }
-const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave,breadcrumb }) => {
+const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
   const { store, dispatch } = useContext(HttpContext);
 
   const { t } = useTranslation();
@@ -67,7 +68,7 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave,breadcrumb }) => {
       endpoint: urlPretreatment(store.request.endpoint),
     }).then((responseAndTestResult) => {
       dispatch((state) => {
-        console.log(store.response,'sss')
+        console.log(store.response, 'sss');
         if (responseAndTestResult.response.type === 'success') {
           state.response = responseAndTestResult.response;
           state.testResult = responseAndTestResult.testResult;

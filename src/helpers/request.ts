@@ -99,7 +99,7 @@ export const AgentAxiosAndTest = ({
       headers: res.headers,
       status: res.status,
     }).then((testDescriptor) => {
-      console.log(res.headers)
+      console.log(res.headers);
       const errRes = {
         description: '',
         expectResults: [],
