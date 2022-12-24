@@ -1,0 +1,1 @@
+## 去store状态管理，多用原生的useContent

@@ -70,9 +70,7 @@ const Http: FC<HttpProps> = ({
 
   useEffect(() => {
     dispatch((state) => {
-      if (value) {
-        state.environment = environment;
-      }
+      state.environment = environment;
     });
   }, [environment]);
   return (

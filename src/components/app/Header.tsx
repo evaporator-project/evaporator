@@ -12,13 +12,14 @@ import {
   Select,
   Space,
 } from 'antd';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import useDarkMode from '../../hooks/use-dark-mode';
 import request from '../../services/request';
 import { useStore } from '../../store';
+import { SettingContext } from '../../store/content/SettingContent';
 // import { TooltipButton } from '../index';
 // import InviteWorkspace from '../workspace/Invite';
 import GitHubStarButton from './GitHubStarButton';
@@ -94,6 +95,8 @@ const AppHeader = () => {
 
   // const darkMode = useDarkMode();
 
+  const { store, dispatch } = useContext(SettingContext);
+
   useMount(() => {
     request({
       method: 'GET',
@@ -108,6 +111,12 @@ const AppHeader = () => {
       //   s:res.settings.PROXY_ENABLED
       // })
       setRequestType(res.settings.EXTENSIONS_ENABLED);
+
+      // test
+
+      dispatch((state) => {
+        state.settings.PROXY_ENABLED = true;
+      });
     });
 
     request({

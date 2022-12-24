@@ -1,7 +1,7 @@
 import { css, jsx } from '@emotion/react';
 import { useRequest } from 'ahooks';
 import { Breadcrumb, message, theme } from 'antd';
-import { FC, useMemo } from 'react';
+import {FC, useContext, useMemo} from 'react';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ import request from '../../services/request';
 import { useStore } from '../../store';
 import { useSettingsStore } from '../../store/settings';
 import Http from '../arex-request';
+import {SettingContext} from "../../store/content/SettingContent";
 const { useToken } = theme;
 const HttpBreadcrumb: FC<{ nodePaths: { title: string }[] }> = ({
   nodePaths,
@@ -29,6 +30,7 @@ const HttpBreadcrumb: FC<{ nodePaths: { title: string }[] }> = ({
   );
 };
 const RequestPane: FC<any> = ({ pane }) => {
+    const {store} = useContext(SettingContext)
   const { token } = useToken();
   const { collectionTreeData, activeEnvironment, environments, requestType } =
     useStore();
@@ -83,6 +85,8 @@ const RequestPane: FC<any> = ({ pane }) => {
         height: calc(100vh - 140px);
       `}
     >
+        {/*{}*/}
+        <p>{JSON.stringify(store.settings.PROXY_ENABLED)}</p>
       <Http
         breadcrumb={<HttpBreadcrumb nodePaths={nodePaths} />}
         // @ts-ignore
@@ -91,6 +95,16 @@ const RequestPane: FC<any> = ({ pane }) => {
         environment={mockEnvironmentData}
         onSave={(p) => {
           console.log(p);
+          request({
+            url: '/api/updaterequest',
+            method: 'POST',
+            data: {
+              ...p,
+              id: relationshipRequestId,
+            },
+          }).then((res) => {
+            message.success(JSON.stringify(res));
+          });
         }}
         onSend={(req) => {
           return AgentAxiosAndTest({ request: req });
