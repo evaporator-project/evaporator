@@ -20,6 +20,7 @@
     "allotment": "^1.17.1",
     "antd": "^5.1.0",
     "axios": "^1.2.1",
+    "copy-to-clipboard": "^3.3.3",
     "evaporator-js-sandbox": "^0.0.4",
     "i18next": "^22.4.6",
     "immer": "^9.0.16",

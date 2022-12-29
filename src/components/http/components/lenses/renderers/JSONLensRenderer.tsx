@@ -6,11 +6,12 @@ import MonacoEditor from '@monaco-editor/react';
 import { Button, message, Space, Tooltip } from 'antd';
 import { FC, useContext, useRef } from 'react';
 import React from 'react';
-
+import copy from 'copy-to-clipboard';
 // import { useCodeMirror } from '../../../helpers/editor/codemirror';
 import { HoppRESTResponse } from '../../../helpers/types/HoppRESTResponse';
 import { HttpContext } from '../../../index';
-function coppyUrl() {
+function coppyUrl(text:string) {
+  copy(text);
   message.success('copy success🎉');
 }
 const JSONLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {

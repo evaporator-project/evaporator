@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { useMount } from 'ahooks';
 import { Allotment } from 'allotment';
 import { Button, Select, Space, Tabs, theme } from 'antd';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ import AppHeader from '../components/app/Header';
 import DraggableTabs from '../components/DraggableTabs';
 import CollectionMenu from '../components/menus/CollectionMenu';
 import EnvironmentMenu from '../components/menus/EnvironmentMenu';
+import EnvironmentPane from '../components/panes/EnvironmentPane';
 import RequestPane from '../components/panes/RequestPane';
 import WorkspacePane from '../components/panes/WorkspacePane';
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
@@ -67,9 +68,19 @@ const MainBox = () => {
         });
         // console.log(res.find((r: any) => r._id === params.workspaceId).environments,'res.find((r: any) => r._id === params.workspaceId).environments')
       } else {
-        // location.href = `/${res[0]._id}/workspace/${res[0].name}/workspace/overview`;
+        location.href = `/${res[0]._id}/workspace/${res[0].name}/workspace/overview`;
       }
     });
+
+
+    // console.log(params)
+
+    if (params.workspaceId && params.paneType && params.paneId){
+      console.log(params)
+      dispatch(state => {
+        state.globalState.activeMenu = [params.paneType, params.paneId]
+      })
+    }
   });
   const { dispatch, store } = useContext(MainContext);
   const {
@@ -101,7 +112,22 @@ const MainBox = () => {
     );
   };
   const handleEnvironmentMenuClick = (key: any, node: any) => {
-    console.log(key, node);
+    dispatch((state) => {
+      state.globalState.activeMenu = [MenuTypeEnum.Environment, key];
+
+      if (!state.globalState.panes.find((i) => i.key === key)) {
+        state.globalState.panes.push({
+          key,
+          title: 'Environment',
+          menuType: MenuTypeEnum.Environment,
+          pageType: PageTypeEnum.Environment,
+          isNew: false,
+        });
+      }
+    });
+    nav(
+      `/${params.workspaceId}/workspace/${params.workspaceName}/environment/${node.key}`
+    );
   };
   const handleTabsChange = (activePane: string) => {
     const pane = panes.find((i) => i.key === activePane);
@@ -118,18 +144,39 @@ const MainBox = () => {
   const removeTab = (targetKey: string) => {
     const menuType = activeMenu[0];
     const filteredPanes = panes.filter((i) => i.key !== targetKey);
+    dispatch((state) => {
+      state.globalState.panes = filteredPanes;
+    });
     // setPanes(filteredPanes);
-    // if (filteredPanes.length) {
-    //   const lastPane = filteredPanes[filteredPanes.length - 1];
-    //   const lastKey = lastPane.key;
-    //   setActiveMenu(lastPane.menuType || MenuTypeEnum.Collection, lastKey);
-    // } else {
-    //   setActiveMenu(menuType);
-    // }
+    if (filteredPanes.length) {
+      const lastPane = filteredPanes[filteredPanes.length - 1];
+      const lastKey = lastPane.key;
+      // setActiveMenu(lastPane.menuType || MenuTypeEnum.Collection, lastKey);
+      dispatch((state) => {
+        // state.globalState.activeMenu = [MenuTypeEnum.Collection, key];
+        state.globalState.activeMenu = [
+          lastPane.menuType || MenuTypeEnum.Collection,
+          lastKey,
+        ];
+      });
+    } else {
+      // setActiveMenu(menuType);
+    }
   };
   const addTab = () => {
     console.log();
   };
+
+  useEffect(() => {
+    if (localStorage.getItem('activeEnvironment')) {
+      dispatch((state) => {
+        state.globalState.activeEnvironment = localStorage.getItem(
+          'activeEnvironment'
+        ) as string;
+      });
+    }
+  }, []);
+
   return (
     <div>
       <AppHeader />
@@ -296,11 +343,20 @@ const MainBox = () => {
                         <WorkspacePane pane={pane} />
                       ),
                     };
+                  } else if (pane.pageType === PageTypeEnum.Environment) {
+                    return {
+                      forceRender: true,
+                      label: title,
+                      key: id,
+                      children: pane.pageType === PageTypeEnum.Environment && (
+                        <EnvironmentPane pane={pane} />
+                      ),
+                    };
                   } else {
                     return {
                       label: title,
                       key: id,
-                      children: <div>你好</div>,
+                      children: <div>无</div>,
                     };
                   }
                 })}
@@ -328,6 +384,7 @@ const MainBox = () => {
                       dispatch((state) => {
                         state.globalState.activeEnvironment = value;
                       });
+                      localStorage.setItem('activeEnvironment', value);
                     }}
                   />
                 }
