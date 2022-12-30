@@ -19,14 +19,16 @@ import { MainContext } from '../../../store/content/MainContent';
 import CollectionTitle from './CollectionTitle';
 import { handleDrop } from './helper';
 import SearchHeighLight from './searchHeighLight';
+import {parseGlobalPaneId} from "../../../helpers/utils";
 
 const CollectionMenu = ({ onSelect }: any) => {
+  const { store, dispatch } = useContext(MainContext);
   const params: any = useParams();
   const [searchValue, setSearchValue] = useState('');
   const [autoExpandParent, setAutoExpandParent] = useState(true);
-  const value = useMemo(() => params.paneId, [params]);
+  const value = useMemo(() => parseGlobalPaneId(store.globalState.activeMenu[1])['rawId'], [store.globalState.activeMenu]);
   const selectedKeys = useMemo(() => (value ? [value] : []), [value]);
-  const { store, dispatch } = useContext(MainContext);
+
   const { collectionTreeData } = store.globalState;
   const {
     data: treeData = [],
@@ -49,16 +51,21 @@ const CollectionMenu = ({ onSelect }: any) => {
     }
   );
 
+
   useEffect(() => {
+    // console.log(params)
     const initValue = treeFind(
       collectionTreeData,
-      (node: any) => node.key === params.paneId
+      (node: any) => {
+        // console.log(node.key , params.paneId)
+        return node.key === params.paneId
+      }
     );
 
-    console.log(initValue?.title, 'initValue');
+    console.log(initValue, 'initValue');
 
     if (initValue && expandedKeys.length === 0) {
-      console.log(initValue);
+      // console.log(initValue);
       onSelect(params.paneId, {
         title: initValue.title,
         key: initValue.key,
@@ -66,6 +73,7 @@ const CollectionMenu = ({ onSelect }: any) => {
       });
       setExpandedKeys([params.paneId]);
     }
+    // console.log(collectionTreeData,'collectionTreeData')
   }, [collectionTreeData]);
 
   // const dataList: { key: React.Key; title: string }[] = [];
@@ -127,12 +135,13 @@ const CollectionMenu = ({ onSelect }: any) => {
   };
 
   const handleSelect = (keys: any, info: any) => {
-    console.log(keys);
+    console.log(keys,info.node);
+    const t = treeFind(collectionTreeData,(node)=>node.key === keys[0])
     if (keys.length && onSelect) {
       onSelect(keys[0] as string, {
-        title: info.node.title,
-        key: info.node.key,
-        nodeType: info.node.nodeType,
+        title: t.title,
+        key: t.key,
+        nodeType: t.nodeType,
       });
     }
   };
@@ -140,7 +149,6 @@ const CollectionMenu = ({ onSelect }: any) => {
   const ffftreeData = useMemo(() => {
     const loop = (data: DataNode[]): DataNode[] =>
       data.map((item) => {
-        const strTitle = item.title as string;
         const title = (
           <CollectionTitle
             val={item}
@@ -211,7 +219,7 @@ const CollectionMenu = ({ onSelect }: any) => {
             width: 24px;
           `}
         >
-          +
+          <PlusOutlined></PlusOutlined>
         </span>
         <Input
           className={'collection-header-search'}

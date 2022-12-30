@@ -17,6 +17,7 @@ import RequestPane from '../components/panes/RequestPane';
 import WorkspacePane from '../components/panes/WorkspacePane';
 import { MenuTypeEnum, PageTypeEnum } from '../constant';
 import { treeFind } from '../helpers/collection/util';
+import { generateGlobalPaneId } from '../helpers/utils';
 import useDarkMode from '../hooks/use-dark-mode';
 import request from '../services/request';
 import { MainContext } from '../store/content/MainContent';
@@ -58,9 +59,10 @@ const MainBox = () => {
       method: 'POST',
       url: '/api/listworkspace',
     }).then((res: any) => {
+      console.log(res, 'resssss');
       setWorkspaces(res);
 
-      if (params.workspaceId) {
+      if (params.workspaceId && res.length > 0) {
         dispatch((state) => {
           state.globalState.environments = res.find(
             (r: any) => r._id === params.workspaceId
@@ -72,14 +74,19 @@ const MainBox = () => {
       }
     });
 
-
     // console.log(params)
 
-    if (params.workspaceId && params.paneType && params.paneId){
-      console.log(params)
-      dispatch(state => {
-        state.globalState.activeMenu = [params.paneType, params.paneId]
-      })
+    if (params.workspaceId && params.paneType && params.paneId) {
+      // ??
+      const paneId = generateGlobalPaneId(
+        MenuTypeEnum.Collection,
+        params.paneType,
+        params.paneId
+      );
+      console.log(paneId, params.paneType, 'paneId');
+      dispatch((state) => {
+        state.globalState.activeMenu = [params.paneType, paneId];
+      });
     }
   });
   const { dispatch, store } = useContext(MainContext);
@@ -92,36 +99,53 @@ const MainBox = () => {
   } = store.globalState;
   const { token } = useToken();
   const handleCollectionMenuClick = (key: any, node: any) => {
+    // 点击Collection菜单
+    // 生成paneId，根据菜单类型、页面类型
+    const paneKey = generateGlobalPaneId(
+      MenuTypeEnum.Collection,
+      PageTypeEnum.Request,
+      key
+    );
+    const pageType = [
+      '',
+      PageTypeEnum.Request,
+      PageTypeEnum.Example,
+      PageTypeEnum.Folder,
+    ][node.nodeType];
     dispatch((state) => {
-      state.globalState.activeMenu = [MenuTypeEnum.Collection, key];
-
-      if (!state.globalState.panes.find((i) => i.key === key)) {
+      // 修改当前激活菜单
+      state.globalState.activeMenu = [MenuTypeEnum.Collection, paneKey];
+      if (!state.globalState.panes.find((pane) => pane.key === paneKey)) {
         state.globalState.panes.push({
-          key,
+          key: paneKey,
           title: treeFind(collectionTreeData, (node: any) => node.key === key)
             ?.title,
           menuType: MenuTypeEnum.Collection,
-          pageType:
-            node.nodeType === 3 ? PageTypeEnum.Folder : PageTypeEnum.Request,
-          isNew: false,
+          pageType: pageType,
+          rawId: key,
         });
       }
     });
     nav(
-      `/${params.workspaceId}/workspace/${params.workspaceName}/request/${node.key}`
+      `/${params.workspaceId}/workspace/${params.workspaceName}/${pageType}/${key}`
     );
   };
   const handleEnvironmentMenuClick = (key: any, node: any) => {
-    dispatch((state) => {
-      state.globalState.activeMenu = [MenuTypeEnum.Environment, key];
+    const paneKey = generateGlobalPaneId(
+      MenuTypeEnum.Environment,
+      PageTypeEnum.Environment,
+      key
+    );
 
-      if (!state.globalState.panes.find((i) => i.key === key)) {
+    dispatch((state) => {
+      state.globalState.activeMenu = [MenuTypeEnum.Environment, paneKey];
+      if (!state.globalState.panes.find((pane) => pane.key === paneKey)) {
         state.globalState.panes.push({
-          key,
-          title: 'Environment',
+          key: paneKey,
+          title: node.title,
           menuType: MenuTypeEnum.Environment,
           pageType: PageTypeEnum.Environment,
-          isNew: false,
+          rawId: key,
         });
       }
     });
@@ -130,13 +154,17 @@ const MainBox = () => {
     );
   };
   const handleTabsChange = (activePane: string) => {
-    const pane = panes.find((i) => i.key === activePane);
+    const pane = panes.find((pane) => pane.key === activePane);
     dispatch((state) => {
       state.globalState.activeMenu = [
         pane?.menuType || MenuTypeEnum.Collection,
         activePane,
       ];
     });
+
+    nav(
+      `/${params.workspaceId}/workspace/${params.workspaceName}/${pane?.pageType}/${pane.rawId}`
+    );
   };
   const handleTabsEdit: any = (targetKey: string, action: 'add' | 'remove') => {
     action === 'add' ? addTab() : removeTab(targetKey);
@@ -310,7 +338,10 @@ const MainBox = () => {
           <Allotment.Pane>
             <div>
               <DraggableTabs
-                onChange={handleTabsChange}
+                onChange={(val) => {
+                  console.log(val, 'va');
+                  handleTabsChange(val);
+                }}
                 onEdit={handleTabsEdit}
                 size="small"
                 type="editable-card"

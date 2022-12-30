@@ -1,69 +1,83 @@
-import { Table } from 'antd';
+import { Button, Input, message, Table } from 'antd';
 import React, { useContext, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import { useImmer } from 'use-immer';
 
+import request from '../../services/request';
 import { MainContext } from '../../store/content/MainContent';
 import FormHeader from '../http/components/http/FormHeader';
 import FormTable, { useColumns } from '../http/components/http/FormTable';
 
-const EnvironmentPane = ({ pane }) => {
-  console.log({ pane });
+const EnvironmentPane = ({ pane }: any) => {
+  const params = useParams();
   const { store, dispatch } = useContext(MainContext);
-  console.log(store.globalState.environments);
-  const dataSource = useMemo(() => {
-    return (
-      store.globalState.environments.find((e) => e.name === pane.key)
-        ?.variables || []
-    );
-  }, [store.globalState.environments]);
-  const columns = [
-    {
-      title: 'key',
-      dataIndex: 'key',
-    },
-    {
-      title: 'value',
-      dataIndex: 'value',
-    },
-  ];
-
   const [requestHeaders, setRequestHeaders] = useImmer<any>([]);
 
   useEffect(() => {
-    // setRequestHeaders(
-    //     store.request.headers.map((i: any) => ({
-    //       ...i,
-    //       id: String(Math.random()),
-    //     }))
-    // );
-    if (requestHeaders.length === 0) {
-      setRequestHeaders(
-        (
-          store.globalState.environments.find((e) => e.name === pane.key)
-            ?.variables || []
-        ).map((m: any) => ({
-          ...m,
-          active: true,
-        }))
-      );
-    }
+    setRequestHeaders(
+      (
+        store.globalState.environments.find(
+          (environment) => environment.id === pane.rawId
+        )?.variables || []
+      ).map((m: any) => ({
+        ...m,
+        active: true,
+      }))
+    );
   }, [store.globalState.environments]);
 
-  useEffect(() => {
-    // dispatch((state) => {
-    //   state.request.headers = requestHeaders;
-    // });
+  const index = useMemo(
+    () =>
+      store.globalState.environments.findIndex((e) => {
+        console.log(e.id, params.paneId);
+        return e.id === params.paneId;
+      }),
+    [store.globalState.environments]
+  );
 
-    dispatch((state) => {
-      if (state.globalState.environments[0]) {
-        state.globalState.environments[0].variables = requestHeaders;
-      }
-    });
-  }, [requestHeaders]);
   return (
     <div>
-      <Table columns={columns} dataSource={dataSource} />
+      <Button
+        onClick={() => {
+          dispatch((state) => {
+            state.globalState.environments[index].variables =
+              requestHeaders.map((r: any) => ({
+                key: r.key,
+                value: r.value,
+              }));
+          });
 
+          const envs = JSON.parse(
+            JSON.stringify(store.globalState.environments)
+          );
+          envs[index].variables = requestHeaders.map((r: any) => ({
+            key: r.key,
+            value: r.value,
+          }));
+
+          request({
+            method: 'POST',
+            url: '/api/updateworkspace',
+            data: {
+              id: params.workspaceId,
+              environments: envs,
+            },
+          }).then((res) => {
+            console.log(res);
+            message.success(JSON.stringify(res));
+          });
+        }}
+      >
+        保存
+      </Button>
+      <Input
+        value={store.globalState.environments[index].name}
+        onChange={(e) => {
+          dispatch((state) => {
+              state.globalState.environments[index].name = e.target.value;
+          });
+        }}
+      />
       <FormHeader update={setRequestHeaders} title={'env'} />
       <FormTable
         bordered

@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import type { TabsProps } from 'antd';
 import { Tabs } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -111,7 +112,16 @@ const DraggableTabs: React.FC<TabsProps> = (props) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <Tabs renderTabBar={renderTabBar} {...props} items={orderItems} />
+      <Tabs
+        css={css`
+          .ant-tabs-nav {
+            margin-bottom: 0;
+          }
+        `}
+        renderTabBar={renderTabBar}
+        {...props}
+        items={orderItems}
+      />
     </DndProvider>
   );
 };

@@ -15,6 +15,7 @@ import { MainContext } from '../../store/content/MainContent';
 // import { useStore } from '../../store';
 // import { useSettingsStore } from '../../store/settings';
 import Http from '../http';
+import {parseGlobalPaneId} from "../../helpers/utils";
 // import {SettingContext} from "../../store/content/SettingContent";
 const { useToken } = theme;
 const HttpBreadcrumb: FC<{ nodePaths: { title: string }[] }> = ({
@@ -51,11 +52,11 @@ const RequestPane: FC<any> = ({ pane }) => {
   const darkMode = useDarkMode();
   const { relationshipRequestId } = treeFind(
     collectionTreeData,
-    (node: any) => node.key === pane.key
+    (node: any) => node.key === parseGlobalPaneId(pane.key)['rawId']
   );
   const nodePaths = treeFindPath(
     collectionTreeData,
-    (node: any) => node.key === pane.key
+    (node: any) => node.key === parseGlobalPaneId(pane.key)['rawId']
   );
   const mockEnvironmentData = useMemo(() => {
     return (
@@ -87,6 +88,7 @@ const RequestPane: FC<any> = ({ pane }) => {
         height: calc(100vh - 140px);
       `}
     >
+        <p>{pane.paneId}</p>
       <Http
         breadcrumb={<HttpBreadcrumb nodePaths={nodePaths} />}
         // @ts-ignore

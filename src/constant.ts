@@ -39,6 +39,7 @@ export enum MenuTypeEnum {
 export enum PageTypeEnum {
   Setting = 'setting',
   Request = 'request',
+  Example = 'example',
   Folder = 'folder',
   Collection = 'collection',
   Environment = 'environment',
