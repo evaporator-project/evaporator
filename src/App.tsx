@@ -1,5 +1,3 @@
-import './App.css';
-
 import ConfigMiddlewareProvider from './providers/ConfigMiddlewareProvider';
 import MainProvider from './store/content/MainContent';
 import ThemeMiddlewareProvider from './theme/ThemeMiddlewareProvider';

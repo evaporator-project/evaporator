@@ -300,6 +300,9 @@ const MainBox = () => {
               <Tabs
                 css={css`
                   flex: 1;
+                  .ant-tabs-tabpane {
+                    padding-left: 12px !important;
+                  }
                 `}
                 tabPosition="left"
                 activeKey={activeMenu[0]}

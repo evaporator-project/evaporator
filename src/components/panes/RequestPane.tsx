@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 
 import { treeFind, treeFindPath } from '../../helpers/collection/util';
 import { AgentAxiosAndTest } from '../../helpers/request';
+import { parseGlobalPaneId } from '../../helpers/utils';
 // import Http from './../../components/http'
 // import { AgentAxiosAndTest } from '../../helpers/request';
 import useDarkMode from '../../hooks/use-dark-mode';
@@ -15,7 +16,6 @@ import { MainContext } from '../../store/content/MainContent';
 // import { useStore } from '../../store';
 // import { useSettingsStore } from '../../store/settings';
 import Http from '../http';
-import {parseGlobalPaneId} from "../../helpers/utils";
 // import {SettingContext} from "../../store/content/SettingContent";
 const { useToken } = theme;
 const HttpBreadcrumb: FC<{ nodePaths: { title: string }[] }> = ({
@@ -86,9 +86,9 @@ const RequestPane: FC<any> = ({ pane }) => {
     <div
       css={css`
         height: calc(100vh - 140px);
+        padding-top: 12px;
       `}
     >
-        <p>{pane.paneId}</p>
       <Http
         breadcrumb={<HttpBreadcrumb nodePaths={nodePaths} />}
         // @ts-ignore

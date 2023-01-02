@@ -151,7 +151,9 @@ const Settings = () => {
                   defaultChecked={mode}
                   onChange={(val) => {
                     darkMode.toggle(val);
-
+                    dispatch((state) => {
+                      state.settings.BG_COLOR = val ? 'dark' : 'light';
+                    });
                     request({
                       method: 'POST',
                       url: '/api/usersettings',

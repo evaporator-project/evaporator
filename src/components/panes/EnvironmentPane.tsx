@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import { Button, Input, message, Table } from 'antd';
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
@@ -36,8 +37,10 @@ const EnvironmentPane = ({ pane }: any) => {
   );
 
   return (
-    <div>
+    <div css={css`padding: 10px`}>
       <Button
+          type={'primary'}
+          css={css`margin-bottom: 10px`}
         onClick={() => {
           dispatch((state) => {
             state.globalState.environments[index].variables =

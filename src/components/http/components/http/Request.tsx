@@ -67,7 +67,7 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
           }
         }
       }
-      console.log(url)
+      console.log(url);
       return url;
     };
     dispatch((state) => {
@@ -130,17 +130,6 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
             });
           }}
         />
-        {/*<SmartEnvInput*/}
-        {/*  value={store.request.endpoint}*/}
-        {/*  onChange={(v) => {*/}
-        {/*    dispatch((state) => {*/}
-        {/*      state.request.endpoint = v;*/}
-        {/*    });*/}
-        {/*  }}*/}
-        {/*  reg={HOPP_ENVIRONMENT_REGEX}*/}
-        {/*  environment={store.environment}*/}
-        {/*></SmartEnvInput>*/}
-
         <HighlightInput
           value={store.request.endpoint}
           onChange={(v) => {
