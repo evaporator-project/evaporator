@@ -83,9 +83,9 @@ const MainBox = () => {
         params.paneType,
         params.paneId
       );
-      console.log(paneId, params.paneType, 'paneId');
+      console.log(paneId, params, 'ssssss');
       dispatch((state) => {
-        state.globalState.activeMenu = [params.paneType, paneId];
+        state.globalState.activeMenu = [MenuTypeEnum.Collection, paneId];
       });
     }
   });

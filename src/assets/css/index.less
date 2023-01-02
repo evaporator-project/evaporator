@@ -62,6 +62,9 @@
 }
 
 
+.highlight-input{
+  border-left: none !important;
+}
 
 
 
@@ -71,14 +74,14 @@
   color: black;
   z-index: 1000;
   white-space: nowrap;
-  border-radius: 2px;
   font-weight: bold;
 }
 
 .rhi-tooltip .content{
+  border-radius: 2px;
   padding: 4px;
   background-color: rgb(245,245,245);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, .1), 0 2px 6px rgba(0, 0, 0, .08);
+  box-shadow: 0 1px 2px -2px rgba(0, 0, 0, .16), 0 3px 6px 0 rgba(0, 0, 0, .12), 0 5px 12px 4px rgba(0, 0, 0, .09);
 }
 .rhi-tooltip .shim{
   height: 6px;
@@ -129,4 +132,22 @@
   line-height: 20px;
   color: rgba(0,0,0,0);
   caret-color: black;
+}
+
+
+
+/*dark theme*/
+
+.highlight-input.dark{
+  border: 1px solid #424242;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.highlight-input.dark .red{
+  background-color: #591B08;
+  color: #F79A8E;
+}
+
+.highlight-input.dark .real-input{
+  caret-color: rgba(255, 255, 255, 0.85);
 }

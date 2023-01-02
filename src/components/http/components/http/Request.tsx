@@ -14,7 +14,7 @@ const HeaderWrapper = styled.div`
   display: flex;
   .ant-select-selector {
     border-radius: 0;
-    border-right: none !important;
+    //border-right: none !important;
   }
 `;
 
@@ -202,6 +202,7 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
               }
             },
           }}
+          theme={store.theme}
         ></HighlightInput>
 
         {/*<UbButton>ssss</UbButton>*/}
