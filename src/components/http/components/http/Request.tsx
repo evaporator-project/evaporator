@@ -2,13 +2,20 @@ import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button, Divider, Dropdown, MenuProps, message, Select } from 'antd';
-import { FC, useContext } from 'react';
+import { FC, useContext, useMemo } from 'react';
+import * as Rhi from 'react-highlight-input';
 import { useTranslation } from 'react-i18next';
-
+const { HighlightInput } = Rhi;
+console.log(Rhi.HighlightInput, 'HighlightInput');
+import { HOPP_ENVIRONMENT_REGEX } from '../../editor/extensions/HoppEnvironment';
 import { HttpContext, HttpProps } from '../../index';
 import SmartEnvInput from '../smart/EnvInput';
 const HeaderWrapper = styled.div`
   display: flex;
+  .ant-select-selector {
+    border-radius: 0;
+    border-right: none !important;
+  }
 `;
 
 const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
@@ -46,17 +53,22 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
   const handleRequest = ({ type }: any) => {
     const urlPretreatment = (url: string) => {
       const editorValueMatch = url.match(/\{\{(.+?)\}\}/g) || [''];
-      let replaceVar = editorValueMatch[0];
-      const env = store.environment?.variables || [];
-      for (let i = 0; i < env.length; i++) {
-        if (
-          env[i].key === editorValueMatch[0].replace('{{', '').replace('}}', '')
-        ) {
-          replaceVar = env[i].value;
+      // let u = url
+      for (let j = 0; j < editorValueMatch.length; j++) {
+        let replaceVar = editorValueMatch[j];
+        const env = store.environment?.variables || [];
+        for (let i = 0; i < env.length; i++) {
+          if (
+            env[i].key ===
+            editorValueMatch[j].replace('{{', '').replace('}}', '')
+          ) {
+            replaceVar = env[i].value;
+            url = url.replace(editorValueMatch[j], replaceVar);
+          }
         }
       }
-
-      return url.replace(editorValueMatch[0], replaceVar);
+      console.log(url)
+      return url;
     };
     dispatch((state) => {
       state.response = {
@@ -76,6 +88,10 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
       });
     });
   };
+
+  const mockEnvironment = useMemo(() => {
+    return store.environment;
+  }, [store.environment]);
   return (
     <div
       css={css`
@@ -114,18 +130,85 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
             });
           }}
         />
-        <SmartEnvInput
+        {/*<SmartEnvInput*/}
+        {/*  value={store.request.endpoint}*/}
+        {/*  onChange={(v) => {*/}
+        {/*    dispatch((state) => {*/}
+        {/*      state.request.endpoint = v;*/}
+        {/*    });*/}
+        {/*  }}*/}
+        {/*  reg={HOPP_ENVIRONMENT_REGEX}*/}
+        {/*  environment={store.environment}*/}
+        {/*></SmartEnvInput>*/}
+
+        <HighlightInput
           value={store.request.endpoint}
           onChange={(v) => {
-            // console.log('http://127.0.0.1:5173/arex-request/');
             dispatch((state) => {
               state.request.endpoint = v;
             });
           }}
-        ></SmartEnvInput>
+          highlight={{
+            pattern: HOPP_ENVIRONMENT_REGEX,
+            class: (match: any) => {
+              if (
+                mockEnvironment.variables
+                  .map((v) => v.key)
+                  .includes(match.replace('{{', '').replace('}}', ''))
+              ) {
+                return 'green';
+              } else {
+                return 'red';
+              }
+            },
+            tooltip: (match: any) => {
+              const key = match.replace('{{', '').replace('}}', '');
+              const v = mockEnvironment.variables.find((v) => v.key === key);
+
+              if (!v?.value) {
+                return (
+                  <div>
+                    {'Choose an Environment'}
+
+                    <span
+                      style={{
+                        backgroundColor: 'rgb(184,187,192)',
+                        padding: '0 4px',
+                        marginLeft: '4px',
+                        borderRadius: '2px',
+                      }}
+                    >
+                      {'Not found'}
+                    </span>
+                  </div>
+                );
+              } else {
+                return (
+                  <div>
+                    {mockEnvironment.name}
+
+                    <span
+                      style={{
+                        backgroundColor: 'rgb(184,187,192)',
+                        padding: '0 4px',
+                        marginLeft: '4px',
+                        borderRadius: '2px',
+                      }}
+                    >
+                      {v?.value}
+                    </span>
+                  </div>
+                );
+              }
+            },
+          }}
+        ></HighlightInput>
+
+        {/*<UbButton>ssss</UbButton>*/}
+
         <div
           css={css`
-            margin: 0 0px 0 14px;
+            margin: 0 0px 0 10px;
           `}
         >
           <Dropdown.Button
