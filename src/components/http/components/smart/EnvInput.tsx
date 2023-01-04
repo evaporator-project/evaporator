@@ -28,6 +28,7 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
     if (editorRef.current) {
       decorations();
     }
+    console.log(store.environment,'store.environment')
   }, [store.environment]);
   function decorations() {
     const editor: any = editorRef.current;

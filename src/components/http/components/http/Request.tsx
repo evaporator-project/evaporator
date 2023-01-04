@@ -53,7 +53,6 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
   const handleRequest = ({ type }: any) => {
     const urlPretreatment = (url: string) => {
       const editorValueMatch = url.match(/\{\{(.+?)\}\}/g) || [''];
-      // let u = url
       for (let j = 0; j < editorValueMatch.length; j++) {
         let replaceVar = editorValueMatch[j];
         const env = store.environment?.variables || [];
@@ -67,7 +66,6 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
           }
         }
       }
-      console.log(url);
       return url;
     };
     dispatch((state) => {
@@ -130,69 +128,15 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
             });
           }}
         />
-        <HighlightInput
-          value={store.request.endpoint}
-          onChange={(v) => {
-            dispatch((state) => {
-              state.request.endpoint = v;
-            });
-          }}
-          highlight={{
-            pattern: HOPP_ENVIRONMENT_REGEX,
-            class: (match: any) => {
-              if (
-                mockEnvironment.variables
-                  .map((v) => v.key)
-                  .includes(match.replace('{{', '').replace('}}', ''))
-              ) {
-                return 'green';
-              } else {
-                return 'red';
-              }
-            },
-            tooltip: (match: any) => {
-              const key = match.replace('{{', '').replace('}}', '');
-              const v = mockEnvironment.variables.find((v) => v.key === key);
-
-              if (!v?.value) {
-                return (
-                  <div>
-                    {'Choose an Environment'}
-
-                    <span
-                      style={{
-                        backgroundColor: 'rgb(184,187,192)',
-                        padding: '0 4px',
-                        marginLeft: '4px',
-                        borderRadius: '2px',
-                      }}
-                    >
-                      {'Not found'}
-                    </span>
-                  </div>
-                );
-              } else {
-                return (
-                  <div>
-                    {mockEnvironment.name}
-
-                    <span
-                      style={{
-                        backgroundColor: 'rgb(184,187,192)',
-                        padding: '0 4px',
-                        marginLeft: '4px',
-                        borderRadius: '2px',
-                      }}
-                    >
-                      {v?.value}
-                    </span>
-                  </div>
-                );
-              }
-            },
-          }}
-          theme={store.theme}
-        ></HighlightInput>
+        <SmartEnvInput
+            value={store.request.endpoint}
+            onChange={(v) => {
+              // console.log('http://127.0.0.1:5173/arex-request/');
+              dispatch((state) => {
+                state.request.endpoint = v;
+              });
+            }}
+        ></SmartEnvInput>
 
         {/*<UbButton>ssss</UbButton>*/}
 

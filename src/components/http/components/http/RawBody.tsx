@@ -50,6 +50,7 @@ const HttpRawBody = ({ cRef }: any) => {
           minimap: {
             enabled: false,
           },
+          fontFamily:'IBMPlexMono, "Courier New", monospace'
         }}
         theme={store.theme === 'light' ? 'light' : 'vs-dark'}
       />
