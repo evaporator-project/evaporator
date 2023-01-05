@@ -22,13 +22,16 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
     // here is the editor instance
     // you can store it in `useRef` for further usage
     editorRef.current = editor;
+    editor.lineHighlightBackground = 'red';
+    editor.selectionBackground = 'red';
+    editor.lineHighlightBorder = 'red';
     decorations();
   }
   useEffect(() => {
     if (editorRef.current) {
       decorations();
     }
-    console.log(store.environment,'store.environment')
+    console.log(store.environment, 'store.environment');
   }, [store.environment]);
   function decorations() {
     const editor: any = editorRef.current;
@@ -77,11 +80,20 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
             isWholeLine: false,
             className: myContentClass, // 代码行样式类名
             glyphMarginClassName: myContentClass, // 行数前面小块标记样式类名
+            inlineClassName: myContentClass
           },
         },
       ] // 如果需要清空所有标记，将 newDecorations 设为空数组即可
     );
   }
+
+  useEffect(() => {
+    document.addEventListener('click', function (e) {
+      // console.log(e.clientX,e.clientY)
+
+      console.log(document.elementsFromPoint(e.clientX, e.clientY));
+    });
+  }, []);
   return (
     <div
       css={css`
@@ -93,7 +105,7 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
     >
       {/*<p>{JSON.stringify(store.environment)}</p>*/}
       <MonacoEditor
-        height={18}
+        height={21}
         value={value}
         onChange={(value) => {
           onChange(value);
@@ -105,7 +117,16 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
             enabled: false,
           },
           lineNumbers: 'off',
-          fontSize: 12,
+          fontSize: 14,
+          fontFamily: 'IBMPlexMono, "Courier New", monospace',
+          scrollbar: {
+            useShadows: false,
+            vertical: 'hidden',
+            horizontal: 'hidden',
+          },
+          overviewRulerBorder: false,
+          overviewRulerLanes: 0,
+          renderLineHighlight: 'none',
         }}
         theme={store.theme === 'light' ? 'light' : 'vs-dark'}
       />

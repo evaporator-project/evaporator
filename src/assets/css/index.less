@@ -1,7 +1,23 @@
+.myGlyphMarginClass {
+  background: #ef4444;
+  color: white !important;
+}
+
+.myContentClass {
+  background: #ef4444;
+  color: white !important;
+}
+
+.myContentClass-green {
+  background: #7cb305;
+  color: white !important;
+}
+
 @font-face {
   font-family: "IBMPlexMono"; /* Project id 3197714 */
   src: url('./IBMPlexMono-Regular.woff2') format('woff2')
 }
+
 :root {
   --focus-border: #007fd4;
   --sash-size: 8px !important;
@@ -68,13 +84,12 @@
 }
 
 
-.highlight-input{
+.highlight-input {
   border-left: none !important;
 }
 
 
-
-.rhi-tooltip{
+.rhi-tooltip {
   position: absolute;
   top: -32px;
   color: black;
@@ -83,35 +98,36 @@
   font-weight: bold;
 }
 
-.rhi-tooltip .content{
+.rhi-tooltip .content {
   border-radius: 2px;
   padding: 4px;
-  background-color: rgb(245,245,245);
+  background-color: rgb(245, 245, 245);
   box-shadow: 0 1px 2px -2px rgba(0, 0, 0, .16), 0 3px 6px 0 rgba(0, 0, 0, .12), 0 5px 12px 4px rgba(0, 0, 0, .09);
 }
-.rhi-tooltip .shim{
+
+.rhi-tooltip .shim {
   height: 6px;
 }
 
-.rhi-tooltip .small-triangle{
-  border: 4px solid rgba(0,0,0,0);
+.rhi-tooltip .small-triangle {
+  border: 4px solid rgba(0, 0, 0, 0);
   width: 0;
   height: 0;
-  border-top-color: rgb(245,245,245);
+  border-top-color: rgb(245, 245, 245);
   margin-left: 8px;
 }
 
-.highlight-input .green{
+.highlight-input .green {
   color: #ff6c37;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
-.highlight-input .red{
+.highlight-input .red {
   color: #B70700;
   background-color: #FFEBE7;
 }
 
-.highlight-input{
+.highlight-input {
   position: relative;
   border: 1px solid #d9d9d9;
   display: inline-block;
@@ -120,40 +136,39 @@
   padding: 5px;
 }
 
-.highlight-input .display-input{
-  display:flex;
+.highlight-input .display-input {
+  display: flex;
   min-width: 200px;
   width: 100%;
   height: 20px;
   line-height: 20px;
 }
 
-.highlight-input .real-input{
+.highlight-input .real-input {
   position: absolute;
-  outline:none;
+  outline: none;
   top: 5px;
   min-width: 200px;
   width: 100%;
   height: 20px;
   line-height: 20px;
-  color: rgba(0,0,0,0);
+  color: rgba(0, 0, 0, 0);
   caret-color: black;
 }
 
 
-
 /*dark theme*/
 
-.highlight-input.dark{
+.highlight-input.dark {
   border: 1px solid #424242;
   color: rgba(255, 255, 255, 0.85);
 }
 
-.highlight-input.dark .red{
+.highlight-input.dark .red {
   background-color: #591B08;
   color: #F79A8E;
 }
 
-.highlight-input.dark .real-input{
+.highlight-input.dark .real-input {
   caret-color: rgba(255, 255, 255, 0.85);
 }
