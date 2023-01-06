@@ -27,6 +27,7 @@ const RawLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
         value={response.type === 'success' ? JSON.stringify(response.body) : ''}
         language={'txt'}
         options={{
+            fontFamily: 'IBMPlexMono, "Courier New", monospace',
           minimap: {
             enabled: false,
           },

@@ -69,6 +69,7 @@ const JSONLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
           value={JSON.stringify(jsonObj, null, 2)}
           language={'json'}
           options={{
+            fontFamily: 'IBMPlexMono, "Courier New", monospace',
             minimap: {
               enabled: false,
             },

@@ -122,6 +122,7 @@ arex.test("Status code is 5xx", ()=> {
           }}
           language={'javascript'}
           options={{
+            fontFamily: 'IBMPlexMono, "Courier New", monospace',
             minimap: {
               enabled: false,
             },

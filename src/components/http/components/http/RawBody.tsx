@@ -50,7 +50,15 @@ const HttpRawBody = ({ cRef }: any) => {
           minimap: {
             enabled: false,
           },
-          fontFamily:'IBMPlexMono, "Courier New", monospace'
+          fontFamily:'IBMPlexMono, "Courier New", monospace',
+          // scrollbar: {
+          //   useShadows: false,
+          //   vertical: 'hidden',
+          //   horizontal: 'hidden',
+          // },
+          // overviewRulerBorder: false,
+          scrollBeyondLastLine:false
+          // overviewRulerLanes: 0,
         }}
         theme={store.theme === 'light' ? 'light' : 'vs-dark'}
       />

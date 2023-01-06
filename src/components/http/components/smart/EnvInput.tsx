@@ -78,8 +78,8 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
           range: new monaco.Range(1, from + 1, 1, to + 1), // rowStart, columnStart, rowEnd, columnEnd
           options: {
             isWholeLine: false,
-            className: myContentClass, // 代码行样式类名
-            glyphMarginClassName: myContentClass, // 行数前面小块标记样式类名
+            // className: myContentClass, // 代码行样式类名
+            // glyphMarginClassName: myContentClass, // 行数前面小块标记样式类名
             inlineClassName: myContentClass
           },
         },
