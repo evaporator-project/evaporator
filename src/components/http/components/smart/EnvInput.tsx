@@ -1,14 +1,89 @@
 import { css, useTheme } from '@emotion/react';
 import MonacoEditor from '@monaco-editor/react';
+import { Tooltip } from 'antd';
 import * as monaco from 'monaco-editor';
-import React, { FC, useContext, useEffect, useRef } from 'react';
+import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 
 import {
   getMarkFromToArr,
   HOPP_ENVIRONMENT_REGEX,
 } from '../../editor/extensions/HoppEnvironment';
 import { HttpContext } from '../../index';
+import SmartTooltip from './Tooltip';
+const TooltipContent:FC<{ match:any, mockEnvironment:any }> = ({ match, mockEnvironment }) => {
+  const key = match.replace('{{', '').replace('}}', '');
+  const v = mockEnvironment.variables.find((v:any) => v.key === key);
+  return (
+    <div className={'rhi-tooltip'}>
+      <div className="content">
+        {!v?.value ? (
+          <div>
+            {'Choose an Environment'}
 
+            <span
+              style={{
+                backgroundColor: 'rgb(184,187,192)',
+                padding: '0 4px',
+                marginLeft: '4px',
+                borderRadius: '2px',
+              }}
+            >
+              {'Not found'}
+            </span>
+          </div>
+        ) : (
+          <div>
+            {mockEnvironment.name}
+            <span
+              style={{
+                backgroundColor: 'rgb(184,187,192)',
+                padding: '0 4px',
+                marginLeft: '4px',
+                borderRadius: '2px',
+              }}
+            >
+              {v?.value}
+            </span>
+          </div>
+        )}
+      </div>
+      <div className="shim">
+        <div className="small-triangle"></div>
+      </div>
+    </div>
+  );
+};
+// 获取元素的绝对位置坐标（像对于浏览器视区左上角）
+function getElementViewPosition(element:any) {
+  //计算x坐标
+  let actualLeft = element.offsetLeft;
+  var current = element.offsetParent;
+  while (current !== null) {
+    actualLeft += current.offsetLeft + current.clientLeft;
+    current = current.offsetParent;
+  }
+  if (document.compatMode == 'BackCompat') {
+    var elementScrollLeft = document.body.scrollLeft;
+  } else {
+    var elementScrollLeft = document.documentElement.scrollLeft;
+  }
+  const left = actualLeft - elementScrollLeft;
+  //计算y坐标
+  let actualTop = element.offsetTop;
+  var current = element.offsetParent;
+  while (current !== null) {
+    actualTop += current.offsetTop + current.clientTop;
+    current = current.offsetParent;
+  }
+  if (document.compatMode == 'BackCompat') {
+    var elementScrollTop = document.body.scrollTop;
+  } else {
+    var elementScrollTop = document.documentElement.scrollTop;
+  }
+  const right = actualTop - elementScrollTop;
+  //返回结果
+  return { x: left, y: right };
+}
 interface SmartEnvInputProps {
   value: string;
   onChange: (e: any) => void;
@@ -17,6 +92,11 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
   const theme = useTheme();
   const editorRef = useRef(null);
   const { store } = useContext(HttpContext);
+
+  const [open, setOpen] = useState(false);
+  const [left, setLeft] = useState(0);
+  const [top, setTop] = useState(0);
+  const [textContent, setTextContent] = useState('');
 
   function handleEditorDidMount(editor: any, monaco: any) {
     // here is the editor instance
@@ -54,11 +134,12 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
     }
 
     for (const decoration of decorations) {
+      console.log('decoration.options', decoration.options.inlineClassName);
       if (
         decoration &&
         decoration.options &&
-        (decoration.options.className === 'myContentClass' ||
-          decoration.options.className === 'myContentClass-green')
+        (decoration.options.inlineClassName === 'myContentClass' ||
+          decoration.options.inlineClassName === 'myContentClass-green')
       ) {
         ids.push(decoration.id);
       }
@@ -80,7 +161,7 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
             isWholeLine: false,
             // className: myContentClass, // 代码行样式类名
             // glyphMarginClassName: myContentClass, // 行数前面小块标记样式类名
-            inlineClassName: myContentClass
+            inlineClassName: myContentClass,
           },
         },
       ] // 如果需要清空所有标记，将 newDecorations 设为空数组即可
@@ -88,12 +169,50 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
   }
 
   useEffect(() => {
-    document.addEventListener('click', function (e) {
-      // console.log(e.clientX,e.clientY)
+    setTimeout(() => {
+      // console.log(document.querySelector('.myContentClass-green'))
 
-      console.log(document.elementsFromPoint(e.clientX, e.clientY));
-    });
-  }, []);
+      try {
+        const a = document.querySelector('.myContentClass-green');
+        // @ts-ignore
+        a.addEventListener('mouseover', function (e) {
+          const { x, y } = getElementViewPosition(e.target);
+          const l = x;
+          const t = y;
+          setLeft(l);
+          setTop(t);
+          setOpen(true);
+          // @ts-ignore
+          setTextContent(e.target.textContent);
+          // console.log(e.target.textContent)
+        });
+        // @ts-ignore
+        a.addEventListener('mouseout', function (e) {
+          setOpen(false);
+        });
+      } catch (e) {}
+
+      try {
+        const b = document.querySelector('.myContentClass');
+        // @ts-ignore
+        b.addEventListener('mouseover', function (e) {
+          const { x, y } = getElementViewPosition(e.target);
+          const l = x;
+          const t = y;
+          setLeft(l);
+          setTop(t);
+          setOpen(true);
+          // @ts-ignore
+          setTextContent(e.target.textContent);
+          // console.log(e.target.textContent)
+        });
+        // @ts-ignore
+        b.addEventListener('mouseout', function (e) {
+          setOpen(false);
+        });
+      } catch (e) {}
+    }, 500);
+  }, [store.environment]);
   return (
     <div
       css={css`
@@ -129,6 +248,18 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
           renderLineHighlight: 'none',
         }}
         theme={store.theme === 'light' ? 'light' : 'vs-dark'}
+      />
+      <SmartTooltip
+        open={open}
+        content={
+          <TooltipContent
+            match={textContent}
+            mockEnvironment={store.environment}
+          />
+        }
+        left={left}
+        top={top}
+        contentHeight={0}
       />
     </div>
   );
