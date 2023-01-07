@@ -10,9 +10,12 @@ import {
 } from '../../editor/extensions/HoppEnvironment';
 import { HttpContext } from '../../index';
 import SmartTooltip from './Tooltip';
-const TooltipContent:FC<{ match:any, mockEnvironment:any }> = ({ match, mockEnvironment }) => {
+const TooltipContent: FC<{ match: any; mockEnvironment: any }> = ({
+  match,
+  mockEnvironment,
+}) => {
   const key = match.replace('{{', '').replace('}}', '');
-  const v = mockEnvironment.variables.find((v:any) => v.key === key);
+  const v = mockEnvironment.variables.find((v: any) => v.key === key);
   return (
     <div className={'rhi-tooltip'}>
       <div className="content">
@@ -54,7 +57,7 @@ const TooltipContent:FC<{ match:any, mockEnvironment:any }> = ({ match, mockEnvi
   );
 };
 // 获取元素的绝对位置坐标（像对于浏览器视区左上角）
-function getElementViewPosition(element:any) {
+function getElementViewPosition(element: any) {
   //计算x坐标
   let actualLeft = element.offsetLeft;
   var current = element.offsetParent;
@@ -105,6 +108,7 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
     editor.lineHighlightBackground = 'red';
     editor.selectionBackground = 'red';
     editor.lineHighlightBorder = 'red';
+    // editorRef.current
     decorations();
   }
   useEffect(() => {
@@ -168,28 +172,36 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
     );
   }
 
+  function fn1(e) {
+    const { x, y } = getElementViewPosition(e.target);
+    const l = x;
+    const t = y;
+    setLeft(l);
+    setTop(t);
+    setOpen(true);
+    // @ts-ignore
+    setTextContent(e.target.textContent);
+    // console.log(e.target.textContent)
+  }
+  function fn2() {
+    setOpen(false);
+  }
   useEffect(() => {
     setTimeout(() => {
       // console.log(document.querySelector('.myContentClass-green'))
 
+    }, 500);
+
+    document.querySelector('.dakuangzi').addEventListener('mouseenter', (e) => {
       try {
         const a = document.querySelector('.myContentClass-green');
         // @ts-ignore
-        a.addEventListener('mouseover', function (e) {
-          const { x, y } = getElementViewPosition(e.target);
-          const l = x;
-          const t = y;
-          setLeft(l);
-          setTop(t);
-          setOpen(true);
-          // @ts-ignore
-          setTextContent(e.target.textContent);
-          // console.log(e.target.textContent)
-        });
+        // a.removeEventListener('mouseover',fn1)
+        // a.removeEventListener('mouseout',fn2)
+        a.addEventListener('mouseover', fn1);
+
         // @ts-ignore
-        a.addEventListener('mouseout', function (e) {
-          setOpen(false);
-        });
+        a.addEventListener('mouseout', fn2);
       } catch (e) {}
 
       try {
@@ -211,10 +223,11 @@ const SmartEnvInput: FC<SmartEnvInputProps> = ({ value, onChange }) => {
           setOpen(false);
         });
       } catch (e) {}
-    }, 500);
+    });
   }, [store.environment]);
   return (
     <div
+      className={'dakuangzi'}
       css={css`
         border: 1px solid ${theme.colorBorder};
         flex: 1;
