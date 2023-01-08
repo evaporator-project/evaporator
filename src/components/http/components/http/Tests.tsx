@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import { css, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Button, Typography } from 'antd';
 import React, { useContext } from 'react';
@@ -31,7 +31,7 @@ export const ResponseTestWrapper = styled.div`
   & > div:last-of-type {
     width: 35%;
     text-align: left;
-    border-left: 1px solid #eee;
+    //border-left: 1px solid #eee;
     padding-left: 20px;
   }
 `;
@@ -39,6 +39,7 @@ export const ResponseTestWrapper = styled.div`
 const HttpTests = () => {
   const { store, dispatch } = useContext(HttpContext);
   const { t } = useTranslation();
+  const theme = useTheme();
   const codeSnippet = [
     {
       name: 'Response: Status code is 200',
@@ -111,24 +112,34 @@ arex.test("Status code is 5xx", ()=> {
         <div></div>
       </ResponseTestHeader>
       <ResponseTestWrapper>
-        <MonacoEditor
-          value={store.request.testScript}
-          onChange={(value) => {
-            if (value) {
-              dispatch((state) => {
-                state.request.testScript = value;
-              });
-            }
-          }}
-          language={'javascript'}
-          options={{
-            fontFamily: 'IBMPlexMono, "Courier New", monospace',
-            minimap: {
-              enabled: false,
-            },
-          }}
-          theme={store.theme === 'light' ? 'light' : 'vs-dark'}
-        />
+        <div
+          css={css`
+            min-width: 0;
+            flex: 1;
+            //width: 100%;
+          `}
+        >
+          <MonacoEditor
+            value={store.request.testScript}
+            onChange={(value) => {
+              if (value) {
+                dispatch((state) => {
+                  state.request.testScript = value;
+                });
+              }
+            }}
+            language={'javascript'}
+            options={{
+              fontFamily: 'IBMPlexMono, "Courier New", monospace',
+              minimap: {
+                enabled: false,
+              },
+              scrollBeyondLastLine: false,
+              wordWrap: 'wordWrapColumn',
+            }}
+            theme={store.theme === 'light' ? 'light' : 'vs-dark'}
+          />
+        </div>
 
         <div
           css={css`
@@ -147,6 +158,9 @@ arex.test("Status code is 5xx", ()=> {
           </Text>
           <div>
             <a
+              css={css`
+                color: ${theme.colorPrimary};
+              `}
               type="text"
               onClick={() =>
                 window.open('https://docs.hoppscotch.io/features/tests')

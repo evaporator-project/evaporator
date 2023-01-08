@@ -73,6 +73,8 @@ const JSONLensRenderer: FC<{ response: HoppRESTResponse }> = ({ response }) => {
             minimap: {
               enabled: false,
             },
+            scrollBeyondLastLine: false,
+            wordWrap: 'wordWrapColumn',
           }}
           theme={store.theme === 'light' ? 'light' : 'vs-dark'}
         />

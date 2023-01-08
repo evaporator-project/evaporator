@@ -31,7 +31,7 @@ const HttpHeaders = () => {
     <div>
       <FormHeader update={setRequestHeaders} title={t('request.header_list')} />
       <FormTable
-        bordered
+        // bordered
         size="small"
         rowKey={'id'}
         pagination={false}

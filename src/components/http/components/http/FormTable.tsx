@@ -10,6 +10,8 @@ import { useContext } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Updater } from 'use-immer';
+
+import SmartEnvInput from '../smart/EnvInput';
 export type KeyValueType = {
   key: string;
   value: string;
@@ -54,12 +56,12 @@ export const useColumns = (
       key: 'key',
       render: editable
         ? (text, record, i) => (
-            <Input
+            <SmartEnvInput
               value={text}
-              bordered={false}
-              placeholder={t('count.key') || ''}
-              disabled={!record.active}
-              onChange={(e) => handleChange(i, 'key', e.target.value)}
+              // bordered={false}
+              // placeholder={t('count.key') || ''}
+              // disabled={!record.active}
+              onChange={(e) => handleChange(i, 'key', e)}
             />
           )
         : undefined,
@@ -70,12 +72,12 @@ export const useColumns = (
       key: 'value',
       render: editable
         ? (text, record, i) => (
-            <Input
+            <SmartEnvInput
               value={text}
-              bordered={false}
-              placeholder={t('count.value') || ''}
-              disabled={!record.active}
-              onChange={(e) => handleChange(i, 'value', e.target.value)}
+              // bordered={false}
+              // placeholder={t('count.key') || ''}
+              // disabled={!record.active}
+              onChange={(e) => handleChange(i, 'value', e)}
             />
           )
         : undefined,

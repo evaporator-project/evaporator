@@ -20,16 +20,18 @@ export const getMarkFromToArr = (
     value: string;
   };
 }[] => {
-  // ssss
   const editorValueMatch = text.match(reg) || [];
   const arr = [];
+
+  let cloneText = text;
+
   for (let i = 0; i < editorValueMatch.length; i++) {
     const find = currentEnv.variables.find(
       (f) => f.key === editorValueMatch[i].replace('{{', '').replace('}}', '')
     );
     arr.push({
-      from: text.indexOf(editorValueMatch[i]),
-      to: text.indexOf(editorValueMatch[i]) + editorValueMatch[i].length,
+      from: cloneText.indexOf(editorValueMatch[i]),
+      to: cloneText.indexOf(editorValueMatch[i]) + editorValueMatch[i].length,
       found: find ? true : false,
       matchEnv: {
         name: currentEnv.name || 'choose an environment',
@@ -37,6 +39,12 @@ export const getMarkFromToArr = (
         value: find ? find.value : 'not found',
       },
     });
+    cloneText = cloneText.replace(
+      editorValueMatch[i],
+      [...Array(editorValueMatch[i].length)].map((a) => '*').join('')
+    );
+    // console.log([...Array(editorValueMatch[i].length)].map(a=>'*'))
+    console.log(cloneText, 'cloneText');
   }
   return arr;
 };

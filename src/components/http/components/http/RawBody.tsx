@@ -36,6 +36,7 @@ const HttpRawBody = ({ cRef }: any) => {
       `}
     >
       <MonacoEditor
+          loading={<div></div>}
         height={'100%'}
         value={store.request.body.body as string}
         onChange={(value) => {
@@ -50,15 +51,9 @@ const HttpRawBody = ({ cRef }: any) => {
           minimap: {
             enabled: false,
           },
-          fontFamily:'IBMPlexMono, "Courier New", monospace',
-          // scrollbar: {
-          //   useShadows: false,
-          //   vertical: 'hidden',
-          //   horizontal: 'hidden',
-          // },
-          // overviewRulerBorder: false,
-          scrollBeyondLastLine:false
-          // overviewRulerLanes: 0,
+          fontFamily: 'IBMPlexMono, "Courier New", monospace',
+          scrollBeyondLastLine: false,
+          wordWrap: 'wordWrapColumn',
         }}
         theme={store.theme === 'light' ? 'light' : 'vs-dark'}
       />

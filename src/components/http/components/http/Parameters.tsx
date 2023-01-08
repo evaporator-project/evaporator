@@ -31,7 +31,7 @@ const HttpParameters = () => {
         update={setRequestParams}
       />
       <FormTable
-        bordered
+        // bordered
         rowKey={'id'}
         size="small"
         pagination={false}

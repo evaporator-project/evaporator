@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 
 import { Portal } from './Portal';
 interface TooltipProps {
@@ -17,21 +17,21 @@ const SmartTooltip: FC<TooltipProps> = ({
   contentHeight,
 }) => {
   const listHeight = useRef(null);
-  const [bentiOpen, setBentiOpen] = useState(false);
+  const [maskOpen, setMaskOpen] = useState(false);
   return (
     <Portal>
       <div
         css={css`
-          display: ${open || bentiOpen ? 'block' : 'none'};
+          display: ${open || maskOpen ? 'block' : 'none'};
           left: ${left}px;
           top: ${top - contentHeight}px;
           position: absolute;
         `}
         onMouseOut={() => {
-          setBentiOpen(false);
+          setMaskOpen(false);
         }}
         onMouseOver={() => {
-          setBentiOpen(true);
+          setMaskOpen(true);
         }}
         ref={listHeight}
       >
