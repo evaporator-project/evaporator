@@ -170,25 +170,20 @@ const MainBox = () => {
     action === 'add' ? addTab() : removeTab(targetKey);
   };
   const removeTab = (targetKey: string) => {
-    const menuType = activeMenu[0];
     const filteredPanes = panes.filter((i) => i.key !== targetKey);
     dispatch((state) => {
       state.globalState.panes = filteredPanes;
     });
-    // setPanes(filteredPanes);
     if (filteredPanes.length) {
       const lastPane = filteredPanes[filteredPanes.length - 1];
       const lastKey = lastPane.key;
-      // setActiveMenu(lastPane.menuType || MenuTypeEnum.Collection, lastKey);
       dispatch((state) => {
-        // state.globalState.activeMenu = [MenuTypeEnum.Collection, key];
         state.globalState.activeMenu = [
           lastPane.menuType || MenuTypeEnum.Collection,
           lastKey,
         ];
       });
     } else {
-      // setActiveMenu(menuType);
     }
   };
   const addTab = () => {
@@ -341,8 +336,19 @@ const MainBox = () => {
           <Allotment.Pane>
             <div>
               <DraggableTabs
+                onClickContextMenu={({ tabKey, clickKey, order }) => {
+                  console.log({ tabKey, clickKey, order });
+                  if (clickKey === '1') {
+                    removeTab(tabKey);
+                  } else if (clickKey === '5') {
+                    // const clickIndex = order.findIndex((o) => o === tabKey);
+                    // const arr = order.filter((o, index) => index < clickIndex);
+                    // for (let i = 0; i < arr.length; i++) {
+                    //   removeTab(arr[i]);
+                    // }
+                  }
+                }}
                 onChange={(val) => {
-                  console.log(val, 'va');
                   handleTabsChange(val);
                 }}
                 onEdit={handleTabsEdit}

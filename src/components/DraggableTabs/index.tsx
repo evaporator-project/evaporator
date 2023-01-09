@@ -1,11 +1,42 @@
 import { css } from '@emotion/react';
-import type { TabsProps } from 'antd';
+import { Dropdown, MenuProps, message, TabsProps } from 'antd';
 import { Tabs } from 'antd';
 import React, { useRef, useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 // https://ant.design/components/tabs-cn/#components-tabs-demo-custom-tab-bar-node
+const dropdownItems: MenuProps['items'] = [
+  {
+    label: 'Close',
+    key: '1',
+  },
+  {
+    label: 'Close Other Tabs',
+    key: '2',
+  },
+  {
+    label: 'Close All Tabs',
+    key: '3',
+  },
+  {
+    label: 'Close Unmodified Tabs',
+    key: '4',
+  },
+  {
+    label: 'Close Tabs to the Left',
+    key: '5',
+  },
+  {
+    label: 'Close Tabs to the Right',
+    key: '6',
+  },
+];
+
+// const onClick: MenuProps['onClick'] = (e) => {
+//   console.log(e, 'e');
+//   // message.info(`Click on item ${key}`);
+// };
 
 const type = 'DraggableTabNode';
 interface DraggableTabPaneProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -51,7 +82,18 @@ const DraggableTabNode = ({
   );
 };
 
-const DraggableTabs: React.FC<TabsProps> = (props) => {
+const DraggableTabs: React.FC<
+  TabsProps & {
+    onClickContextMenu: ({
+      tabKey,
+      clickKey,
+    }: {
+      tabKey: string;
+      clickKey: string;
+      order:any
+    }) => void;
+  }
+> = (props) => {
   const { items = [] } = props;
   const [order, setOrder] = useState<React.Key[]>([]);
 
@@ -78,15 +120,32 @@ const DraggableTabs: React.FC<TabsProps> = (props) => {
     DefaultTabBar
   ) => (
     <DefaultTabBar {...tabBarProps}>
-      {(node) => (
-        <DraggableTabNode
-          key={node.key}
-          index={node.key!}
-          moveNode={moveTabNode}
-        >
-          {node}
-        </DraggableTabNode>
-      )}
+      {(node) => {
+        // console.log({node});
+        return (
+          <DraggableTabNode
+            key={node.key}
+            index={node.key!}
+            moveNode={moveTabNode}
+          >
+            <Dropdown
+              menu={{
+                items: dropdownItems,
+                onClick: function (e) {
+                  props.onClickContextMenu({
+                    tabKey: String(node.key),
+                    clickKey: e.key,
+                    order
+                  });
+                },
+              }}
+              trigger={['contextMenu']}
+            >
+              <div>{node}</div>
+            </Dropdown>
+          </DraggableTabNode>
+        );
+      }}
     </DefaultTabBar>
   );
 
