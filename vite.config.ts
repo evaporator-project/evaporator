@@ -6,15 +6,15 @@ import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
 import viteCompression from "vite-plugin-compression";
 export default defineConfig({
   plugins: [
-    importToCDN.default({
-      modules: [
-        autoComplete('react'),
-        autoComplete('react-dom'),
-        autoComplete('axios'),
-        autoComplete('antd'),
-        autoComplete('ahooks')
-      ],
-    }),
+    // importToCDN.default({
+    //   modules: [
+    //     autoComplete('react'),
+    //     autoComplete('react-dom'),
+    //     autoComplete('axios'),
+    //     autoComplete('antd'),
+    //     autoComplete('ahooks')
+    //   ],
+    // }),
     react({
       jsxImportSource: '@emotion/react',
     }),
