@@ -21,7 +21,6 @@ const { useToken } = theme;
 const HttpBreadcrumb: FC<{ nodePaths: { title: string }[] }> = ({
   nodePaths,
 }) => {
-  console.log(nodePaths, 'nodePaths');
   return (
     <div>
       <Breadcrumb>
@@ -77,7 +76,6 @@ const RequestPane: FC<any> = ({ pane }) => {
       }),
     {
       onSuccess(res) {
-        console.log(res);
       },
     }
   );
@@ -97,7 +95,6 @@ const RequestPane: FC<any> = ({ pane }) => {
         theme={store.settings.BG_COLOR}
         environment={mockEnvironmentData}
         onSave={(p) => {
-          console.log(p);
           request({
             url: '/api/updaterequest',
             method: 'POST',
@@ -110,6 +107,7 @@ const RequestPane: FC<any> = ({ pane }) => {
           });
         }}
         onSend={(req) => {
+            console.log('此次请求的真实参数:',req)
           return AgentAxiosAndTest({ request: req });
         }}
       />

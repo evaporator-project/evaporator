@@ -1,20 +1,16 @@
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Button, Divider, Dropdown, MenuProps, message, Select } from 'antd';
+import { Button, Dropdown, MenuProps, message, Select } from 'antd';
 import { FC, useContext, useMemo } from 'react';
-import * as Rhi from 'react-highlight-input';
 import { useTranslation } from 'react-i18next';
-const { HighlightInput } = Rhi;
-console.log(Rhi.HighlightInput, 'HighlightInput');
-import { HOPP_ENVIRONMENT_REGEX } from '../../editor/extensions/HoppEnvironment';
+
 import { HttpContext, HttpProps } from '../../index';
 import SmartEnvInput from '../smart/EnvInput';
 const HeaderWrapper = styled.div`
   display: flex;
   .ant-select-selector {
     border-radius: 0;
-    //border-right: none !important;
   }
 `;
 
@@ -73,12 +69,18 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
         type: 'loading',
       };
     });
+    // *** 参与校验分两种 1.重提醒，弹窗提示 2.静默处理，例如空值
     onSend({
       ...store.request,
+      headers: store.request.headers.filter(
+        (f) => f.key !== '' && f.value !== ''
+      ),
+      params: store.request.params.filter(
+        (f) => f.key !== '' && f.value !== ''
+      ),
       endpoint: urlPretreatment(store.request.endpoint),
     }).then((responseAndTestResult) => {
       dispatch((state) => {
-        console.log(store.response, 'sss');
         if (responseAndTestResult.response.type === 'success') {
           state.response = responseAndTestResult.response;
           state.testResult = responseAndTestResult.testResult;
@@ -129,13 +131,13 @@ const HttpRequest: FC<HttpRequestProps> = ({ onSend, onSave, breadcrumb }) => {
           }}
         />
         <SmartEnvInput
-            value={store.request.endpoint}
-            onChange={(v) => {
-              // console.log('http://127.0.0.1:5173/arex-request/');
-              dispatch((state) => {
-                state.request.endpoint = v;
-              });
-            }}
+          value={store.request.endpoint}
+          onChange={(v) => {
+            // console.log('http://127.0.0.1:5173/arex-request/');
+            dispatch((state) => {
+              state.request.endpoint = v;
+            });
+          }}
         ></SmartEnvInput>
 
         {/*<UbButton>ssss</UbButton>*/}

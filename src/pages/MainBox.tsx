@@ -59,7 +59,6 @@ const MainBox = () => {
       method: 'POST',
       url: '/api/listworkspace',
     }).then((res: any) => {
-      console.log(res, 'resssss');
       setWorkspaces(res);
 
       if (params.workspaceId && res.length > 0) {
@@ -83,7 +82,6 @@ const MainBox = () => {
         params.paneType,
         params.paneId
       );
-      console.log(paneId, params, 'ssssss');
       dispatch((state) => {
         state.globalState.activeMenu = [MenuTypeEnum.Collection, paneId];
       });
@@ -336,18 +334,18 @@ const MainBox = () => {
           <Allotment.Pane>
             <div>
               <DraggableTabs
-                onClickContextMenu={({ tabKey, clickKey, order }) => {
-                  console.log({ tabKey, clickKey, order });
-                  if (clickKey === '1') {
-                    removeTab(tabKey);
-                  } else if (clickKey === '5') {
-                    // const clickIndex = order.findIndex((o) => o === tabKey);
-                    // const arr = order.filter((o, index) => index < clickIndex);
-                    // for (let i = 0; i < arr.length; i++) {
-                    //   removeTab(arr[i]);
-                    // }
-                  }
-                }}
+                // onClickContextMenu={({ tabKey, clickKey, order }) => {
+                //   console.log({ tabKey, clickKey, order });
+                //   if (clickKey === '1') {
+                //     removeTab(tabKey);
+                //   } else if (clickKey === '5') {
+                //     // const clickIndex = order.findIndex((o) => o === tabKey);
+                //     // const arr = order.filter((o, index) => index < clickIndex);
+                //     // for (let i = 0; i < arr.length; i++) {
+                //     //   removeTab(arr[i]);
+                //     // }
+                //   }
+                // }}
                 onChange={(val) => {
                   handleTabsChange(val);
                 }}

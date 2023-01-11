@@ -122,7 +122,7 @@ arex.test("Status code is 5xx", ()=> {
           <MonacoEditor
             value={store.request.testScript}
             onChange={(value) => {
-              if (value) {
+              if (value !== undefined) {
                 dispatch((state) => {
                   state.request.testScript = value;
                 });

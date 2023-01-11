@@ -22,7 +22,6 @@ const AppFooter = () => {
   const { t } = useTranslation();
 
   const interceptorSelection = useMemo(() => {
-    console.log({ PROXY_ENABLED, EXTENSIONS_ENABLED });
     if (PROXY_ENABLED === false && EXTENSIONS_ENABLED === false) {
       return 'BROWSER_ENABLED';
     } else if (PROXY_ENABLED === true && EXTENSIONS_ENABLED === false) {

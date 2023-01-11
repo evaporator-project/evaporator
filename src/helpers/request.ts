@@ -103,25 +103,6 @@ export const AgentAxiosAndTest = ({
       headers: res.headers,
       status: res.status,
     }).then((testDescriptor) => {
-      console.log(res.headers);
-      const errRes = {
-        description: '',
-        expectResults: [],
-        tests: [],
-        envDiff: {
-          global: {
-            additions: [],
-            deletions: [],
-            updations: [],
-          },
-          selected: {
-            additions: [],
-            deletions: [],
-            updations: [],
-          },
-        },
-        scriptError: true,
-      };
       const s = translateToSandboxTestResults(testDescriptor);
 
       return {

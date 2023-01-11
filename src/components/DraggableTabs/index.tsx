@@ -81,19 +81,18 @@ const DraggableTabNode = ({
     </div>
   );
 };
-
-const DraggableTabs: React.FC<
-  TabsProps & {
-    onClickContextMenu: ({
-      tabKey,
-      clickKey,
-    }: {
-      tabKey: string;
-      clickKey: string;
-      order:any
-    }) => void;
-  }
-> = (props) => {
+// TabsProps & {
+//   onClickContextMenu: ({
+//                          tabKey,
+//                          clickKey,
+//                        }: {
+//     tabKey: string;
+//     clickKey: string;
+//     order:any
+//   }) => void;
+// }
+// 本来尝试添加onClickContextMenu，发现会报错
+const DraggableTabs: React.FC<TabsProps> = (props) => {
   const { items = [] } = props;
   const [order, setOrder] = useState<React.Key[]>([]);
 
@@ -132,11 +131,11 @@ const DraggableTabs: React.FC<
               menu={{
                 items: dropdownItems,
                 onClick: function (e) {
-                  props.onClickContextMenu({
-                    tabKey: String(node.key),
-                    clickKey: e.key,
-                    order
-                  });
+                  // props.onClickContextMenu({
+                  //   tabKey: String(node.key),
+                  //   clickKey: e.key,
+                  //   order,
+                  // });
                 },
               }}
               trigger={['contextMenu']}

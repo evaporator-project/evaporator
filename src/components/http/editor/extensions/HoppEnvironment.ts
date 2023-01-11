@@ -43,8 +43,6 @@ export const getMarkFromToArr = (
       editorValueMatch[i],
       [...Array(editorValueMatch[i].length)].map((a) => '*').join('')
     );
-    // console.log([...Array(editorValueMatch[i].length)].map(a=>'*'))
-    console.log(cloneText, 'cloneText');
   }
   return arr;
 };

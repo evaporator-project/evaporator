@@ -61,9 +61,6 @@ const CollectionMenu = ({ onSelect }: any) => {
         return node.key === params.paneId
       }
     );
-
-    console.log(initValue, 'initValue');
-
     if (initValue && expandedKeys.length === 0) {
       // console.log(initValue);
       onSelect(params.paneId, {

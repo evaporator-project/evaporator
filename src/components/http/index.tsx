@@ -57,6 +57,16 @@ const Http: FC<HttpProps> = ({
     dispatch((state) => {
       if (value) {
         state.request = value;
+        console.log(state.request);
+        if (
+          !state.request.headers.find((head) => head.key === 'Content-Type')
+        ) {
+          state.request.headers.push({
+            key: 'Content-Type',
+            value: 'application/json',
+            active: true,
+          });
+        }
       }
     });
   }, [value]);
